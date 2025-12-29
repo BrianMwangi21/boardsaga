@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { StoryInput, StoryDocument } from '@/lib/story-schema';
 
+function normalizePGN(pgn: string): string {
+  return pgn.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n{3,}/g, '\n\n');
+}
+
 export async function GET() {
   try {
     const db = await getDb();
@@ -45,11 +49,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedPGN = normalizePGN(rawPGN);
+
     const db = await getDb();
     const now = new Date();
 
     const storyDoc: Omit<StoryDocument, '_id'> = {
-      rawPGN,
+      rawPGN: normalizedPGN,
       analysis,
       story,
       createdAt: now,
