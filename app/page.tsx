@@ -37,6 +37,22 @@ export default function Home() {
       }
 
       const gameData = parseResult.data
+
+      const checkPgnResponse = await fetch('/api/stories/check-pgn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pgn: text }),
+      })
+
+      const checkPgnResult = await checkPgnResponse.json()
+
+      if (checkPgnResult.exists && checkPgnResult.story) {
+        window.location.href = `/story/${checkPgnResult.story._id}`
+        return
+      }
+
       await generateStory(gameData)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -77,8 +93,25 @@ export default function Home() {
         throw new Error(storyResult.error || 'Failed to generate story')
       }
 
-      setStory(storyResult.story)
-      setAppState('story')
+      const saveStoryResponse = await fetch('/api/stories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rawPGN: gameData.pgn,
+          analysis: analysisData,
+          story: storyResult.story,
+        }),
+      })
+
+      const saveStoryResult = await saveStoryResponse.json()
+
+      if (!saveStoryResponse.ok) {
+        throw new Error(saveStoryResult.error || 'Failed to save story')
+      }
+
+      window.location.href = `/story/${saveStoryResult._id}`
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       setAppState('error')
