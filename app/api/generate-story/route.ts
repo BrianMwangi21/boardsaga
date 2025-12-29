@@ -145,7 +145,7 @@ export async function POST(request: Request) {
     if (cached && now - cached.timestamp < CACHE_TTL) {
       console.log(`[Cache Hit] Story found for analysis hash: ${analysisHash}`)
       return Response.json({
-        data: cached.data,
+        story: cached.data,
         cached: true,
         tokenUsage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
       })
