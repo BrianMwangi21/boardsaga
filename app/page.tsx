@@ -81,9 +81,12 @@ export default function Home() {
         throw new Error(storyResult.error || 'Failed to generate story')
       }
 
+      console.log('[Story Generated] Full response:', storyResult)
+      console.log('[Story Generated] Story object:', storyResult.story)
+      console.log('[Story Generated] Chapter count:', storyResult.story?.chapters?.length)
+      
       setStory(storyResult.story)
       setAppState('story')
-      console.log('[Story Generated]', storyResult.story)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       setAppState('error')
@@ -97,7 +100,42 @@ export default function Home() {
     setStory(null)
   }
 
+  const testStoryViewer = () => {
+    setStory({
+      id: "test-story-1",
+      title: "Test Story - The Silent Knight",
+      format: "short" as const,
+      chapters: [
+        {
+          id: "chapter-1",
+          title: "The Opening",
+          chapterNumber: 1,
+          sections: ["opening" as const],
+          content: "This is a test chapter with some content. The knight moved from g1 to f3, establishing control over the center. From my perspective as the knight, I felt ready to leap into action.",
+          narrativeStyle: "mixed" as const,
+          chessBoards: [],
+          keyMoveReferences: [],
+          isFlashback: false
+        }
+      ],
+      summary: "A test story to verify UI rendering",
+      gameMetadata: {
+        whitePlayer: "Test Player 1",
+        blackPlayer: "Test Player 2",
+        result: "1-0"
+      },
+      pieceLoreUsed: [],
+      storyThemes: [],
+      narrativeArc: "Test arc",
+      createdAt: new Date()
+    })
+    setAppState('story')
+  }
+
   if (appState === 'story' && story) {
+    console.log('[Rendering Story Viewer]', story)
+    console.log('[Story Chapters]', story.chapters)
+    console.log('[Story Chapters Length]', story.chapters?.length)
     return <StoryViewer story={story} />
   }
 
@@ -119,6 +157,14 @@ export default function Home() {
                 {error}
               </div>
             )}
+            <div className="mt-4 text-center">
+              <button
+                onClick={testStoryViewer}
+                className="text-sm text-muted-foreground hover:text-foreground underline"
+              >
+                Test Story Viewer (Debug)
+              </button>
+            </div>
           </div>
         )}
 

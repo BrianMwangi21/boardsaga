@@ -21,90 +21,117 @@ export default function StoryViewer({ story }: StoryViewerProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('chapter')
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0)
 
-  const currentChapter = story.chapters[currentChapterIndex]
+  if (!story || !story.chapters || story.chapters.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-100 py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4">Story Not Available</h2>
+          <p className="text-muted-foreground mb-6">
+            The story could not be displayed. Please try uploading your PGN file again.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
+          >
+            Upload New Game
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const currentChapterIndexSafe = currentChapterIndex >= 0 && currentChapterIndex < story.chapters.length ? currentChapterIndex : 0
+  const currentChapter = story.chapters[currentChapterIndexSafe]
 
   const nextChapter = () => {
-    if (currentChapterIndex < story.chapters.length - 1) {
+    if (currentChapterIndexSafe < story.chapters.length - 1) {
       setCurrentChapterIndex(prev => prev + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const prevChapter = () => {
-    if (currentChapterIndex > 0) {
+    if (currentChapterIndexSafe > 0) {
       setCurrentChapterIndex(prev => prev - 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
-  const renderChapterContent = (chapter: typeof story.chapters[0]) => (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          {chapter.isFlashback && (
-            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-              Flashback
-            </span>
-          )}
-          <span className="text-sm text-gray-500 uppercase tracking-wide">
-            Chapter {chapter.chapterNumber}
-          </span>
-        </div>
-        
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          {chapter.title}
-        </h2>
-        
-        {chapter.sections.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6">
-            {chapter.sections.map(section => (
-              <span
-                key={section}
-                className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm"
-              >
-                {SECTION_LABELS[section]}
+  const renderChapterContent = (chapter: typeof story.chapters[0]) => {
+    if (!chapter) {
+      return <div className="text-center py-12">Chapter not found</div>
+    }
+
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            {chapter.isFlashback && (
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                Flashback
               </span>
-            ))}
+            )}
+            <span className="text-sm text-gray-500 uppercase tracking-wide">
+              Chapter {chapter.chapterNumber}
+            </span>
+          </div>
+          
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            {chapter.title}
+          </h2>
+          
+          {chapter.sections.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {chapter.sections.map(section => (
+                <span
+                  key={section}
+                  className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm"
+                >
+                  {SECTION_LABELS[section]}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="prose prose-lg prose-amber max-w-none">
+          {chapter.content && chapter.content.split('\n\n').map((paragraph, index) => (
+            <p key={index} className="mb-4 text-gray-700 leading-relaxed">
+              {paragraph}
+            </p>
+          ))}
+          {!chapter.content && <p className="text-muted-foreground">No content available for this chapter.</p>}
+        </div>
+
+        {chapter.chessBoards && chapter.chessBoards.length > 0 && (
+          <div className="mt-8 mb-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Critical Position</h3>
+            <div className="flex justify-center">
+              <ChessBoard boardState={chapter.chessBoards[0]} />
+            </div>
+          </div>
+        )}
+
+        {chapter.keyMoveReferences && chapter.keyMoveReferences.length > 0 && (
+          <div className="mt-8 p-4 bg-stone-100 rounded-lg border-2 border-stone-300">
+            <h4 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+              Key Move References
+            </h4>
+            <div className="space-y-2">
+              {chapter.keyMoveReferences.map((ref, index) => (
+                <div key={index} className="flex items-start gap-3 text-sm">
+                  <span className="font-mono font-bold text-amber-600 mt-0.5">
+                    {ref.moveNumber}{ref.san}
+                  </span>
+                  <span className="text-gray-600">{ref.context}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
-
-      <div className="prose prose-lg prose-amber max-w-none">
-        {chapter.content.split('\n\n').map((paragraph, index) => (
-          <p key={index} className="mb-4 text-gray-700 leading-relaxed">
-            {paragraph}
-          </p>
-        ))}
-      </div>
-
-      {chapter.chessBoards && chapter.chessBoards.length > 0 && (
-        <div className="mt-8 mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Critical Position</h3>
-          <div className="flex justify-center">
-            <ChessBoard boardState={chapter.chessBoards[0]} />
-          </div>
-        </div>
-      )}
-
-      {chapter.keyMoveReferences && chapter.keyMoveReferences.length > 0 && (
-        <div className="mt-8 p-4 bg-stone-100 rounded-lg border-2 border-stone-300">
-          <h4 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
-            Key Move References
-          </h4>
-          <div className="space-y-2">
-            {chapter.keyMoveReferences.map((ref, index) => (
-              <div key={index} className="flex items-start gap-3 text-sm">
-                <span className="font-mono font-bold text-amber-600 mt-0.5">
-                  {ref.moveNumber}{ref.san}
-                </span>
-                <span className="text-gray-600">{ref.context}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-100 py-12 px-4">

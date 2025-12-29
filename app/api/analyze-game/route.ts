@@ -7,7 +7,7 @@ const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 })
 
-const MODEL = 'openai/gpt-oss-120b:free'
+const MODEL = 'meta-llama/llama-3.3-70b-instruct:free'
 
 const analysisCache = new Map<string, { data: GameAnalysis; timestamp: number }>()
 const CACHE_TTL = 60 * 60 * 1000
@@ -15,6 +15,13 @@ const CACHE_TTL = 60 * 60 * 1000
 const requestLog: Array<{ timestamp: number; endpoint: string }> = []
 const RATE_LIMIT_WINDOW = 60 * 1000
 const RATE_LIMIT_MAX_REQUESTS = 20
+
+const MAX_RETRIES = 3
+const RETRY_DELAY = 1000
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 export async function POST(request: Request) {
   try {
@@ -60,75 +67,108 @@ export async function POST(request: Request) {
 
     const prompt = generateFullAnalysisPrompt(parsedGame)
 
-    const result = streamText({
-      model: openrouter.chat(MODEL),
-      prompt,
-      temperature: 0.7
-    })
+    let lastError: Error | null = null
 
-    const fullResponse = await result.text
-    let analysisData: GameAnalysis
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        console.log(`[Analyze Game] Attempt ${attempt}/${MAX_RETRIES}`)
 
-    try {
-      const jsonMatch = fullResponse.match(/\{[\s\S]*\}/)
-      if (!jsonMatch) {
-        throw new Error('No JSON found in response')
-      }
-      analysisData = JSON.parse(jsonMatch[0])
-    } catch (error) {
-      console.error('[Parse Error] Failed to parse LLM response:', error)
-      console.error('[Raw Response]', fullResponse)
-      return Response.json(
-        { error: 'Failed to parse analysis response from AI' },
-        { status: 500 }
-      )
-    }
+        const result = streamText({
+          model: openrouter.chat(MODEL),
+          prompt,
+          temperature: 0.7,
+          maxOutputTokens: 4096
+        })
 
-    const gameAnalysis: GameAnalysis = {
-      gameMetadata: {
-        whitePlayer: parsedGame.metadata.white || 'Unknown',
-        blackPlayer: parsedGame.metadata.black || 'Unknown',
-        whiteElo: parsedGame.metadata.whiteElo,
-        blackElo: parsedGame.metadata.blackElo,
-        event: parsedGame.metadata.event,
-        result: parsedGame.metadata.result,
-        date: parsedGame.metadata.date,
-        timeControl: parsedGame.metadata.timeControl,
-        opening: parsedGame.metadata.opening
-      },
-      chessjsData: parsedGame.chessjsData,
-      narrativeAnalysis: {
-        overview: analysisData.narrativeAnalysis?.overview || {
-          phase: 'mixed',
-          openingPlayed: 'Unknown',
-          keyThemes: [],
-          tempoControl: 'balanced'
-        },
-        keyMoments: analysisData.narrativeAnalysis?.keyMoments || [],
-        playerStrategies: analysisData.narrativeAnalysis?.playerStrategies || {
-          white: { style: [], strengths: [], weaknesses: [], signatureMoves: [] },
-          black: { style: [], strengths: [], weaknesses: [], signatureMoves: [] }
-        },
-        loreElements: analysisData.narrativeAnalysis?.loreElements || {
-          dominantPieces: [],
-          piecePersonalities: [],
-          storyThemes: [],
-          narrativeArc: ''
+        const fullResponse = await result.text
+        let analysisData: GameAnalysis
+
+        try {
+          let jsonMatch = fullResponse.match(/```json\s*([\s\S]*?)\s*```/)
+          if (!jsonMatch) {
+            jsonMatch = fullResponse.match(/\{[\s\S]*\}/)
+          }
+          
+          if (!jsonMatch) {
+            throw new Error('No JSON found in response')
+          }
+
+          const jsonContent = jsonMatch[1] || jsonMatch[0]
+          analysisData = JSON.parse(jsonContent)
+
+          console.log(`[Analyze Game] Success on attempt ${attempt}`)
+          
+          const gameAnalysis: GameAnalysis = {
+            gameMetadata: {
+              whitePlayer: parsedGame.metadata.white || 'Unknown',
+              blackPlayer: parsedGame.metadata.black || 'Unknown',
+              whiteElo: parsedGame.metadata.whiteElo,
+              blackElo: parsedGame.metadata.blackElo,
+              event: parsedGame.metadata.event,
+              result: parsedGame.metadata.result,
+              date: parsedGame.metadata.date,
+              timeControl: parsedGame.metadata.timeControl,
+              opening: parsedGame.metadata.opening
+            },
+            chessjsData: parsedGame.chessjsData,
+            narrativeAnalysis: {
+              overview: analysisData.narrativeAnalysis?.overview || {
+                phase: 'mixed',
+                openingPlayed: 'Unknown',
+                keyThemes: [],
+                tempoControl: 'balanced'
+              },
+              keyMoments: analysisData.narrativeAnalysis?.keyMoments || [],
+              playerStrategies: analysisData.narrativeAnalysis?.playerStrategies || {
+                white: { style: [], strengths: [], weaknesses: [], signatureMoves: [] },
+                black: { style: [], strengths: [], weaknesses: [], signatureMoves: [] }
+              },
+              loreElements: analysisData.narrativeAnalysis?.loreElements || {
+                dominantPieces: [],
+                piecePersonalities: [],
+                storyThemes: [],
+                narrativeArc: ''
+              }
+            }
+          }
+
+          analysisCache.set(pgnHash, { data: gameAnalysis, timestamp: now })
+          console.log(`[Cache Stored] Analysis saved for PGN hash: ${pgnHash}`)
+
+          return Response.json({
+            data: gameAnalysis,
+            cached: false,
+            tokenUsage: {
+              promptTokens: 0,
+              completionTokens: 0,
+              totalTokens: 0
+            }
+          })
+
+        } catch (parseError) {
+          console.error('[Parse Error] Failed to parse LLM response:', parseError)
+          console.error('[Response Length]:', fullResponse.length, 'chars')
+          console.error('[Last 300 chars]:', fullResponse.slice(-300))
+          throw new Error('AI response was incomplete or malformed')
+        }
+
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error('Unknown error')
+        console.error(`[Analyze Game] Attempt ${attempt} failed:`, lastError.message)
+
+        if (attempt < MAX_RETRIES) {
+          console.log(`[Analyze Game] Waiting ${RETRY_DELAY}ms before retry...`)
+          await sleep(RETRY_DELAY)
         }
       }
     }
 
-    analysisCache.set(pgnHash, { data: gameAnalysis, timestamp: now })
-    console.log(`[Cache Stored] Analysis saved for PGN hash: ${pgnHash}`)
-
-    const usage = await result.usage
-    console.log(`[Token Usage]`, JSON.stringify(usage))
-
-    return Response.json({
-      data: gameAnalysis,
-      cached: false,
-      tokenUsage: usage
-    })
+    return Response.json(
+      { 
+        error: 'Failed to analyze game after all retries. Please try again.' 
+      },
+      { status: 500 }
+    )
 
   } catch (error) {
     console.error('[Analysis Error]', error)

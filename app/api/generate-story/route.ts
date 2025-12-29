@@ -8,7 +8,7 @@ const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 })
 
-const MODEL = 'openai/gpt-oss-120b:free'
+const MODEL = 'meta-llama/llama-3.3-70b-instruct:free'
 
 const storyCache = new Map<string, { data: Story; timestamp: number }>()
 const CACHE_TTL = 60 * 60 * 1000
@@ -36,18 +36,24 @@ async function generateStoryWithRetry(analysisData: GameAnalysis, format: StoryF
       const result = streamText({
         model: openrouter.chat(MODEL),
         prompt,
-        temperature: 0.8
+        temperature: 0.8,
+        maxOutputTokens: 4096
       })
 
       const fullResponse = await result.text
 
       try {
-        const jsonMatch = fullResponse.match(/\{[\s\S]*\}/)
+        let jsonMatch = fullResponse.match(/```json\s*([\s\S]*?)\s*```/)
+        if (!jsonMatch) {
+          jsonMatch = fullResponse.match(/\{[\s\S]*\}/)
+        }
+        
         if (!jsonMatch) {
           throw new Error('No JSON found in response')
         }
 
-        const storyData = JSON.parse(jsonMatch[0])
+        const jsonContent = jsonMatch[1] || jsonMatch[0]
+        const storyData = JSON.parse(jsonContent)
 
         const story: Story = {
           id: `story-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -59,12 +65,12 @@ async function generateStoryWithRetry(analysisData: GameAnalysis, format: StoryF
               id: ch.id as string || `chapter-${index + 1}`,
               title: ch.title as string || `Chapter ${index + 1}`,
               chapterNumber: ch.chapterNumber as number || index + 1,
-              sections: ch.sections as string[] || [],
-              content: ch.content as string || '',
-              narrativeStyle: ch.narrativeStyle as string || 'mixed',
-              chessBoards: ch.chessBoards as Array<Record<string, unknown>> || [],
-              keyMoveReferences: ch.keyMoveReferences as Array<Record<string, unknown>> || [],
-              isFlashback: ch.isFlashback as boolean || false
+              sections: (ch.sections as string[]) || [],
+              content: (ch.content as string) || '',
+              narrativeStyle: (ch.narrativeStyle as string) || 'mixed',
+              chessBoards: (ch.chessBoards as Array<Record<string, unknown>>) || [],
+              keyMoveReferences: (ch.keyMoveReferences as Array<Record<string, unknown>>) || [],
+              isFlashback: (ch.isFlashback as boolean) || false
             }
           }) || [],
           summary: storyData.summary || '',
@@ -83,6 +89,21 @@ async function generateStoryWithRetry(analysisData: GameAnalysis, format: StoryF
           narrativeArc: storyData.narrativeArc || '',
           totalWordCount: storyData.totalWordCount || 0,
           createdAt: new Date()
+        }
+
+        if (story.chapters.length === 0) {
+          console.warn('[Validation] No chapters in story, creating fallback chapter')
+          story.chapters = [{
+            id: 'chapter-1',
+            title: 'The Game',
+            chapterNumber: 1,
+            sections: ['opening', 'middlegame', 'endgame'],
+            content: `A chess game between ${analysisData.gameMetadata.whitePlayer} and ${analysisData.gameMetadata.blackPlayer}. The opening was ${analysisData.gameMetadata.opening || 'varied'}. Key moments emerged throughout the ${analysisData.chessjsData.totalMoves} moves. The final result was ${analysisData.gameMetadata.result}.`,
+            narrativeStyle: 'mixed',
+            chessBoards: [],
+            keyMoveReferences: [],
+            isFlashback: false
+          }]
         }
 
         console.log(`[Story Generation] Success on attempt ${attempt}`)
