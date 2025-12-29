@@ -23,15 +23,41 @@ export default function StoryViewer({ story }: StoryViewerProps) {
 
   if (!story || !story.chapters || story.chapters.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-100 py-12 px-4">
+      <div
+        className="min-h-screen py-12 px-4"
+        style={{
+          background: 'linear-gradient(to bottom, #F5F0E6 0%, #EEE8D3 100%)',
+        }}
+      >
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Story Not Available</h2>
-          <p className="text-muted-foreground mb-6">
+          <h2
+            className="mb-4"
+            style={{
+              fontFamily: 'var(--font-serif), Georgia, serif',
+              fontSize: 'var(--text-2xl)',
+              fontWeight: 700,
+              color: '#2C1810',
+            }}
+          >
+            Story Not Available
+          </h2>
+          <p
+            className="mb-6"
+            style={{
+              fontSize: 'var(--text-base)',
+              color: '#6B3410',
+            }}
+          >
             The story could not be displayed. Please try uploading your PGN file again.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
+            className="px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+            style={{
+              background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
+              color: '#F5F0E6',
+              boxShadow: '0 4px 16px rgba(44, 24, 16, 0.2)',
+            }}
           >
             Upload New Game
           </button>
@@ -67,25 +93,52 @@ export default function StoryViewer({ story }: StoryViewerProps) {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             {chapter.isFlashback && (
-              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+              <span
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{
+                  background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
+                  color: '#F5F0E6',
+                }}
+              >
                 Flashback
               </span>
             )}
-            <span className="text-sm text-gray-500 uppercase tracking-wide">
+            <span
+              className="uppercase tracking-wide"
+              style={{
+                fontSize: 'var(--text-sm)',
+                color: '#6B3410',
+                fontWeight: 600,
+                letterSpacing: 'var(--tracking-wide)',
+              }}
+            >
               Chapter {chapter.chapterNumber}
             </span>
           </div>
-          
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+
+          <h2
+            className="mb-4"
+            style={{
+              fontFamily: 'var(--font-serif), Georgia, serif',
+              fontSize: 'var(--text-3xl)',
+              fontWeight: 700,
+              color: '#2C1810',
+              letterSpacing: 'var(--tracking-tight)',
+            }}
+          >
             {chapter.title}
           </h2>
-          
+
           {chapter.sections.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {chapter.sections.map(section => (
                 <span
                   key={section}
-                  className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm"
+                  className="px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
+                    color: '#F5F0E6',
+                  }}
                 >
                   {SECTION_LABELS[section]}
                 </span>
@@ -94,18 +147,40 @@ export default function StoryViewer({ story }: StoryViewerProps) {
           )}
         </div>
 
-        <div className="prose prose-lg prose-amber max-w-none">
+        <div className="max-w-none">
           {chapter.content && chapter.content.split('\n\n').map((paragraph, index) => (
-            <p key={index} className="mb-4 text-gray-700 leading-relaxed">
+            <p
+              key={index}
+              className="mb-4 leading-relaxed transition-all duration-200 hover:translate-x-2"
+              style={{
+                fontSize: 'var(--text-lg)',
+                color: '#2C1810',
+                lineHeight: 'var(--leading-loose)',
+              }}
+            >
               {paragraph}
             </p>
           ))}
-          {!chapter.content && <p className="text-muted-foreground">No content available for this chapter.</p>}
+          {!chapter.content && (
+            <p style={{ fontSize: 'var(--text-base)', color: '#6B3410' }}>
+              No content available for this chapter.
+            </p>
+          )}
         </div>
 
         {chapter.chessBoards && chapter.chessBoards.length > 0 && (
           <div className="mt-8 mb-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Critical Position</h3>
+            <h3
+              className="mb-4"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+              }}
+            >
+              Critical Position
+            </h3>
             <div className="flex justify-center">
               <ChessBoard boardState={chapter.chessBoards[0]} />
             </div>
@@ -113,17 +188,43 @@ export default function StoryViewer({ story }: StoryViewerProps) {
         )}
 
         {chapter.keyMoveReferences && chapter.keyMoveReferences.length > 0 && (
-          <div className="mt-8 p-4 bg-stone-100 rounded-lg border-2 border-stone-300">
-            <h4 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+          <div
+            className="mt-8 p-4 rounded-lg"
+            style={{
+              background: 'linear-gradient(135deg, #EEE8D3 0%, #E8C9A0 100%)',
+              border: '2px solid #C19A6B',
+              boxShadow: '0 4px 16px rgba(44, 24, 16, 0.1)',
+            }}
+          >
+            <h4
+              className="mb-3 uppercase tracking-wide"
+              style={{
+                fontSize: 'var(--text-sm)',
+                fontWeight: 700,
+                color: '#6B3410',
+                letterSpacing: 'var(--tracking-wide)',
+              }}
+            >
               Key Move References
             </h4>
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {chapter.keyMoveReferences.map((ref, index) => (
-                <div key={index} className="flex items-start gap-3 text-sm">
-                  <span className="font-mono font-bold text-amber-600 mt-0.5">
+                <div
+                  key={index}
+                  className="flex items-start gap-3"
+                  style={{ fontSize: 'var(--text-sm)' }}
+                >
+                  <span
+                    className="mt-0.5"
+                    style={{
+                      fontFamily: 'monospace',
+                      fontWeight: 700,
+                      color: '#C19A6B',
+                    }}
+                  >
                     {ref.moveNumber}{ref.san}
                   </span>
-                  <span className="text-gray-600">{ref.context}</span>
+                  <span style={{ color: '#2C1810' }}>{ref.context}</span>
                 </div>
               ))}
             </div>
@@ -134,25 +235,71 @@ export default function StoryViewer({ story }: StoryViewerProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-100 py-12 px-4">
+    <div
+      className="min-h-screen py-12 px-4"
+      style={{
+        background: 'linear-gradient(to bottom, #F5F0E6 0%, #EEE8D3 100%)',
+      }}
+    >
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-8 text-white">
-            <h1 className="text-4xl font-bold mb-2">{story.title}</h1>
-            <p className="text-lg text-amber-100 mb-4">{story.summary}</p>
-            
-            <div className="flex flex-wrap items-center gap-4 text-sm text-amber-100">
-              <span className="bg-white/20 px-3 py-1 rounded-full">
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: '#FFFFFF',
+            boxShadow: '0 8px 32px rgba(44, 24, 16, 0.15)',
+          }}
+        >
+          <div
+            className="p-8"
+            style={{
+              background: 'linear-gradient(135deg, #C19A6B 0%, #8B4513 100%)',
+              color: '#F5F0E6',
+            }}
+          >
+            <h1
+              className="mb-2"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-4xl)',
+                fontWeight: 700,
+                letterSpacing: 'var(--tracking-tight)',
+                lineHeight: 'var(--leading-tight)',
+              }}
+            >
+              {story.title}
+            </h1>
+            <p
+              className="mb-4"
+              style={{
+                fontSize: 'var(--text-lg)',
+                color: 'rgba(245, 240, 230, 0.9)',
+                lineHeight: 'var(--leading-relaxed)',
+              }}
+            >
+              {story.summary}
+            </p>
+
+            <div
+              className="flex flex-wrap items-center gap-4"
+              style={{ fontSize: 'var(--text-sm)', color: 'rgba(245, 240, 230, 0.8)' }}
+            >
+              <span
+                className="px-3 py-1 rounded-full"
+                style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+              >
                 {story.chapters.length} chapters
               </span>
-              <span className="bg-white/20 px-3 py-1 rounded-full">
+              <span
+                className="px-3 py-1 rounded-full"
+                style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+              >
                 {story.format}
               </span>
               <span>
                 {story.gameMetadata.whitePlayer} vs {story.gameMetadata.blackPlayer}
               </span>
               {story.gameMetadata.result && (
-                <span className="font-bold">{story.gameMetadata.result}</span>
+                <span style={{ fontWeight: 700 }}>{story.gameMetadata.result}</span>
               )}
             </div>
 
@@ -161,7 +308,11 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                 {story.storyThemes.map(theme => (
                   <span
                     key={theme}
-                    className="px-3 py-1 bg-white/10 rounded-full text-sm"
+                    className="px-3 py-1 rounded-full transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      fontSize: 'var(--text-sm)',
+                    }}
                   >
                     {theme}
                   </span>
@@ -170,28 +321,38 @@ export default function StoryViewer({ story }: StoryViewerProps) {
             )}
           </div>
 
-          <div className="p-4 border-b border-gray-200 bg-gray-50">
+          <div
+            className="p-4"
+            style={{
+              borderBottom: '2px solid #C19A6B',
+              background: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
+            }}
+          >
             <div className="flex items-center justify-between">
               <div className="flex gap-2">
                 <button
                   onClick={() => setViewMode('chapter')}
-                  className={`
-                    px-4 py-2 rounded-lg font-medium transition-colors
-                    ${viewMode === 'chapter'
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
-                  `}
+                  className="px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                  style={{
+                    background: viewMode === 'chapter'
+                      ? 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)'
+                      : 'transparent',
+                    color: viewMode === 'chapter' ? '#F5F0E6' : '#6B3410',
+                    border: '2px solid #C19A6B',
+                  }}
                 >
                   Chapter Mode
                 </button>
                 <button
                   onClick={() => setViewMode('scroll')}
-                  className={`
-                    px-4 py-2 rounded-lg font-medium transition-colors
-                    ${viewMode === 'scroll'
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
-                  `}
+                  className="px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                  style={{
+                    background: viewMode === 'scroll'
+                      ? 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)'
+                      : 'transparent',
+                    color: viewMode === 'scroll' ? '#F5F0E6' : '#6B3410',
+                    border: '2px solid #C19A6B',
+                  }}
                 >
                   Full Scroll
                 </button>
@@ -202,17 +363,33 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                   <button
                     onClick={prevChapter}
                     disabled={currentChapterIndex === 0}
-                    className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: 'transparent',
+                      color: '#6B3410',
+                      border: '2px solid #C19A6B',
+                    }}
                   >
                     ← Previous
                   </button>
-                  <span className="text-sm text-gray-600">
+                  <span
+                    style={{
+                      fontSize: 'var(--text-sm)',
+                      color: '#6B3410',
+                      fontWeight: 600,
+                    }}
+                  >
                     {currentChapterIndex + 1} / {story.chapters.length}
                   </span>
                   <button
                     onClick={nextChapter}
                     disabled={currentChapterIndex === story.chapters.length - 1}
-                    className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: 'transparent',
+                      color: '#6B3410',
+                      border: '2px solid #C19A6B',
+                    }}
                   >
                     Next →
                   </button>
@@ -227,9 +404,16 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                 {renderChapterContent(currentChapter)}
               </div>
             ) : (
-              <div className="space-y-12">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
                 {story.chapters.map((chapter) => (
-                  <div key={chapter.id} className="border-b border-gray-200 pb-12 last:border-0 last:pb-0">
+                  <div
+                    key={chapter.id}
+                    style={{
+                      borderBottom: '2px solid #E8C9A0',
+                      paddingBottom: '3rem',
+                    }}
+                    className="last:border-0 last:pb-0"
+                  >
                     {renderChapterContent(chapter)}
                   </div>
                 ))}
@@ -238,24 +422,76 @@ export default function StoryViewer({ story }: StoryViewerProps) {
           </div>
 
           {story.pieceLoreUsed.length > 0 && (
-            <div className="p-8 bg-stone-50 border-t border-stone-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <div
+              className="p-8"
+              style={{
+                background: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
+                borderTop: '2px solid #C19A6B',
+              }}
+            >
+              <h3
+                className="mb-4"
+                style={{
+                  fontFamily: 'var(--font-serif), Georgia, serif',
+                  fontSize: 'var(--text-xl)',
+                  fontWeight: 700,
+                  color: '#2C1810',
+                }}
+              >
                 Piece Characters
               </h3>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
+                style={{ gap: '1rem' }}
+              >
                 {story.pieceLoreUsed.map((piece, index) => (
                   <div
                     key={index}
-                    className="p-4 bg-white rounded-lg border-2 border-stone-300 shadow-sm"
+                    className="p-4 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                    style={{
+                      background: '#FFFFFF',
+                      border: '2px solid #C19A6B',
+                      boxShadow: '0 2px 8px rgba(44, 24, 16, 0.08)',
+                    }}
                   >
-                    <div className="font-bold text-gray-900 mb-2">{piece.piece}</div>
-                    <div className="text-sm text-gray-700 mb-1">{piece.personality}</div>
+                    <div
+                      className="mb-2"
+                      style={{
+                        fontWeight: 700,
+                        color: '#2C1810',
+                        fontSize: 'var(--text-base)',
+                      }}
+                    >
+                      {piece.piece}
+                    </div>
+                    <div
+                      className="mb-1"
+                      style={{
+                        fontSize: 'var(--text-sm)',
+                        color: '#6B3410',
+                      }}
+                    >
+                      {piece.personality}
+                    </div>
                     {piece.catchphrase && (
-                      <div className="text-xs text-amber-700 italic mb-2">
+                      <div
+                        className="mb-2 italic"
+                        style={{
+                          fontSize: 'var(--text-xs)',
+                          color: '#C19A6B',
+                        }}
+                      >
                         &quot;{piece.catchphrase}&quot;
                       </div>
                     )}
-                    <div className="text-sm text-gray-600">{piece.role}</div>
+                    <div
+                      style={{
+                        fontSize: 'var(--text-sm)',
+                        color: '#8B4513',
+                      }}
+                    >
+                      {piece.role}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -266,7 +502,12 @@ export default function StoryViewer({ story }: StoryViewerProps) {
         <div className="mt-8 text-center">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
+            className="px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+            style={{
+              background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
+              color: '#F5F0E6',
+              boxShadow: '0 4px 16px rgba(44, 24, 16, 0.2)',
+            }}
           >
             Back to Top
           </button>
