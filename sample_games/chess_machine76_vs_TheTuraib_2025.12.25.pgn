@@ -1,0 +1,19 @@
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2025.12.25"]
+[Round "?"]
+[White "chess_machine76"]
+[Black "TheTuraib"]
+[Result "0-1"]
+[TimeControl "1800"]
+[WhiteElo "815"]
+[BlackElo "828"]
+[Termination "TheTuraib won by checkmate"]
+[ECO "C41"]
+[EndTime "18:41:08 GMT+0000"]
+[Link "https://www.chess.com/game/live/147169294044?move=0"]
+
+1. e4 e5 2. Nf3 d6 3. d4 Bg4 4. d5 c6 5. h3 Bd7 6. h4 h6 7. b4 Nf6 8. c4 Bg4 9.
+Nc3 c5 10. bxc5 Qa5 11. Bd2 Nbd7 12. cxd6 Bxd6 13. Nb5 Bb4 14. Bxb4 Qxb4+ 15.
+Qd2 Qc5 16. Rb1 Nxe4 17. Qb4 Qxf2+ 18. Kd1 Bxf3+ 19. Kc1 Qe3+ 20. Kb2 O-O-O 21.
+Nd6+ Nxd6 22. Qxd6 Nc5 23. Qe7 Na4+ 24. Ka1 Qc3+ 25. Rb2 Qxb2# 0-1

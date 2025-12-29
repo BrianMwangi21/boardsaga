@@ -1,0 +1,20 @@
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2025.10.11"]
+[White "TheTuraib"]
+[Black "Fleetmaster1961"]
+[Result "1-0"]
+[ECO "D00"]
+[WhiteElo "967"]
+[BlackElo "906"]
+[TimeControl "1800"]
+[EndTime "9:03:16 PDT"]
+[Termination "TheTuraib won by checkmate"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+
+1. d4 {[%clk 0:29:59]} d5 {[%clk 0:29:56]} 2. Bf4 {[%clk 0:29:56]} Nc6 {[%clk 0:29:21]} 3. e3 {[%clk 0:29:50]} f6 {[%clk 0:29:05]} 4. Nc3 {[%clk 0:29:47]} e5 {[%clk 0:29:00]} 5. Bg3 {[%clk 0:29:24]} Bb4 {[%clk 0:28:45]} 6. Nge2 {[%clk 0:28:55]} Bg4 {[%clk 0:28:36]} 7. a3 {[%clk 0:28:48]} Bxc3+ {[%clk 0:28:31]} 8. bxc3 {[%clk 0:28:46]} Nh6 {[%clk 0:27:57]} 9. h3 {[%clk 0:28:33]} Be6 {[%clk 0:27:35]} 10. Nc1 {[%clk 0:28:18]} O-O {[%clk 0:27:16]}
+ 11. Be2 {[%clk 0:27:59]} e4 {[%clk 0:26:10]} 12. Nb3 {[%clk 0:27:47]} b6 {[%clk 0:25:12]} 13. O-O {[%clk 0:27:25]} a5 {[%clk 0:24:57]} 14. Bb5 {[%clk 0:27:19]} Na7 {[%clk 0:24:40]} 15. Qe2 {[%clk 0:27:10]} Bd7 {[%clk 0:24:29]} 16. Ba6 {[%clk 0:27:03]} b5 {[%clk 0:24:02]} 17. Bb7 {[%clk 0:26:56]} Rb8 {[%clk 0:23:54]} 18. Bxd5+ {[%clk 0:26:54]} Kh8 {[%clk 0:23:31]} 19. Bxe4 {[%clk 0:26:40]} Be6 {[%clk 0:22:18]} 20. Nxa5 {[%clk 0:26:24]} Bc4 {[%clk 0:22:07]}
+ 21. Bd3 {[%clk 0:26:17]} Bxd3 {[%clk 0:21:41]} 22. cxd3 {[%clk 0:26:10]} b4 {[%clk 0:21:35]} 23. axb4 {[%clk 0:26:05]} Nb5 {[%clk 0:21:17]} 24. Rfc1 {[%clk 0:25:54]} Nf5 {[%clk 0:21:00]} 25. Nc6 {[%clk 0:25:42]} Qc8 {[%clk 0:20:48]} 26. Nxb8 {[%clk 0:25:34]} Qxb8 {[%clk 0:20:44]} 27. Bh2 {[%clk 0:25:34]} Qb6 {[%clk 0:20:08]} 28. Qf3 {[%clk 0:25:20]} Nfd6 {[%clk 0:19:13]} 29. Ra8 {[%clk 0:25:10]} Rg8 {[%clk 0:18:49]} 30. Rxg8+ {[%clk 0:24:41]} Kxg8 {[%clk 0:18:44]}
+ 31. Qd5+ {[%clk 0:24:41]} Kf8 {[%clk 0:18:32]} 32. Ra1 {[%clk 0:24:34]} Qb7 {[%clk 0:18:12]} 33. Ra8+ {[%clk 0:24:24]} Ke7 {[%clk 0:18:01]} 34. Bxd6+ {[%clk 0:24:17]} Nxd6 {[%clk 0:17:37]} 35. Qg8 {[%clk 0:23:36]} Nf5 {[%clk 0:15:50]} 36. Qe8+ {[%clk 0:23:08]} Kd6 {[%clk 0:15:32]} 37. Rd8# {[%clk 0:23:07]} 1-0
+

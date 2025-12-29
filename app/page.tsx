@@ -139,20 +139,24 @@ export default function Home() {
 
             <div className="border rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Moves</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-96 overflow-y-auto">
-                {parsedGame.moves.map((move) => (
-                  <div
-                    key={move.moveNumber}
-                    className={`p-2 rounded ${
-                      move.turn === 'w' ? 'bg-muted/30' : 'bg-muted/60'
-                    }`}
-                  >
-                    <span className="text-xs text-muted-foreground">
-                      {move.turn === 'w' ? `${Math.ceil(move.moveNumber / 2)}. ` : '... '}
-                    </span>
-                    <span className="font-medium">{move.san}</span>
-                  </div>
-                ))}
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {parsedGame.moves.reduce<React.ReactNode[]>((acc, move, index) => {
+                  if (move.turn === 'w') {
+                    const blackMove = parsedGame.moves[index + 1]
+                    acc.push(
+                      <div key={index} className="flex gap-4 p-2 hover:bg-muted/50 rounded">
+                        <span className="text-sm text-muted-foreground w-12">
+                          {Math.ceil(move.moveNumber / 2)}.
+                        </span>
+                        <span className="font-medium flex-1">{move.san}</span>
+                        {blackMove && (
+                          <span className="font-medium flex-1">{blackMove.san}</span>
+                        )}
+                      </div>
+                    )
+                  }
+                  return acc
+                }, [])}
               </div>
             </div>
           </div>
