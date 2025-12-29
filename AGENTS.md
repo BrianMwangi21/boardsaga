@@ -6,7 +6,7 @@
 - **Single Responsibility**: Each component should solve one specific problem
 - **Loose Coupling**: Avoid tight coupling between components - use props and callbacks for communication
 - **High Cohesion**: Group related functionality together
-- **Reusability**: Create reusable UI components (buttons, inputs, cards) in components/ui/
+- **Reusability**: Create reusable UI components (buttons, inputs, cards) in app/components/ui/
 
 ### Function Design
 - **Pure Functions**: Where possible, write pure functions (no side effects)
@@ -16,7 +16,7 @@
 
 ### File Organization
 ```
-components/
+app/components/
   ui/           # Reusable UI components (Header, Footer, Button, Card)
   pgn/          # PGN-specific components (PGNUploader, PGNDisplay)
   story/        # Story-specific components (StoryViewer, StoryEditor)
