@@ -45,7 +45,6 @@ describe.skip('Analyze Game API', () => {
 
   describe('GET endpoint', () => {
     it('should return API documentation', async () => {
-      const request = new NextRequest('http://localhost:3000/api/analyze-game')
       const { GET } = await import('@/app/api/analyze-game/route')
       const response = await GET()
 
