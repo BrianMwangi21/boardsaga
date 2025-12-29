@@ -17,14 +17,14 @@ Allow users to upload PGN files and validate/parse them correctly.
 - **Next.js Layout**: Use app/layout.tsx to wrap pages with header/footer for consistent layout across the app
 
 ### Tasks
-- [ ] Create PGN upload UI component with drag-and-drop support
-- [ ] Implement PGN validation (check file format, content structure)
-- [ ] Build PGN parser to extract:
+- [x] Create PGN upload UI component with drag-and-drop support
+- [x] Implement PGN validation (check file format, content structure)
+- [x] Build PGN parser to extract:
   - Game metadata (players, date, event, result)
   - Move list (standard algebraic notation)
   - Comments and annotations (if present)
-- [ ] Display parsed PGN data for user confirmation
-- [ ] Add error handling for invalid PGNs
+- [x] Display parsed PGN data for user confirmation
+- [x] Add error handling for invalid PGNs
 
 ### Deliverables
 - Upload component in `app/components/PGNUploader.tsx`
