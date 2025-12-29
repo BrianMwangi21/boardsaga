@@ -1,65 +1,163 @@
-import Image from "next/image";
+'use client'
+
+import { useState } from 'react'
+import PGNUploader from './components/pgn/PGNUploader'
+import { ParsedGame } from '@/lib/pgn-parser'
 
 export default function Home() {
+  const [parsedGame, setParsedGame] = useState<ParsedGame | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleFileSelect = async (file: File) => {
+    setLoading(true)
+    setError(null)
+    setParsedGame(null)
+
+    try {
+      const text = await file.text()
+      const response = await fetch('/api/parse-pgn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pgn: text }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to parse PGN')
+      }
+
+      setParsedGame(result.data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const resetUpload = () => {
+    setParsedGame(null)
+    setError(null)
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">BoardSaga</h1>
+          <p className="text-lg text-muted-foreground">
+            Transform your chess games into captivating stories
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        {!parsedGame && !loading && (
+          <div>
+            <PGNUploader onFileSelect={handleFileSelect} />
+            {error && (
+              <div className="mt-4 p-4 border border-destructive/50 bg-destructive/10 text-destructive rounded-lg">
+                {error}
+              </div>
+            )}
+          </div>
+        )}
+
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">Parsing your game...</p>
+          </div>
+        )}
+
+        {parsedGame && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">Game Analysis</h2>
+              <button
+                onClick={resetUpload}
+                className="px-4 py-2 text-sm border rounded hover:bg-muted"
+              >
+                Upload New Game
+              </button>
+            </div>
+
+            <div className="border rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Game Information</h3>
+              <dl className="grid grid-cols-2 gap-4">
+                {parsedGame.metadata.white && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">White</dt>
+                    <dd className="font-medium">{parsedGame.metadata.white}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.black && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Black</dt>
+                    <dd className="font-medium">{parsedGame.metadata.black}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.whiteElo && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">White Elo</dt>
+                    <dd className="font-medium">{parsedGame.metadata.whiteElo}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.blackElo && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Black Elo</dt>
+                    <dd className="font-medium">{parsedGame.metadata.blackElo}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.event && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Event</dt>
+                    <dd className="font-medium">{parsedGame.metadata.event}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.result && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Result</dt>
+                    <dd className="font-medium">{parsedGame.metadata.result}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.date && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Date</dt>
+                    <dd className="font-medium">{parsedGame.metadata.date}</dd>
+                  </div>
+                )}
+                {parsedGame.metadata.timeControl && (
+                  <div>
+                    <dt className="text-sm text-muted-foreground">Time Control</dt>
+                    <dd className="font-medium">{parsedGame.metadata.timeControl}</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            <div className="border rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Moves</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-96 overflow-y-auto">
+                {parsedGame.moves.map((move) => (
+                  <div
+                    key={move.moveNumber}
+                    className={`p-2 rounded ${
+                      move.turn === 'w' ? 'bg-muted/30' : 'bg-muted/60'
+                    }`}
+                  >
+                    <span className="text-xs text-muted-foreground">
+                      {move.turn === 'w' ? `${Math.ceil(move.moveNumber / 2)}. ` : '... '}
+                    </span>
+                    <span className="font-medium">{move.san}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }
