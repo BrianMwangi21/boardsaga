@@ -81,8 +81,9 @@ export default function Home() {
         throw new Error(storyResult.error || 'Failed to generate story')
       }
 
-      setStory(storyResult.data)
+      setStory(storyResult.story)
       setAppState('story')
+      console.log('[Story Generated]', storyResult.story)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       setAppState('error')
