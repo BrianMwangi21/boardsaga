@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { Chess } from 'chess.js'
 import Chessground from '@bezalel6/react-chessground'
 import { ChessBoardState } from '@/lib/story-types'
@@ -34,13 +33,17 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
   const turnColor = turn === 'w' ? 'white' : 'black'
 
   const moves = chess.moves({ verbose: true })
-  const dests = moves.reduce((acc, move) => {
+  const destsRecord = moves.reduce((acc, move) => {
     if (!acc[move.from]) {
       acc[move.from] = []
     }
     acc[move.from].push(move.to)
     return acc
   }, {} as Record<string, string[]>)
+
+  const dests = new Map<string, string[]>(
+    Object.entries(destsRecord) as Array<[string, string[]]>
+  )
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -57,6 +60,7 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
           movable={{
             free: false,
             color: turnColor,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             dests: dests as any
           }}
           highlight={{

@@ -5,10 +5,10 @@ export function determineStoryFormat(analysisData: GameAnalysis): StoryFormat {
   const { chessjsData, narrativeAnalysis } = analysisData
   const keyMoments = narrativeAnalysis.keyMoments
 
-  const highImpactMoments = keyMoments.filter((m: any) => m.impact === 'high' || m.impact === 'game-deciding').length
-  const complexPieces = keyMoments.filter((m: any) => m.piecesInvolved.length > 1).length
+  const highImpactMoments = keyMoments.filter((m: { impact: string }) => m.impact === 'high' || m.impact === 'game-deciding').length
+  const complexPieces = keyMoments.filter((m: { piecesInvolved: unknown[] }) => m.piecesInvolved.length > 1).length
 
-  const criteria: StoryFormat = 
+  const criteria: StoryFormat =
     (chessjsData.totalMoves > 50 || highImpactMoments >= 4 || complexPieces >= 3) ? 'epic' :
     (chessjsData.totalMoves > 30 || highImpactMoments >= 2) ? 'detailed' :
     'short'
@@ -163,7 +163,7 @@ WRITING GUIDELINES:
 Generate the story now. Return ONLY the JSON object, no additional text.`
 }
 
-export function generateChapterPrompt(analysisData: GameAnalysis, chapterInfo: { chapterNumber: number, sections: string[] }, format: StoryFormat): string {
+export function generateChapterPrompt(analysisData: GameAnalysis, chapterInfo: { chapterNumber: number, sections: string[] }): string {
   return `Generate a single chapter for a chess story.
 
 CHAPTER ${chapterInfo.chapterNumber}

@@ -53,17 +53,20 @@ async function generateStoryWithRetry(analysisData: GameAnalysis, format: StoryF
           id: `story-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           title: storyData.title || 'Untitled Chess Story',
           format,
-          chapters: storyData.chapters?.map((chapter: any, index: number) => ({
-            id: chapter.id || `chapter-${index + 1}`,
-            title: chapter.title || `Chapter ${index + 1}`,
-            chapterNumber: chapter.chapterNumber || index + 1,
-            sections: chapter.sections || [],
-            content: chapter.content || '',
-            narrativeStyle: chapter.narrativeStyle || 'mixed',
-            chessBoards: chapter.chessBoards || [],
-            keyMoveReferences: chapter.keyMoveReferences || [],
-            isFlashback: chapter.isFlashback || false
-          })) || [],
+          chapters: storyData.chapters?.map((chapter: unknown, index: number) => {
+            const ch = chapter as Record<string, unknown>
+            return {
+              id: ch.id as string || `chapter-${index + 1}`,
+              title: ch.title as string || `Chapter ${index + 1}`,
+              chapterNumber: ch.chapterNumber as number || index + 1,
+              sections: ch.sections as string[] || [],
+              content: ch.content as string || '',
+              narrativeStyle: ch.narrativeStyle as string || 'mixed',
+              chessBoards: ch.chessBoards as Array<Record<string, unknown>> || [],
+              keyMoveReferences: ch.keyMoveReferences as Array<Record<string, unknown>> || [],
+              isFlashback: ch.isFlashback as boolean || false
+            }
+          }) || [],
           summary: storyData.summary || '',
           gameMetadata: {
             whitePlayer: analysisData.gameMetadata.whitePlayer,

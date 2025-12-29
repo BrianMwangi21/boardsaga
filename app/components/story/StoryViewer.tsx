@@ -201,7 +201,7 @@ export default function StoryViewer({ story }: StoryViewerProps) {
               </div>
             ) : (
               <div className="space-y-12">
-                {story.chapters.map((chapter, index) => (
+                {story.chapters.map((chapter) => (
                   <div key={chapter.id} className="border-b border-gray-200 pb-12 last:border-0 last:pb-0">
                     {renderChapterContent(chapter)}
                   </div>
@@ -225,7 +225,7 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                     <div className="text-sm text-gray-700 mb-1">{piece.personality}</div>
                     {piece.catchphrase && (
                       <div className="text-xs text-amber-700 italic mb-2">
-                        "{piece.catchphrase}"
+                        &quot;{piece.catchphrase}&quot;
                       </div>
                     )}
                     <div className="text-sm text-gray-600">{piece.role}</div>

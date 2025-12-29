@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import PGNUploader from './components/pgn/PGNUploader'
 import { ParsedGame } from '@/lib/pgn-parser'
-import { GameAnalysis } from '@/lib/prompts/prompts'
 import { Story } from '@/lib/story-types'
 import StoryLoading from './components/ui/StoryLoading'
 import StoryViewer from './components/story/StoryViewer'
@@ -13,7 +12,6 @@ type AppState = 'upload' | 'analyzing' | 'generating' | 'story' | 'error'
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload')
   const [parsedGame, setParsedGame] = useState<ParsedGame | null>(null)
-  const [analysis, setAnalysis] = useState<GameAnalysis | null>(null)
   const [story, setStory] = useState<Story | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -21,7 +19,6 @@ export default function Home() {
     setAppState('analyzing')
     setError(null)
     setParsedGame(null)
-    setAnalysis(null)
     setStory(null)
 
     try {
@@ -68,7 +65,6 @@ export default function Home() {
       }
 
       const analysisData = analyzeResult.data
-      setAnalysis(analysisData)
       setAppState('generating')
 
       const storyResponse = await fetch('/api/generate-story', {
@@ -97,7 +93,6 @@ export default function Home() {
     setAppState('upload')
     setError(null)
     setParsedGame(null)
-    setAnalysis(null)
     setStory(null)
   }
 
