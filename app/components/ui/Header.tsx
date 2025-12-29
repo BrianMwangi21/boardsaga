@@ -17,7 +17,7 @@ export default function Header() {
           <Link href="/lore" className="hover:underline">
             Lore
           </Link>
-          <Link href="/history" className="hover:underline">
+          <Link href="/stories" className="hover:underline">
             Stories
           </Link>
           <a

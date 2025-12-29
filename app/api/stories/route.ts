@@ -11,10 +11,10 @@ export async function GET() {
         {},
         {
           projection: {
-            title: 1,
-            gameMetadata: 1,
-            format: 1,
-            summary: 1,
+            'story.title': 1,
+            'story.gameMetadata': 1,
+            'story.format': 1,
+            'story.summary': 1,
             createdAt: 1,
           },
         }

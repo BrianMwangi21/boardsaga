@@ -13,19 +13,21 @@ export interface StoryDocument {
 
 export interface StoryMetadata {
   _id: ObjectId;
-  title: string;
-  gameMetadata: {
-    whitePlayer: string;
-    blackPlayer: string;
-    whiteElo?: string;
-    blackElo?: string;
-    event?: string;
-    result?: string;
-    date?: string;
-    opening?: string;
+  story: {
+    title: string;
+    gameMetadata: {
+      whitePlayer: string;
+      blackPlayer: string;
+      whiteElo?: string;
+      blackElo?: string;
+      event?: string;
+      result?: string;
+      date?: string;
+      opening?: string;
+    };
+    format: 'short' | 'detailed' | 'epic';
+    summary: string;
   };
-  format: 'short' | 'detailed' | 'epic';
-  summary: string;
   createdAt: Date;
 }
 

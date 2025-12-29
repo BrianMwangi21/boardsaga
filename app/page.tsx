@@ -49,7 +49,7 @@ export default function Home() {
       const checkPgnResult = await checkPgnResponse.json()
 
       if (checkPgnResult.exists && checkPgnResult.story) {
-        window.location.href = `/story/${checkPgnResult.story._id}`
+        window.location.href = `/stories/${checkPgnResult.story._id}`
         return
       }
 
@@ -111,7 +111,7 @@ export default function Home() {
         throw new Error(saveStoryResult.error || 'Failed to save story')
       }
 
-      window.location.href = `/story/${saveStoryResult._id}`
+      window.location.href = `/stories/${saveStoryResult._id}`
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       setAppState('error')

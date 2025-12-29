@@ -96,20 +96,20 @@ export default function HistoryPage() {
           {stories.map((story) => (
             <Link
               key={story._id.toString()}
-              href={`/story/${story._id.toString()}`}
+              href={`/stories/${story._id.toString()}`}
               className="group block"
             >
               <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-stone-200 group-hover:border-amber-400 h-full">
                 <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-6 text-white">
                   <h2 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-amber-100 transition-colors">
-                    {story.title}
+                    {story.story.title}
                   </h2>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-2 py-1 bg-white/20 rounded text-xs">
-                      {story.format}
+                      {story.story.format}
                     </span>
                     <span className="px-2 py-1 bg-white/20 rounded text-xs">
-                      {story.gameMetadata.result || 'Unknown'}
+                      {story.story.gameMetadata.result || 'Unknown'}
                     </span>
                   </div>
                 </div>
@@ -119,26 +119,26 @@ export default function HistoryPage() {
                     <div className="flex items-center gap-2 text-sm">
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">White</div>
-                        <div className="text-gray-600">{story.gameMetadata.whitePlayer}</div>
+                        <div className="text-gray-600">{story.story.gameMetadata.whitePlayer}</div>
                       </div>
                       <div className="text-gray-400">vs</div>
                       <div className="flex-1 text-right">
                         <div className="font-medium text-gray-900">Black</div>
-                        <div className="text-gray-600">{story.gameMetadata.blackPlayer}</div>
+                        <div className="text-gray-600">{story.story.gameMetadata.blackPlayer}</div>
                       </div>
                     </div>
 
-                    {story.gameMetadata.opening && (
+                    {story.story.gameMetadata.opening && (
                       <div className="text-sm text-gray-600">
                         <span className="font-medium">Opening:</span>{' '}
-                        {story.gameMetadata.opening}
+                        {story.story.gameMetadata.opening}
                       </div>
                     )}
 
-                    {story.gameMetadata.date && (
+                    {story.story.gameMetadata.date && (
                       <div className="text-sm text-gray-600">
                         <span className="font-medium">Date:</span>{' '}
-                        {new Date(story.gameMetadata.date).toLocaleDateString()}
+                        {new Date(story.story.gameMetadata.date).toLocaleDateString()}
                       </div>
                     )}
 
@@ -147,9 +147,9 @@ export default function HistoryPage() {
                     </div>
                   </div>
 
-                  {story.summary && (
+                  {story.story.summary && (
                     <p className="mt-4 text-sm text-gray-600 line-clamp-3">
-                      {story.summary}
+                      {story.story.summary}
                     </p>
                   )}
                 </div>
