@@ -1,4 +1,6 @@
-import { ParsedGame } from '@/lib/pgn-parser'
+import { ParsedGame, ParsedMove } from '@/lib/pgn-parser'
+
+export type { ParsedMove }
 
 export interface GameAnalysis {
   gameMetadata: {
@@ -12,6 +14,7 @@ export interface GameAnalysis {
     timeControl?: string
     opening?: string
   }
+  moves: ParsedMove[]
   chessjsData: {
     totalMoves: number
     checkEvents: number

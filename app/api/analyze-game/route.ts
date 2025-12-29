@@ -110,6 +110,7 @@ export async function POST(request: Request) {
               timeControl: parsedGame.metadata.timeControl,
               opening: parsedGame.metadata.opening
             },
+            moves: parsedGame.moves,
             chessjsData: parsedGame.chessjsData,
             narrativeAnalysis: {
               overview: analysisData.narrativeAnalysis?.overview || {

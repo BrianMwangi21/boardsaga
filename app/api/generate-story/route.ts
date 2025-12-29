@@ -1,6 +1,6 @@
 import { streamText } from 'ai'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
-import { GameAnalysis } from '@/lib/prompts/prompts'
+import { GameAnalysis, ParsedMove } from '@/lib/prompts/prompts'
 import { generateStoryPrompt, determineStoryFormat } from '@/lib/prompts/story-prompts'
 import { Story, StoryFormat, StoryGenerationRequest, StoryGenerationResponse } from '@/lib/story-types'
 
@@ -22,6 +22,79 @@ const RETRY_DELAY = 1000
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function getFenForMove(moves: ParsedMove[], moveNumber: number, san?: string): string | null {
+  if (!moves || moves.length === 0) {
+    console.warn('[getFenForMove] No moves available')
+    return null
+  }
+
+  console.log(`[getFenForMove] Looking for half-move ${moveNumber} ${san || ''}`)
+  console.log(`[getFenForMove] Total half-moves: ${moves.length}`)
+  console.log(`[getFenForMove] Half-move range: ${moves[0]?.moveNumber} to ${moves[moves.length - 1]?.moveNumber}`)
+
+  let moveIndex = moves.findIndex(m => 
+    m.moveNumber === moveNumber && (!san || m.san === san)
+  )
+
+  if (moveIndex === -1) {
+    console.warn(`[getFenForMove] Half-move not found at number ${moveNumber}`)
+    
+    if (moveNumber > moves.length) {
+      const clampedIndex = Math.min(moveNumber - 1, moves.length - 1)
+      console.log(`[getFenForMove] Using clamped index ${clampedIndex} for half-move ${moveNumber}`)
+      moveIndex = clampedIndex
+    } else {
+      const closestMove = moves.reduce((closest, move) => {
+        if (Math.abs(move.moveNumber - moveNumber) < Math.abs(closest.moveNumber - moveNumber)) {
+          return move
+        }
+        return closest
+      }, moves[0])
+      
+      moveIndex = moves.indexOf(closestMove)
+      console.log(`[getFenForMove] Using closest half-move: ${closestMove.moveNumber} ${closestMove.san}`)
+    }
+  }
+
+  if (moveIndex === -1 || moveIndex >= moves.length) {
+    console.warn(`[getFenForMove] Could not find valid half-move`)
+    return null
+  }
+
+  const move = moves[moveIndex]
+  console.log(`[getFenForMove] Found half-move: ${move.san} (${move.turn === 'w' ? 'White' : 'Black'}) at index ${moveIndex}`)
+  console.log(`[getFenForMove] FEN: ${move.after}`)
+  return move.after
+}
+
+function fixChessBoardsInStory(story: Story, moves: ParsedMove[]): Story {
+  console.log(`[fixChessBoardsInStory] Processing ${story.chapters.length} chapters`)
+  console.log(`[fixChessBoardsInStory] Available half-moves: ${moves.length}`)
+  console.log(`[fixChessBoardsInStory] Half-move range: ${moves[0]?.moveNumber} to ${moves[moves.length - 1]?.moveNumber}`)
+
+  story.chapters.forEach(chapter => {
+    if (chapter.chessBoards && chapter.chessBoards.length > 0) {
+      chapter.chessBoards.forEach((board, boardIndex) => {
+        console.log(`[fixChessBoardsInStory] Processing board ${boardIndex + 1} - half-move ${board.moveNumber} ${board.san || ''}`)
+        
+        const actualFen = getFenForMove(moves, board.moveNumber, board.san)
+        
+        if (actualFen) {
+          board.fen = actualFen
+          console.log(`[Fixing FEN] Chapter ${chapter.chapterNumber}, Board ${boardIndex + 1}`)
+          console.log(`  Correct FEN: ${actualFen}`)
+        } else {
+          console.warn(`[Warning] Could not find FEN for half-move ${board.moveNumber} ${board.san || ''}`)
+          board.fen = moves.length > 0 ? moves[0].before : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+          console.log(`[Warning] Using starting position FEN: ${board.fen}`)
+        }
+      })
+    }
+  })
+  
+  return story
 }
 
 async function generateStoryWithRetry(analysisData: GameAnalysis, format: StoryFormat): Promise<Story> {
@@ -109,8 +182,8 @@ async function generateStoryWithRetry(analysisData: GameAnalysis, format: StoryF
         console.log(`[Story Generation] Success on attempt ${attempt}`)
         return story
 
-      } catch (parseError) {
-        console.error('[Parse Error] Failed to parse LLM response:', parseError)
+      } catch {
+        console.error('[Parse Error] Failed to parse LLM response')
         console.error('[Raw Response]', fullResponse)
         throw new Error('Failed to parse story response from AI')
       }
@@ -165,16 +238,18 @@ export async function POST(request: Request) {
     const cached = storyCache.get(analysisHash)
     if (cached && now - cached.timestamp < CACHE_TTL) {
       console.log(`[Cache Hit] Story found for analysis hash: ${analysisHash}`)
+      const fixedCachedStory = fixChessBoardsInStory(cached.data, analysisData.moves)
       return Response.json({
-        story: cached.data,
+        story: fixedCachedStory,
         cached: true,
         tokenUsage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
       })
     }
 
     const story = await generateStoryWithRetry(analysisData, storyFormat)
+    const fixedStory = fixChessBoardsInStory(story, analysisData.moves)
 
-    storyCache.set(analysisHash, { data: story, timestamp: now })
+    storyCache.set(analysisHash, { data: fixedStory, timestamp: now })
     console.log(`[Cache Stored] Story saved for analysis hash: ${analysisHash}`)
 
     const response: StoryGenerationResponse = {

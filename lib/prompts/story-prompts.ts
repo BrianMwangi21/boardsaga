@@ -37,6 +37,19 @@ CHESS.JS TACTICAL DATA:
 - Promotions: ${analysisData.chessjsData.promotions.length}
 - Final State: ${analysisData.chessjsData.finalState}
 
+IMPORTANT - MOVE NUMBERING:
+In chess, "move 1" means BOTH White's first move AND Black's response.
+However, the system tracks each half-move individually (what we call "ply"):
+- Move 1 = White's first move (e.g., e4)
+- Move 2 = Black's response (e.g., e5)
+- Move 3 = White's second move (e.g., Nf3)
+- Move 4 = Black's second response (e.g., Nc6)
+And so on...
+
+So when you see "Move 15" in this system, it refers to the 15th half-move in the game sequence.
+For a game with ${analysisData.chessjsData.totalMoves} half-moves total, valid move numbers are 1 to ${analysisData.chessjsData.totalMoves}.
+DO NOT exceed ${analysisData.chessjsData.totalMoves}.
+
 NARRATIVE ANALYSIS:
 - Phase: ${analysisData.narrativeAnalysis.overview.phase}
 - Opening Played: ${analysisData.narrativeAnalysis.overview.openingPlayed}
@@ -83,15 +96,16 @@ STORY REQUIREMENTS:
    - Third-person: Use for bird's-eye view, objective description (e.g., "The battle across sixty-four squares intensified...")
 
 2. Chapter Structure:
-   - Organize into ${formatCriteria.maxChapters} chapters maximum
-   - Each chapter should have a clear focus (Opening, Middlegame, Endgame, or Key Moments)
-   - Include both linear progression and strategic flashbacks for dramatic effect
-   - Each chapter must have a compelling title
+    - Organize into ${formatCriteria.maxChapters} chapters maximum
+    - Each chapter should have a clear focus (Opening, Middlegame, Endgame, or Key Moments)
+    - Include both linear progression and strategic flashbacks for dramatic effect
+    - Each chapter must have a compelling title
 
 3. Chess Content Integration:
-   - Include actual move references when describing key moments (e.g., "On move 23, the Knight sprang to f5...")
-   - For critical moments, provide chess board state (FEN notation) so visualization is possible
-   - Board state should include: FEN, move number, move notation, and why this moment is critical
+    - Include actual move references when describing key moments (e.g., "On move 23, the Knight sprang to f5...")
+    - IMPORTANT: Move numbers MUST correspond to actual moves in the game (move 1 = first move, move 2 = second move, etc.)
+    - Do not hallucinate move numbers - only use moves that actually exist in the game
+    - For critical moments, indicate the move number and san notation for board visualization
 
 4. Piece Lore Integration (~70% inclusion):
    - Incorporate piece personalities and catchphrases from BoardSaga lore
@@ -121,7 +135,6 @@ Return ONLY a JSON object with this structure:
       "narrativeStyle": "mixed",
       "chessBoards": [
         {
-          "fen": "FEN notation for critical position",
           "moveNumber": 15,
           "san": "move notation",
           "description": "What makes this position critical",
@@ -185,7 +198,7 @@ Return ONLY the chapter content text.`
 }
 
 export function generateChessBoardStatePrompt(keyMoment: { moveNumber: number, san: string, description: string, criticalReason: string }, analysisData: GameAnalysis): string {
-  return `Extract the chess board state (FEN notation) for this key moment.
+  return `Generate the chess board state metadata for this key moment (FEN will be computed from actual game).
 
 Key Moment:
 - Move: ${keyMoment.moveNumber} ${keyMoment.san}
@@ -196,14 +209,14 @@ Game Context:
 ${analysisData.gameMetadata.whitePlayer} vs ${analysisData.gameMetadata.blackPlayer}
 Total Moves: ${analysisData.chessjsData.totalMoves}
 
-Provide the FEN notation for the position immediately after this move is played. Also provide:
+Provide metadata for this position. Also provide:
 1. Brief description of why this position is critical
 2. Which pieces are under attack or in danger
 3. What makes this moment a turning point, blunder, or brilliancy
 
 Return ONLY a JSON object:
 {
-  "fen": "FEN notation string",
+  "fen": "placeholder-will-be-replaced-with-actual-fen",
   "moveNumber": ${keyMoment.moveNumber},
   "san": "${keyMoment.san}",
   "description": "Why this position is critical",

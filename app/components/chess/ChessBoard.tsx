@@ -3,6 +3,9 @@
 import { Chess } from 'chess.js'
 import Chessground from '@bezalel6/react-chessground'
 import { ChessBoardState } from '@/lib/story-types'
+import 'chessground/assets/chessground.base.css'
+import 'chessground/assets/chessground.brown.css'
+import 'chessground/assets/chessground.cburnett.css'
 
 interface ChessBoardProps {
   boardState: ChessBoardState
@@ -28,56 +31,104 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
   const config = SIZE_CONFIGS[size]
   const criticalColor = CRITICAL_REASON_COLORS[boardState.criticalReason as keyof typeof CRITICAL_REASON_COLORS] || 'bg-gray-100 border-gray-400'
 
-  const chess = new Chess(boardState.fen)
-  const turn = chess.turn()
-  const turnColor = turn === 'w' ? 'white' : 'black'
+  let chess: Chess
+  let turn: 'w' | 'b' = 'w'
+  let turnColor: 'white' | 'black' = 'white'
+  let boardError = false
 
-  const moves = chess.moves({ verbose: true })
-  const destsRecord = moves.reduce((acc, move) => {
-    if (!acc[move.from]) {
-      acc[move.from] = []
+  console.log('[ChessBoard] Rendering with FEN:', boardState.fen)
+
+  if (!boardState.fen || typeof boardState.fen !== 'string') {
+    console.error('[ChessBoard] Invalid FEN: null or not a string')
+    boardError = true
+    chess = new Chess()
+  } else if (!boardState.fen.includes(' ')) {
+    console.error('[ChessBoard] Invalid FEN: missing space-delimited fields:', boardState.fen)
+    boardError = true
+    chess = new Chess()
+  } else {
+    try {
+      chess = new Chess(boardState.fen)
+      turn = chess.turn()
+      turnColor = turn === 'w' ? 'white' : 'black'
+    } catch (error) {
+      console.error('[ChessBoard] Invalid FEN:', boardState.fen, error)
+      boardError = true
+      chess = new Chess()
     }
-    acc[move.from].push(move.to)
-    return acc
-  }, {} as Record<string, string[]>)
+  }
 
-  const dests = new Map<string, string[]>(
-    Object.entries(destsRecord) as Array<[string, string[]]>
-  )
+  let dests: Map<string, string[]> = new Map()
+  if (!boardError) {
+    const moves = chess.moves({ verbose: true })
+    const destsRecord = moves.reduce((acc, move) => {
+      if (!acc[move.from]) {
+        acc[move.from] = []
+      }
+      acc[move.from].push(move.to)
+      return acc
+    }, {} as Record<string, string[]>)
+
+    dests = new Map<string, string[]>(
+      Object.entries(destsRecord) as Array<[string, string[]]>
+    )
+  }
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div
-        className="border-4 rounded-lg shadow-xl"
-        style={{
-          borderColor: '#8B4513',
-          backgroundColor: '#D4A373'
-        }}
-      >
-        <Chessground
-          fen={boardState.fen}
-          turnColor={turnColor}
-          movable={{
-            free: false,
-            color: turnColor,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            dests: dests as any
-          }}
-          highlight={{
-            lastMove: false,
-            check: true
-          }}
-          animation={{
-            enabled: true,
-            duration: 200
-          }}
-          orientation={turnColor}
+      {boardError ? (
+        <div
+          className="border-4 rounded-lg shadow-xl flex items-center justify-center text-center p-4"
           style={{
+            borderColor: '#8B4513',
+            backgroundColor: '#D4A373',
             width: config.width,
             height: config.height
           }}
-        />
-      </div>
+        >
+          <div>
+            <p className="text-red-800 font-bold mb-2">Board Position Error</p>
+            <p className="text-sm text-red-900">
+              Unable to display board for move {boardState.moveNumber} ({boardState.san})
+            </p>
+            <p className="text-xs text-red-950 mt-2">
+              FEN: {boardState.fen?.substring(0, 30)}...
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="border-4 rounded-lg shadow-xl"
+          style={{
+            borderColor: '#8B4513',
+            backgroundColor: '#D4A373'
+          }}
+        >
+          <Chessground
+            fen={chess.fen()}
+            turnColor={turnColor}
+            movable={{
+              free: false,
+              color: turnColor,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              dests: dests as any
+            }}
+            highlight={{
+              lastMove: false,
+              check: true
+            }}
+            animation={{
+              enabled: true,
+              duration: 200
+            }}
+            orientation={turnColor}
+            style={{
+              width: config.width,
+              height: config.height
+            }}
+          />
+        </div>
+      )}
 
       <div className={`w-full p-3 rounded-lg border-2 ${criticalColor}`}>
         <div className="text-center">

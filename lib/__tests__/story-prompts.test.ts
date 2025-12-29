@@ -1,12 +1,12 @@
 import {
-  determineStoryFormat,
-  generateStoryPrompt,
-  generateChapterPrompt,
-  generateChessBoardStatePrompt
-} from '@/lib/prompts/story-prompts'
+   determineStoryFormat,
+   generateStoryPrompt,
+   generateChapterPrompt
+ } from '@/lib/prompts/story-prompts'
 import { GameAnalysis } from '@/lib/prompts/prompts'
 
 const mockAnalysis: GameAnalysis = {
+  moves: [],
   gameMetadata: {
     whitePlayer: 'Magnus Carlsen',
     blackPlayer: 'Fabiano Caruana',
@@ -213,7 +213,7 @@ describe('Story Generation Prompts', () => {
 
   describe('generateChapterPrompt', () => {
     it('should generate prompt for chapter with sections', () => {
-      const prompt = generateChapterPrompt(mockAnalysis, { chapterNumber: 1, sections: ['opening'] }, 'detailed')
+      const prompt = generateChapterPrompt(mockAnalysis, { chapterNumber: 1, sections: ['opening'] })
       expect(prompt).toContain('CHAPTER 1')
       expect(prompt).toContain('Focus Sections: opening')
       expect(prompt).toContain('Magnus Carlsen')
@@ -221,48 +221,17 @@ describe('Story Generation Prompts', () => {
     })
 
     it('should include available key moments in chapter prompt', () => {
-      const prompt = generateChapterPrompt(mockAnalysis, { chapterNumber: 2, sections: ['middlegame'] }, 'detailed')
+      const prompt = generateChapterPrompt(mockAnalysis, { chapterNumber: 2, sections: ['middlegame'] })
       expect(prompt).toContain('Available Key Moments')
       expect(prompt).toContain('Move 23')
       expect(prompt).toContain('brilliancy')
     })
 
     it('should include piece personalities in chapter prompt', () => {
-      const prompt = generateChapterPrompt(mockAnalysis, { chapterNumber: 3, sections: ['endgame'] }, 'detailed')
+      const prompt = generateChapterPrompt(mockAnalysis, { chapterNumber: 3, sections: ['endgame'] })
       expect(prompt).toContain('Piece Personalities Available')
       expect(prompt).toContain('Knight')
       expect(prompt).toContain('unpredictable warrior')
-    })
-  })
-
-  describe('generateChessBoardStatePrompt', () => {
-    it('should generate prompt for chess board state', () => {
-      const keyMoment = {
-        moveNumber: 23,
-        san: 'Nd5',
-        description: 'Knight sacrifice',
-        criticalReason: 'turning-point'
-      }
-      const prompt = generateChessBoardStatePrompt(keyMoment, mockAnalysis)
-      expect(prompt).toContain('Move: 23 Nd5')
-      expect(prompt).toContain('Knight sacrifice')
-      expect(prompt).toContain('turning-point')
-      expect(prompt).toContain('Magnus Carlsen')
-      expect(prompt).toContain('Total Moves: 60')
-    })
-
-    it('should request FEN notation and position details', () => {
-      const keyMoment = {
-        moveNumber: 45,
-        san: 'Rf8',
-        description: 'Rook invasion',
-        criticalReason: 'game-deciding'
-      }
-      const prompt = generateChessBoardStatePrompt(keyMoment, mockAnalysis)
-      expect(prompt).toContain('FEN notation')
-      expect(prompt).toContain('why this position is critical')
-      expect(prompt).toContain('under attack or in danger')
-      expect(prompt).toContain('JSON object')
     })
   })
 })

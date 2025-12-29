@@ -11,7 +11,7 @@ export interface ChessBoardState {
   moveNumber: number
   san: string
   description: string
-  criticalReason: 'turning-point' | 'blunder' | 'brilliancy' | 'sacrifice' | 'check' | 'promotion'
+  criticalReason: 'turning-point' | 'blunder' | 'brilliancy' | 'sacrifice' | 'check' | 'promotion' | 'checkmate' | 'positioning' | 'approach' | 'initial setup'
 }
 
 export interface StoryChapter {
