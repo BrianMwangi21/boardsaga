@@ -77,19 +77,23 @@ Set up LLM analysis for chess games using Vercel AI SDK.
 Generate engaging stories from analyzed chess games.
 
 ### Tasks
-- [ ] Design story structure:
+- [x] Design story structure:
   - Title generation
   - Chapter breakdown (Opening, Middle Game, Endgame)
   - Highlight sections (Key moments)
-- [ ] Build story generation API route
-- [ ] Implement narrative flow logic
-- [ ] Add story review/edit UI
-- [ ] Support multiple story formats (short, detailed, epic)
+- [x] Build story generation API route
+- [x] Implement narrative flow logic
+- [x] Add creative loading experience with flash cards
+- [x] Support multiple story formats (short, detailed, epic)
 
 ### Deliverables
 - Story generation API at `app/api/generate-story/route.ts`
-- Story display component in `app/components/StoryViewer.tsx`
-- Story editor component in `app/components/StoryEditor.tsx`
+- Story display component in `app/components/story/StoryViewer.tsx`
+- Chess board visualization component in `app/components/chess/ChessBoard.tsx`
+- Creative loading experience component in `app/components/ui/StoryLoading.tsx`
+- Story type definitions in `lib/story-types.ts`
+- Story generation prompts in `lib/prompts/story-prompts.ts`
+- Tests for story generation prompts and API
 
 ### Definition of Done
 - Stories generate successfully from analyzed games
