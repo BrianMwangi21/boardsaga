@@ -30,14 +30,27 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
     <div
       {...getRootProps()}
       className={`
-        border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors
-        ${isDragActive ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
+        border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all duration-300
+        ${isDragActive ? 'scale-[1.02]' : 'hover:scale-[1.01]'}
       `}
+      style={{
+        background: isDragActive
+          ? 'linear-gradient(135deg, rgba(193, 154, 107, 0.2) 0%, rgba(212, 163, 115, 0.2) 100%)'
+          : 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
+        borderColor: isDragActive ? '#8B4513' : '#C19A6B',
+        boxShadow: isDragActive
+          ? '0 8px 32px rgba(139, 69, 19, 0.2)'
+          : '0 4px 16px rgba(44, 24, 16, 0.1)',
+      }}
     >
       <input {...getInputProps()} />
       <div className="flex flex-col items-center gap-4">
         <svg
-          className="w-16 h-16 text-muted-foreground"
+          className="w-16 h-16 transition-all duration-300"
+          style={{
+            color: isDragActive ? '#8B4513' : '#C19A6B',
+            transform: isDragActive ? 'scale(1.1)' : 'scale(1)',
+          }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -50,14 +63,38 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
           />
         </svg>
         <div>
-          <p className="text-lg font-medium">
+          <p
+            className="transition-all duration-200"
+            style={{
+              fontFamily: 'var(--font-serif), Georgia, serif',
+              fontSize: 'var(--text-lg)',
+              fontWeight: 600,
+              color: isDragActive ? '#2C1810' : '#8B4513',
+            }}
+          >
             {isDragActive ? 'Drop your PGN file here' : 'Drag and drop your PGN file'}
           </p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p
+            className="transition-all duration-200"
+            style={{
+              fontSize: 'var(--text-sm)',
+              color: '#6B3410',
+              marginTop: '0.25rem',
+            }}
+          >
             or click to browse your files
           </p>
         </div>
-        <p className="text-xs text-muted-foreground">.pgn files only</p>
+        <p
+          className="transition-all duration-200"
+          style={{
+            fontSize: 'var(--text-xs)',
+            color: '#8B4513',
+            opacity: 0.7,
+          }}
+        >
+          .pgn files only
+        </p>
       </div>
     </div>
   )
