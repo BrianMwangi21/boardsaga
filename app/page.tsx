@@ -3,20 +3,31 @@
 import { useState } from 'react'
 import PGNUploader from './components/pgn/PGNUploader'
 import { ParsedGame } from '@/lib/pgn-parser'
+import { GameAnalysis } from '@/lib/prompts/prompts'
+import { Story } from '@/lib/story-types'
+import StoryLoading from './components/ui/StoryLoading'
+import StoryViewer from './components/story/StoryViewer'
+
+type AppState = 'upload' | 'analyzing' | 'generating' | 'story' | 'error'
 
 export default function Home() {
+  const [appState, setAppState] = useState<AppState>('upload')
   const [parsedGame, setParsedGame] = useState<ParsedGame | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [analysis, setAnalysis] = useState<GameAnalysis | null>(null)
+  const [story, setStory] = useState<Story | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const handleFileSelect = async (file: File) => {
-    setLoading(true)
+    setAppState('analyzing')
     setError(null)
     setParsedGame(null)
+    setAnalysis(null)
+    setStory(null)
 
     try {
       const text = await file.text()
-      const response = await fetch('/api/parse-pgn', {
+
+      const parseResponse = await fetch('/api/parse-pgn', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -24,23 +35,74 @@ export default function Home() {
         body: JSON.stringify({ pgn: text }),
       })
 
-      const result = await response.json()
+      const parseResult = await parseResponse.json()
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to parse PGN')
+      if (!parseResponse.ok) {
+        throw new Error(parseResult.error || 'Failed to parse PGN')
       }
 
-      setParsedGame(result.data)
+      const gameData = parseResult.data
+      setParsedGame(gameData)
+
+      await generateStory(gameData)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setLoading(false)
+      setAppState('error')
+    }
+  }
+
+  const generateStory = async (gameData: ParsedGame) => {
+    try {
+      const analyzeResponse = await fetch('/api/analyze-game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pgn: gameData.pgn }),
+      })
+
+      const analyzeResult = await analyzeResponse.json()
+
+      if (!analyzeResponse.ok) {
+        throw new Error(analyzeResult.error || 'Failed to analyze game')
+      }
+
+      const analysisData = analyzeResult.data
+      setAnalysis(analysisData)
+      setAppState('generating')
+
+      const storyResponse = await fetch('/api/generate-story', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ analysisData }),
+      })
+
+      const storyResult = await storyResponse.json()
+
+      if (!storyResponse.ok) {
+        throw new Error(storyResult.error || 'Failed to generate story')
+      }
+
+      setStory(storyResult.data)
+      setAppState('story')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+      setAppState('error')
     }
   }
 
   const resetUpload = () => {
-    setParsedGame(null)
+    setAppState('upload')
     setError(null)
+    setParsedGame(null)
+    setAnalysis(null)
+    setStory(null)
+  }
+
+  if (appState === 'story' && story) {
+    return <StoryViewer story={story} />
   }
 
   return (
@@ -53,7 +115,7 @@ export default function Home() {
           </p>
         </div>
 
-        {!parsedGame && !loading && (
+        {appState === 'upload' && (
           <div>
             <PGNUploader onFileSelect={handleFileSelect} />
             {error && (
@@ -64,25 +126,33 @@ export default function Home() {
           </div>
         )}
 
-        {loading && (
+        {appState === 'analyzing' && (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <p className="mt-4 text-muted-foreground">Parsing your game...</p>
+            <p className="mt-4 text-muted-foreground">Analyzing your game...</p>
           </div>
         )}
 
-        {parsedGame && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">Game Analysis</h2>
-              <button
-                onClick={resetUpload}
-                className="px-4 py-2 text-sm border rounded hover:bg-muted"
-              >
-                Upload New Game
-              </button>
-            </div>
+        {appState === 'generating' && (
+          <StoryLoading isGenerating={true} />
+        )}
 
+        {appState === 'error' && (
+          <div className="text-center py-12">
+            <div className="mb-4 text-destructive text-6xl">⚠️</div>
+            <h2 className="text-2xl font-bold mb-2">Something went wrong</h2>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <button
+              onClick={resetUpload}
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {appState === 'analyzing' && parsedGame && (
+          <div className="mt-8 space-y-6">
             <div className="border rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Game Information</h3>
               <dl className="grid grid-cols-2 gap-4">
@@ -98,24 +168,6 @@ export default function Home() {
                     <dd className="font-medium">{parsedGame.metadata.black}</dd>
                   </div>
                 )}
-                {parsedGame.metadata.whiteElo && (
-                  <div>
-                    <dt className="text-sm text-muted-foreground">White Elo</dt>
-                    <dd className="font-medium">{parsedGame.metadata.whiteElo}</dd>
-                  </div>
-                )}
-                {parsedGame.metadata.blackElo && (
-                  <div>
-                    <dt className="text-sm text-muted-foreground">Black Elo</dt>
-                    <dd className="font-medium">{parsedGame.metadata.blackElo}</dd>
-                  </div>
-                )}
-                {parsedGame.metadata.event && (
-                  <div>
-                    <dt className="text-sm text-muted-foreground">Event</dt>
-                    <dd className="font-medium">{parsedGame.metadata.event}</dd>
-                  </div>
-                )}
                 {parsedGame.metadata.result && (
                   <div>
                     <dt className="text-sm text-muted-foreground">Result</dt>
@@ -128,36 +180,7 @@ export default function Home() {
                     <dd className="font-medium">{parsedGame.metadata.date}</dd>
                   </div>
                 )}
-                {parsedGame.metadata.timeControl && (
-                  <div>
-                    <dt className="text-sm text-muted-foreground">Time Control</dt>
-                    <dd className="font-medium">{parsedGame.metadata.timeControl}</dd>
-                  </div>
-                )}
               </dl>
-            </div>
-
-            <div className="border rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Moves</h3>
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {parsedGame.moves.reduce<React.ReactNode[]>((acc, move, index) => {
-                  if (move.turn === 'w') {
-                    const blackMove = parsedGame.moves[index + 1]
-                    acc.push(
-                      <div key={index} className="flex gap-4 p-2 hover:bg-muted/50 rounded">
-                        <span className="text-sm text-muted-foreground w-12">
-                          {Math.ceil(move.moveNumber / 2)}.
-                        </span>
-                        <span className="font-medium flex-1">{move.san}</span>
-                        {blackMove && (
-                          <span className="font-medium flex-1">{blackMove.san}</span>
-                        )}
-                      </div>
-                    )
-                  }
-                  return acc
-                }, [])}
-              </div>
             </div>
           </div>
         )}
