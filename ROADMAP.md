@@ -11,6 +11,11 @@ This roadmap breaks down BoardSaga into modular, achievable phases. Each phase b
 ### Goal
 Allow users to upload PGN files and validate/parse them correctly.
 
+### Architecture Notes
+- **PGN Upload**: This is the main index page (app/page.tsx) - the entry point of the application
+- **Reusable Components**: Header and footer components should be created in components/ui/ for consistent styling and reusability
+- **Next.js Layout**: Use app/layout.tsx to wrap pages with header/footer for consistent layout across the app
+
 ### Tasks
 - [ ] Create PGN upload UI component with drag-and-drop support
 - [ ] Implement PGN validation (check file format, content structure)
