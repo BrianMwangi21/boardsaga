@@ -6,9 +6,11 @@ import StoryViewer from '../../components/story/StoryViewer';
 export default async function StoryPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  if (!ObjectId.isValid(params.id)) {
+  const { id } = await params;
+
+  if (!ObjectId.isValid(id)) {
     notFound();
   }
 
@@ -17,7 +19,7 @@ export default async function StoryPage({
   try {
     const db = await getDb();
     storyDoc = await db.collection('stories').findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     });
   } catch (error) {
     console.error('Error fetching story:', error);
