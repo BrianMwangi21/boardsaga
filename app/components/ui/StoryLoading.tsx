@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface FlashCardProps {
   title: string
@@ -12,6 +12,17 @@ interface FlashCardProps {
 interface StoryLoadingProps {
   isGenerating?: boolean
 }
+
+const secretLoadingMessages = [
+  'Just kidding, the AI is taking a coffee break ☕',
+  'Consulting the oracle of chess wisdom 🔮',
+  'The knights are arguing about who moves first 🗡️',
+  'Trying to understand why you played that move 🤔',
+  'Checking if this is a grandmaster game or... 👀',
+  'The pawns are whispering about your strategy 🤫',
+  'Plotting your chess epic, chapter by chapter 📚',
+  'Rearranging the board for dramatic effect ✨',
+]
 
 const PIECE_LORE = [
   {
@@ -124,6 +135,30 @@ export default function StoryLoading({ isGenerating = true }: StoryLoadingProps)
   const [currentCard, setCurrentCard] = useState(0)
   const [cardType, setCardType] = useState<'lore' | 'analysis'>('lore')
   const [isVisible, setIsVisible] = useState(true)
+  const [secretMessage, setSecretMessage] = useState('')
+  const [showSecret, setShowSecret] = useState(false)
+  const titleClickCount = useRef(0)
+  const titleClickTimer = useRef<NodeJS.Timeout | null>(null)
+
+  const handleTitleClick = () => {
+    titleClickCount.current += 1
+
+    if (titleClickTimer.current) {
+      clearTimeout(titleClickTimer.current)
+    }
+
+    titleClickTimer.current = setTimeout(() => {
+      if (titleClickCount.current >= 3) {
+        const randomSecret = secretLoadingMessages[Math.floor(Math.random() * secretLoadingMessages.length)]
+        setSecretMessage(randomSecret)
+        setShowSecret(true)
+        setTimeout(() => {
+          setShowSecret(false)
+        }, 3000)
+      }
+      titleClickCount.current = 0
+    }, 500)
+  }
 
   useEffect(() => {
     if (!isGenerating) return
@@ -164,21 +199,23 @@ export default function StoryLoading({ isGenerating = true }: StoryLoadingProps)
           </svg>
         </div>
         <h2
-          className="mb-2"
+          className="mb-2 cursor-pointer transition-transform duration-200 hover:scale-105"
           style={{
             fontFamily: 'var(--font-serif), Georgia, serif',
             fontSize: 'var(--text-2xl)',
             fontWeight: 700,
             color: '#2C1810',
           }}
+          onClick={handleTitleClick}
         >
-          Generating Your Chess Story
+          {showSecret ? secretMessage : 'Generating Your Chess Story'}
         </h2>
         <p
           className="transition-all duration-200"
           style={{
             fontSize: 'var(--text-base)',
             color: '#6B3410',
+            opacity: showSecret ? 0 : 1,
           }}
         >
           The pieces are weaving their tale...
@@ -188,8 +225,8 @@ export default function StoryLoading({ isGenerating = true }: StoryLoadingProps)
       <div
         className="transition-all duration-300"
         style={{
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
+          opacity: isVisible && !showSecret ? 1 : 0,
+          transform: isVisible && !showSecret ? 'translateY(0)' : 'translateY(16px)',
         }}
       >
         {cardType === 'lore' ? (
