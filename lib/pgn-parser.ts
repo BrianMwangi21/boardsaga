@@ -12,6 +12,7 @@ export interface GameMetadata {
   blackElo?: string
   timeControl?: string
   termination?: string
+  opening?: string
 }
 
 export interface ParsedMove {
@@ -22,10 +23,29 @@ export interface ParsedMove {
   moveNumber: number
 }
 
+export interface ChessjsData {
+  totalMoves: number
+  checkEvents: number
+  castling: {
+    white: boolean
+    black: boolean
+  }
+  promotions: Array<{
+    moveNumber: number
+    color: 'white' | 'black'
+    from: string
+    to: string
+    piece: string
+  }>
+  captures: number
+  finalState: string
+}
+
 export interface ParsedGame {
   metadata: GameMetadata
   moves: ParsedMove[]
   pgn: string
+  chessjsData: ChessjsData
 }
 
 export function parsePGN(pgn: string): ParsedGame | null {
@@ -63,10 +83,48 @@ export function parsePGN(pgn: string): ParsedGame | null {
       moveNumber: index + 1,
     }))
 
+    let checkEvents = 0
+    const castling = { white: false, black: false }
+    const promotions: ChessjsData['promotions'] = []
+    let captures = 0
+    
+    const verboseMoves = chess.history({ verbose: true })
+    verboseMoves.forEach((move) => {
+      if (move.san.includes('+') || move.san.includes('#')) {
+        checkEvents++
+      }
+      if (move.san.includes('O-O')) {
+        if (move.color === 'w') castling.white = true
+        else castling.black = true
+      }
+      if (move.promotion) {
+        promotions.push({
+          moveNumber: moves.findIndex(m => m.san === move.san) + 1,
+          color: move.color === 'w' ? 'white' : 'black',
+          from: move.from,
+          to: move.to,
+          piece: move.promotion
+        })
+      }
+      if (move.captured) {
+        captures++
+      }
+    })
+
+    const chessjsData: ChessjsData = {
+      totalMoves: moves.length,
+      checkEvents,
+      castling,
+      promotions,
+      captures,
+      finalState: chess.isCheckmate() ? 'checkmate' : chess.isDraw() ? 'draw' : chess.isStalemate() ? 'stalemate' : 'incomplete'
+    }
+
     return {
       metadata,
       moves,
       pgn,
+      chessjsData
     }
   } catch (error) {
     console.error('Error parsing PGN:', error)

@@ -44,15 +44,15 @@ Allow users to upload PGN files and validate/parse them correctly.
 Set up LLM analysis for chess games using Vercel AI SDK.
 
 ### Tasks
-- [ ] Install and configure Vercel AI SDK
-- [ ] Set up API route for PGN analysis
-- [ ] Design prompts for:
+- [x] Install and configure Vercel AI SDK
+- [x] Set up API route for PGN analysis
+- [x] Design prompts for:
   - Game overview (opening, middle game, endgame)
   - Key moments (turning points, blunders, brilliancies)
   - Player strategies and styles
-- [ ] Implement streaming response handling
-- [ ] Add error handling and retry logic
-- [ ] Rate limiting for API calls
+- [x] Implement streaming response handling
+- [x] Add error handling and retry logic
+- [x] Rate limiting for API calls
 
 ### Tech Notes
 - Use open-source LLMs via Vercel AI SDK (Qwen, DeepSeek, Kimi, or GPT-OSS)
