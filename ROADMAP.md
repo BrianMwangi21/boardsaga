@@ -108,19 +108,17 @@ Generate engaging stories from analyzed chess games.
 Save generated stories and provide history management.
 
 ### Tasks
-- [ ] Set up MongoDB Atlas database
-- [ ] Design database schema:
-  - Games collection (PGN data, parsed moves)
-  - Stories collection (generated stories, metadata)
-  - Users collection (if authentication added later)
-- [ ] Implement MongoDB connection helper
-- [ ] Create API routes for CRUD operations:
+- [x] Set up MongoDB Atlas database
+- [x] Design database schema:
+  - Stories collection (PGN data, analysis, story metadata)
+- [x] Implement MongoDB connection helper
+- [x] Create API routes for CRUD operations:
   - Save story
   - Get story by ID
   - List user's stories
   - Delete story
-- [ ] Add story history page
-- [ ] Implement search/filter functionality
+  - Check for existing PGN
+- [x] Add story history page
 
 ### Database Choice
 **MongoDB Atlas** - Perfect for Vercel deployment with free tier, flexible schema, and great developer experience.
