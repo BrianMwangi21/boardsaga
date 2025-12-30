@@ -55,8 +55,6 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
   let turnColor: 'white' | 'black' = 'white'
   let boardError = false
 
-  console.log('[ChessBoard] Rendering with FEN:', boardState.fen)
-
   useEffect(() => {
     return () => {
       if (clickTimeoutRef.current) {
@@ -103,7 +101,7 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
     }
   }
 
-  let dests: Map<string, string[]> = new Map()
+  let dests: Map<unknown, string[]> = new Map()
   if (!boardError) {
     const moves = chess.moves({ verbose: true })
     const destsRecord = moves.reduce((acc, move) => {
@@ -114,8 +112,8 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
       return acc
     }, {} as Record<string, string[]>)
 
-    dests = new Map<string, string[]>(
-      Object.entries(destsRecord) as Array<[string, string[]]>
+    dests = new Map<unknown, string[]>(
+      Object.entries(destsRecord) as unknown as Array<[unknown, string[]]>
     )
   }
 
@@ -163,6 +161,7 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
               movable={{
                 free: false,
                 color: turnColor,
+                // chess.js and chessground have incompatible Key types, using any to bridge them
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 dests: dests as any
               }}

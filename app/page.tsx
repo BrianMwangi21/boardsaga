@@ -3,21 +3,17 @@
 import { useState } from 'react'
 import PGNUploader from './components/pgn/PGNUploader'
 import { ParsedGame } from '@/lib/pgn-parser'
-import { Story } from '@/lib/story-types'
 import StoryLoading from './components/ui/StoryLoading'
-import StoryViewer from './components/story/StoryViewer'
 
 type AppState = 'upload' | 'analyzing' | 'generating' | 'story' | 'error'
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload')
-  const [story, setStory] = useState<Story | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const handleFileSelect = async (file: File) => {
     setAppState('analyzing')
     setError(null)
-    setStory(null)
 
     try {
       const text = await file.text()
@@ -121,11 +117,6 @@ export default function Home() {
   const resetUpload = () => {
     setAppState('upload')
     setError(null)
-    setStory(null)
-  }
-
-  if (appState === 'story' && story) {
-    return <StoryViewer story={story} />
   }
 
   return (
