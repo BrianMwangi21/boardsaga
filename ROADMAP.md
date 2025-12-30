@@ -218,7 +218,7 @@ Integrate Stockfish chess engine to provide accurate, factual game analysis and 
   - Cross-reference story move references with actual game moves
   - Auto-correct or flag hallucinated moves
   - Ensure FEN and SAN notation match
-- [ ] Add engine analysis tests in `lib/__tests__/stockfish.test.ts`
+- [x] Add engine analysis tests in `lib/__tests__/stockfish-client.test.ts`
 
 ### Tech Notes
 - **Stockfish.js**: https://github.com/nmrugg/stockfish.js - WebAssembly build of Stockfish
