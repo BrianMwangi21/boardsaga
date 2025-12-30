@@ -1,0 +1,27 @@
+export const STOCKFISH = {
+  DEFAULT_DEPTH: 15,
+  EVALUATION_DEPTH: 5,
+  ENGINE_TIMEOUT_MS: 5000,
+  GAME_ANALYSIS_TIMEOUT_MS: 60000,
+  READY_TIMEOUT_MS: 5000,
+} as const
+
+export const MOVE_CLASSIFICATIONS = {
+  BLUNDER_THRESHOLD: 200,
+  MISTAKE_THRESHOLD: 100,
+  INACCURACY_THRESHOLD: 50,
+} as const
+
+export const CACHE = {
+  TTL_MS: 60 * 60 * 1000,
+} as const
+
+export const RATE_LIMIT = {
+  DEFAULT_WINDOW_MS: 60 * 1000,
+  DEFAULT_MAX_REQUESTS: 20,
+} as const
+
+export const RETRY = {
+  DEFAULT_MAX_ATTEMPTS: 3,
+  DEFAULT_DELAY_MS: 1000,
+} as const
