@@ -105,8 +105,10 @@ function validateMovesInStory(story: Story, moves: ParsedMove[], engineData?: Ma
   }
 }
 
-function fixChessBoardsInStory(story: Story, moves: ParsedMove[], engineData?: Map<number, MoveAnalysis> | Record<number, MoveAnalysis>): Story {
-  const engineMap = engineData instanceof Map ? engineData : new Map(Object.entries(engineData || {}).map(([k, v]) => [Number(k), v]))
+function fixChessBoardsInStory(story: Story, moves: ParsedMove[], engineData?: Map<number, MoveAnalysis> | Record<number, MoveAnalysis> | Record<string, MoveAnalysis>): Story {
+  const engineMap = engineData instanceof Map ? engineData : new Map(
+    Object.entries(engineData || {}).map(([k, v]) => [typeof k === 'string' ? parseInt(k, 10) : k, v] as [number, MoveAnalysis])
+  )
 
   story.chapters.forEach(chapter => {
     if (chapter.chessBoards && chapter.chessBoards.length > 0) {
