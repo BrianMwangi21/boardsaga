@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { Story, ChapterSection } from '@/lib/story-types'
 import ChessBoard from '../chess/ChessBoard'
 
@@ -17,52 +17,10 @@ const SECTION_LABELS: Record<ChapterSection, string> = {
   'key-moments': 'Key Moments'
 }
 
-const STORY_EASTER_EGGS = [
-  'The pieces speak to those who listen...',
-  'Every game tells a story, but this one speaks volumes!',
-  'You\'ve found a hidden chapter in the legend!',
-  'The board remembers what the players forget.',
-  'A master\'s touch is felt in every move.',
-  'Strategy and sacrifice: the twin pillars of chess.',
-  'In the end, it\'s not just about winning—it\'s about the art.',
-]
-
 export default function StoryViewer({ story }: StoryViewerProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('chapter')
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0)
-  const [easterEgg, setEasterEgg] = useState('')
-  const [showEasterEgg, setShowEasterEgg] = useState(false)
   const [hoveredParagraph, setHoveredParagraph] = useState<number | null>(null)
-  const clickCountRef = useRef(0)
-  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-
-  useEffect(() => {
-    return () => {
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  const handleTitleClick = () => {
-    clickCountRef.current++
-    setShowEasterEgg(false)
-
-    if (clickTimeoutRef.current) {
-      clearTimeout(clickTimeoutRef.current)
-    }
-
-    clickTimeoutRef.current = setTimeout(() => {
-      if (clickCountRef.current >= 5) {
-        const randomEgg = STORY_EASTER_EGGS[Math.floor(Math.random() * STORY_EASTER_EGGS.length)]
-        setEasterEgg(randomEgg)
-        setShowEasterEgg(true)
-        setTimeout(() => setShowEasterEgg(false), 4000)
-      }
-      clickCountRef.current = 0
-    }, 600)
-  }
 
   const handleParagraphHover = (index: number) => {
     setHoveredParagraph(index)
@@ -168,9 +126,7 @@ export default function StoryViewer({ story }: StoryViewerProps) {
             </div>
 
             <h2
-              ref={titleRef}
-              onClick={handleTitleClick}
-              className="mb-4 cursor-pointer transition-all duration-300 hover:text-[#8B4513]"
+              className="mb-4"
               style={{
                 fontFamily: 'var(--font-serif), Georgia, serif',
                 fontSize: 'var(--text-3xl)',
@@ -181,22 +137,6 @@ export default function StoryViewer({ story }: StoryViewerProps) {
             >
               {chapter.title}
             </h2>
-
-            {showEasterEgg && (
-              <div
-                className="mb-4 p-3 rounded-lg text-center transition-all duration-500"
-                style={{
-                  background: 'linear-gradient(135deg, #C19A6B 0%, #8B4513 100%)',
-                  color: '#F5F0E6',
-                  boxShadow: '0 4px 12px rgba(139, 69, 19, 0.3)',
-                  animation: 'slideIn 0.3s ease-out',
-                }}
-              >
-                <p className="italic" style={{ fontSize: 'var(--text-sm)' }}>
-                  {easterEgg}
-                </p>
-              </div>
-            )}
 
           {chapter.sections.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">

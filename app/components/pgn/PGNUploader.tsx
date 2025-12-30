@@ -1,27 +1,13 @@
 'use client'
 
-import { useCallback, useState, useRef } from 'react'
+import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 
 interface PGNUploaderProps {
   onFileSelect: (file: File) => void
 }
 
-const secretMessages = [
-  'The Queen is waiting...',
-  'Your move, grandmaster!',
-  'Checkmate is inevitable',
-  'Knights move in mysterious ways',
-  'Pawns have feelings too!',
-  'The board is set...',
-]
-
 export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
-  const [secretMessage, setSecretMessage] = useState('')
-  const [showSecret, setShowSecret] = useState(false)
-  const clickCount = useRef(0)
-  const clickTimer = useRef<NodeJS.Timeout | null>(null)
-
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
@@ -30,26 +16,6 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
     },
     [onFileSelect]
   )
-
-  const handleInputClick = () => {
-    clickCount.current += 1
-
-    if (clickTimer.current) {
-      clearTimeout(clickTimer.current)
-    }
-
-    clickTimer.current = setTimeout(() => {
-      if (clickCount.current >= 5) {
-        const randomMessage = secretMessages[Math.floor(Math.random() * secretMessages.length)]
-        setSecretMessage(randomMessage)
-        setShowSecret(true)
-        setTimeout(() => {
-          setShowSecret(false)
-        }, 2500)
-      }
-      clickCount.current = 0
-    }, 500)
-  }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -77,7 +43,7 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
           : '0 4px 16px rgba(44, 24, 16, 0.1)',
       }}
     >
-      <input {...getInputProps()} onClick={handleInputClick} />
+      <input {...getInputProps()} />
       <div className="flex flex-col items-center gap-3">
         <svg
           className="w-12 h-12 transition-all duration-300"
@@ -106,7 +72,7 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
               color: isDragActive ? '#2C1810' : '#8B4513',
             }}
           >
-            {showSecret ? secretMessage : (isDragActive ? 'Drop your PGN file here' : 'Drag and drop your PGN file')}
+            {isDragActive ? 'Drop your PGN file here' : 'Drag and drop your PGN file'}
           </p>
           <p
             className="transition-all duration-200"
@@ -114,7 +80,6 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
               fontSize: 'var(--text-sm)',
               color: '#6B3410',
               marginTop: '0.25rem',
-              opacity: showSecret ? 0 : 1,
             }}
           >
             or click to browse your files
@@ -125,7 +90,7 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
           style={{
             fontSize: 'var(--text-xs)',
             color: '#8B4513',
-            opacity: showSecret ? 0 : 0.7,
+            opacity: 0.7,
           }}
         >
           .pgn files only
