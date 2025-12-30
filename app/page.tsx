@@ -3,13 +3,16 @@
 import { useState } from 'react'
 import PGNUploader from './components/pgn/PGNUploader'
 import { ParsedGame } from '@/lib/pgn-parser'
+import { StockfishClient, type GameEngineData } from '@/lib/stockfish-client'
 import StoryLoading from './components/ui/StoryLoading'
 
-type AppState = 'upload' | 'analyzing' | 'generating' | 'story' | 'error'
+type AppState = 'upload' | 'analyzing-engine' | 'analyzing' | 'generating' | 'story' | 'error'
+type EngineStatus = 'running' | 'failed' | 'completed'
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload')
   const [error, setError] = useState<string | null>(null)
+  const [engineStatus, setEngineStatus] = useState<EngineStatus>('running')
 
   const handleFileSelect = async (file: File) => {
     setAppState('analyzing')
@@ -49,21 +52,54 @@ export default function Home() {
         return
       }
 
-      await generateStory(gameData)
+      setAppState('analyzing-engine')
+      setEngineStatus('running')
+
+      const stockfishClient = new StockfishClient()
+
+      try {
+      const engineTimeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Stockfish analysis timeout')), 60000)
+      )
+
+        const engineData = await Promise.race([
+          stockfishClient.analyzeGame(gameData),
+          engineTimeout
+        ])
+
+        setEngineStatus('completed')
+        await generateStory(gameData, engineData)
+      } catch (engineError) {
+        console.warn('Stockfish analysis failed, continuing without engine data:', engineError)
+        setEngineStatus('failed')
+        await generateStory(gameData, null)
+      } finally {
+        stockfishClient.terminate()
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       setAppState('error')
     }
   }
 
-  const generateStory = async (gameData: ParsedGame) => {
+  const generateStory = async (gameData: ParsedGame, engineData: GameEngineData | null) => {
     try {
+      const serializedEngineData = engineData ? {
+        pgnHash: engineData.pgnHash,
+        positions: engineData.positions,
+        evaluations: Object.fromEntries(engineData.evaluations),
+        keyPositions: engineData.keyPositions,
+      } : null
+
       const analyzeResponse = await fetch('/api/analyze-game', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ pgn: gameData.pgn }),
+        body: JSON.stringify({
+          pgn: gameData.pgn,
+          engineData: serializedEngineData,
+        }),
       })
 
       const analyzeResult = await analyzeResponse.json()
@@ -187,6 +223,49 @@ export default function Home() {
             >
               Analyzing your game...
             </p>
+          </div>
+        )}
+
+        {appState === 'analyzing-engine' && (
+          <div className="text-center py-8">
+            <div
+              className="inline-block animate-spin rounded-full h-12 w-12 mx-auto"
+              style={{
+                borderTop: '3px solid #4CAF50',
+                borderRight: '3px solid transparent',
+                borderBottom: '3px solid #2E7D32',
+                borderLeft: '3px solid transparent',
+              }}
+            ></div>
+            <p
+              className="mt-4"
+              style={{
+                color: '#6B3410',
+              }}
+            >
+              Stockfish engine analyzing key positions...
+            </p>
+            <p
+              className="mt-2 text-sm"
+              style={{
+                color: '#8B4513',
+              }}
+            >
+              This may take 10-20 seconds
+            </p>
+            {engineStatus === 'failed' && (
+              <p
+                className="mt-3 text-sm"
+                style={{
+                  color: '#FF6B6B',
+                  background: 'rgba(255, 107, 107, 0.1)',
+                  padding: '8px',
+                  borderRadius: '4px',
+                }}
+              >
+                ⚠️ Engine analysis failed, continuing with AI analysis only
+              </p>
+            )}
           </div>
         )}
 

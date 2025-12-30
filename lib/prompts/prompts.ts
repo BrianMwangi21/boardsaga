@@ -1,4 +1,5 @@
 import { ParsedGame, ParsedMove } from '@/lib/pgn-parser'
+import type { GameEngineData, EngineEvaluation, MoveAnalysis } from '@/lib/stockfish-client'
 
 export type { ParsedMove }
 
@@ -32,6 +33,7 @@ export interface GameAnalysis {
     captures: number
     finalState: string
   }
+  engineData?: GameEngineData
   narrativeAnalysis: {
     overview: {
       phase: 'opening' | 'middlegame' | 'endgame' | 'mixed'

@@ -6,6 +6,7 @@ import { Story, StoryFormat, StoryGenerationRequest, StoryGenerationResponse } f
 import { Cache, generateHashFromObject, CACHE_TTL } from '@/lib/cache'
 import { DEFAULT_RATE_LIMITER } from '@/lib/rate-limit'
 import { withRetry } from '@/lib/retry'
+import type { MoveAnalysis } from '@/lib/stockfish-client'
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
@@ -51,7 +52,62 @@ function getFenForMove(moves: ParsedMove[], moveNumber: number, san?: string): s
   return move.after
 }
 
-function fixChessBoardsInStory(story: Story, moves: ParsedMove[]): Story {
+interface ValidationResult {
+  valid: boolean
+  issues: string[]
+}
+
+function validateMovesInStory(story: Story, moves: ParsedMove[], engineData?: Map<number, MoveAnalysis> | Record<number, MoveAnalysis>): ValidationResult {
+  const issues: string[] = []
+  const validMoveNumbers = new Set(moves.map(m => m.moveNumber))
+  const validSanNotations = new Map(moves.map(m => [m.san, m.moveNumber]))
+  const engineMap = engineData instanceof Map ? engineData : new Map(Object.entries(engineData || {}).map(([k, v]) => [Number(k), v]))
+
+  story.chapters.forEach(chapter => {
+    if (chapter.chessBoards && chapter.chessBoards.length > 0) {
+      chapter.chessBoards.forEach((board) => {
+        if (!validMoveNumbers.has(board.moveNumber)) {
+          issues.push(`Invalid move number ${board.moveNumber} in chapter "${chapter.title}". Game has ${moves.length} moves.`)
+        }
+
+        if (engineMap.has(board.moveNumber - 1)) {
+          const engineMove = engineMap.get(board.moveNumber - 1)
+          if (engineMove && board.san !== engineMove.san) {
+            issues.push(`Incorrect move notation at move ${board.moveNumber}. LLM said "${board.san}", actual move is "${engineMove.san}"`)
+          }
+        } else if (moves[board.moveNumber - 1] && board.san !== moves[board.moveNumber - 1].san) {
+          issues.push(`Incorrect move notation at move ${board.moveNumber}. LLM said "${board.san}", actual move is "${moves[board.moveNumber - 1].san}"`)
+        }
+      })
+    }
+
+    if (chapter.keyMoveReferences && chapter.keyMoveReferences.length > 0) {
+      chapter.keyMoveReferences.forEach((ref) => {
+        if (!validMoveNumbers.has(ref.moveNumber)) {
+          issues.push(`Invalid move reference ${ref.moveNumber} in chapter "${chapter.title}". Game has ${moves.length} moves.`)
+        }
+
+        if (engineMap.has(ref.moveNumber - 1)) {
+          const engineMove = engineMap.get(ref.moveNumber - 1)
+          if (engineMove && ref.san !== engineMove.san) {
+            issues.push(`Incorrect move reference at move ${ref.moveNumber}. LLM said "${ref.san}", actual move is "${engineMove.san}"`)
+          }
+        } else if (moves[ref.moveNumber - 1] && ref.san !== moves[ref.moveNumber - 1].san) {
+          issues.push(`Incorrect move reference at move ${ref.moveNumber}. LLM said "${ref.san}", actual move is "${moves[ref.moveNumber - 1].san}"`)
+        }
+      })
+    }
+  })
+
+  return {
+    valid: issues.length === 0,
+    issues
+  }
+}
+
+function fixChessBoardsInStory(story: Story, moves: ParsedMove[], engineData?: Map<number, MoveAnalysis> | Record<number, MoveAnalysis>): Story {
+  const engineMap = engineData instanceof Map ? engineData : new Map(Object.entries(engineData || {}).map(([k, v]) => [Number(k), v]))
+
   story.chapters.forEach(chapter => {
     if (chapter.chessBoards && chapter.chessBoards.length > 0) {
       chapter.chessBoards.forEach((board) => {
@@ -60,7 +116,40 @@ function fixChessBoardsInStory(story: Story, moves: ParsedMove[]): Story {
         if (actualFen) {
           board.fen = actualFen
         } else {
-          board.fen = moves.length > 0 ? moves[0].before : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+          board.fen = moves.length > 0 ? moves[0].before : 'rnbqkbnr/pppppppp/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+        }
+
+        if (engineMap.has(board.moveNumber - 1)) {
+          const engineMove = engineMap.get(board.moveNumber - 1)
+          if (engineMove) {
+            board.san = engineMove.san
+            if (!board.engineScore) {
+              board.engineScore = engineMove.evaluation.score
+            }
+            if (!board.engineDepth) {
+              board.engineDepth = engineMove.evaluation.depth
+            }
+            if (!board.classification) {
+              board.classification = engineMove.classification
+            }
+          }
+        }
+      })
+    }
+
+    if (chapter.keyMoveReferences && chapter.keyMoveReferences.length > 0) {
+      chapter.keyMoveReferences.forEach((ref) => {
+        if (engineMap.has(ref.moveNumber - 1)) {
+          const engineMove = engineMap.get(ref.moveNumber - 1)
+          if (engineMove) {
+            ref.san = engineMove.san
+            if (!ref.engineScore) {
+              ref.engineScore = engineMove.evaluation.score
+            }
+            if (!ref.classification) {
+              ref.classification = engineMove.classification
+            }
+          }
         }
       })
     }
@@ -180,7 +269,7 @@ export async function POST(request: Request) {
     const analysisHash = generateHashFromObject(analysisData)
     const cached = storyCache.get(analysisHash)
     if (cached) {
-      const fixedCachedStory = fixChessBoardsInStory(cached, analysisData.moves)
+      const fixedCachedStory = fixChessBoardsInStory(cached, analysisData.moves, analysisData.engineData?.evaluations)
       return Response.json({
         story: fixedCachedStory,
         cached: true,
@@ -189,7 +278,13 @@ export async function POST(request: Request) {
     }
 
     const story = await generateStoryWithRetry(analysisData, storyFormat)
-    const fixedStory = fixChessBoardsInStory(story, analysisData.moves)
+    const fixedStory = fixChessBoardsInStory(story, analysisData.moves, analysisData.engineData?.evaluations)
+
+    const validation = validateMovesInStory(fixedStory, analysisData.moves, analysisData.engineData?.evaluations)
+
+    if (validation.issues.length > 0) {
+      console.warn('[Move Validation Issues]', validation.issues.join('\n'))
+    }
 
     storyCache.set(analysisHash, fixedStory)
 

@@ -12,6 +12,9 @@ export interface ChessBoardState {
   san: string
   description: string
   criticalReason: 'turning-point' | 'blunder' | 'brilliancy' | 'sacrifice' | 'check' | 'promotion' | 'checkmate' | 'positioning' | 'approach' | 'initial setup'
+  engineScore?: number
+  engineDepth?: number
+  classification?: 'blunder' | 'mistake' | 'inaccuracy' | 'good' | 'brilliancy' | 'book'
 }
 
 export interface StoryChapter {
@@ -26,6 +29,8 @@ export interface StoryChapter {
     moveNumber: number
     san: string
     context: string
+    engineScore?: number
+    classification?: 'blunder' | 'mistake' | 'inaccuracy' | 'good' | 'brilliancy' | 'book'
   }>
   isFlashback?: boolean
 }

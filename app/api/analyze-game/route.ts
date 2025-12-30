@@ -1,16 +1,9 @@
-import { streamText } from 'ai'
-import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import { parsePGN } from '@/lib/pgn-parser'
-import { generateFullAnalysisPrompt, GameAnalysis } from '@/lib/prompts/prompts'
+import { GameAnalysis } from '@/lib/prompts/prompts'
+import { type GameEngineData, type MoveAnalysis } from '@/lib/stockfish-client'
+import { analyzeGameWithEngine } from '@/lib/engine-analyzer'
 import { Cache, generateHash, CACHE_TTL } from '@/lib/cache'
 import { DEFAULT_RATE_LIMITER } from '@/lib/rate-limit'
-import { withRetry } from '@/lib/retry'
-
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY
-})
-
-const MODEL = 'meta-llama/llama-3.3-70b-instruct:free'
 
 const analysisCache = new Cache<GameAnalysis>()
 
@@ -27,7 +20,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { pgn } = body
+    const { pgn, engineData: rawEngineData } = body
 
     if (!pgn || typeof pgn !== 'string') {
       return Response.json(
@@ -36,9 +29,31 @@ export async function POST(request: Request) {
       )
     }
 
+    const engineData: GameEngineData | null = rawEngineData ? {
+      pgnHash: rawEngineData.pgnHash,
+      positions: rawEngineData.positions,
+      evaluations: new Map<number, MoveAnalysis>(
+        Object.entries(rawEngineData.evaluations).map(([k, v]) => [parseInt(k), v as MoveAnalysis])
+      ),
+      keyPositions: rawEngineData.keyPositions,
+    } : null
+
     const pgnHash = generateHash(pgn)
     const cached = analysisCache.get(pgnHash)
+
     if (cached) {
+      if (engineData && !cached.engineData) {
+        const updatedAnalysis: GameAnalysis = {
+          ...cached,
+          engineData: engineData
+        }
+        analysisCache.set(pgnHash, updatedAnalysis)
+        return Response.json({
+          data: updatedAnalysis,
+          cached: true,
+          tokenUsage: { promptTokens: 0, completionTokens: 0 }
+        })
+      }
       return Response.json({
         data: cached,
         cached: true,
@@ -54,65 +69,32 @@ export async function POST(request: Request) {
       )
     }
 
-    const prompt = generateFullAnalysisPrompt(parsedGame)
+    const narrativeAnalysis = analyzeGameWithEngine(parsedGame, engineData)
 
-    const gameAnalysis = await withRetry(async () => {
-      const result = streamText({
-        model: openrouter.chat(MODEL),
-        prompt,
-        temperature: 0.7,
-        maxOutputTokens: 4096
-      })
-
-      const fullResponse = await result.text
-
-      let jsonMatch = fullResponse.match(/```json\s*([\s\S]*?)\s*```/)
-      if (!jsonMatch) {
-        jsonMatch = fullResponse.match(/\{[\s\S]*\}/)
-      }
-
-      if (!jsonMatch) {
-        throw new Error('No JSON found in response')
-      }
-
-      const jsonContent = jsonMatch[1] || jsonMatch[0]
-      const analysisData = JSON.parse(jsonContent)
-
-      return {
-        gameMetadata: {
-          whitePlayer: parsedGame.metadata.white || 'Unknown',
-          blackPlayer: parsedGame.metadata.black || 'Unknown',
-          whiteElo: parsedGame.metadata.whiteElo,
-          blackElo: parsedGame.metadata.blackElo,
-          event: parsedGame.metadata.event,
-          result: parsedGame.metadata.result,
-          date: parsedGame.metadata.date,
-          timeControl: parsedGame.metadata.timeControl,
-          opening: parsedGame.metadata.opening
-        },
-        moves: parsedGame.moves,
-        chessjsData: parsedGame.chessjsData,
-        narrativeAnalysis: {
-          overview: analysisData.narrativeAnalysis?.overview || {
-            phase: 'mixed',
-            openingPlayed: 'Unknown',
-            keyThemes: [],
-            tempoControl: 'balanced'
-          },
-          keyMoments: analysisData.narrativeAnalysis?.keyMoments || [],
-          playerStrategies: analysisData.narrativeAnalysis?.playerStrategies || {
-            white: { style: [], strengths: [], weaknesses: [], signatureMoves: [] },
-            black: { style: [], strengths: [], weaknesses: [], signatureMoves: [] }
-          },
-          loreElements: analysisData.narrativeAnalysis?.loreElements || {
-            dominantPieces: [],
-            piecePersonalities: [],
-            storyThemes: [],
-            narrativeArc: ''
-          }
-        }
-      }
+    console.log('[Stockfish Data]', {
+      evaluationsCount: engineData?.evaluations.size || 0,
+      keyPositionsCount: engineData?.keyPositions.length || 0,
+      positionsCount: engineData?.positions.length || 0,
+      evaluations: engineData?.evaluations
     })
+
+    const gameAnalysis: GameAnalysis = {
+      gameMetadata: {
+        whitePlayer: parsedGame.metadata.white || 'Unknown',
+        blackPlayer: parsedGame.metadata.black || 'Unknown',
+        whiteElo: parsedGame.metadata.whiteElo,
+        blackElo: parsedGame.metadata.blackElo,
+        event: parsedGame.metadata.event,
+        result: parsedGame.metadata.result,
+        date: parsedGame.metadata.date,
+        timeControl: parsedGame.metadata.timeControl,
+        opening: parsedGame.metadata.opening
+      },
+      moves: parsedGame.moves,
+      chessjsData: parsedGame.chessjsData,
+      engineData: engineData || undefined,
+      narrativeAnalysis
+    }
 
     analysisCache.set(pgnHash, gameAnalysis)
 
@@ -139,11 +121,11 @@ export async function GET() {
   return Response.json({
     endpoint: 'Analyze Game',
     method: 'POST',
-    description: 'Analyzes a chess PGN and returns narrative analysis with lore integration',
+    description: 'Analyzes a chess PGN and returns narrative analysis using Stockfish engine',
     body: {
-      pgn: 'string - PGN content to analyze'
+      pgn: 'string - PGN content to analyze',
+      engineData: 'optional - Stockfish engine analysis data'
     },
-    model: MODEL,
     rateLimit: {
       window: `${DEFAULT_WINDOW / 1000}s`,
       maxRequests: DEFAULT_MAX_REQUESTS
