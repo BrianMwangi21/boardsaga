@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { StoryInput, StoryDocument } from '@/lib/story-schema';
+import { GameAnalysis } from '@/lib/prompts/prompts';
 
 function normalizePGN(pgn: string): string {
   return pgn.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n{3,}/g, '\n\n');
@@ -56,7 +57,20 @@ export async function POST(request: NextRequest) {
 
     const storyDoc: Omit<StoryDocument, '_id'> = {
       rawPGN: normalizedPGN,
-      analysis,
+      analysis: {
+        ...analysis,
+        engineData: analysis.engineData ? {
+          pgnHash: analysis.engineData.pgnHash,
+          positions: analysis.engineData.positions,
+          evaluations: analysis.engineData.evaluations instanceof Map
+            ? Array.from(analysis.engineData.evaluations.entries()).reduce((obj, [key, value]) => {
+                obj[String(key)] = value;
+                return obj;
+              }, {} as Record<string, unknown>)
+            : analysis.engineData.evaluations as Record<string, unknown>,
+          keyPositions: analysis.engineData.keyPositions
+        } : undefined
+      } as GameAnalysis,
       story,
       createdAt: now,
       updatedAt: now,
