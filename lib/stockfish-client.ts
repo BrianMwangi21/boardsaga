@@ -22,7 +22,7 @@ export interface PositionData {
 export interface GameEngineData {
   pgnHash: string;
   positions: PositionData[];
-  evaluations: Map<number, MoveAnalysis>;
+  evaluations: Map<number, MoveAnalysis> | Record<number, MoveAnalysis>;
   keyPositions: number[];
 }
 

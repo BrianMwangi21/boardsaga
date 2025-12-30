@@ -55,22 +55,29 @@ export async function POST(request: NextRequest) {
     const db = await getDb();
     const now = new Date();
 
+    const engineDataToSave = analysis.engineData ? {
+      pgnHash: analysis.engineData.pgnHash,
+      positions: analysis.engineData.positions,
+      evaluations: analysis.engineData.evaluations instanceof Map
+        ? Object.fromEntries(analysis.engineData.evaluations.entries())
+        : analysis.engineData.evaluations as Record<number, unknown>,
+      keyPositions: analysis.engineData.keyPositions
+    } : undefined
+
+    console.log('[MongoDB Save] engineData.evaluations:',
+      'type:', analysis.engineData?.evaluations instanceof Map ? 'Map' : typeof analysis.engineData?.evaluations,
+      'count:', analysis.engineData?.evaluations instanceof Map ? analysis.engineData.evaluations.size : Object.keys(analysis.engineData.evaluations || {}).length,
+      'sample:', analysis.engineData?.evaluations instanceof Map ? 
+        Array.from(analysis.engineData.evaluations.entries()).slice(0, 2) : 
+        Object.values(analysis.engineData.evaluations || {}).slice(0, 2)
+    )
+
     const storyDoc: Omit<StoryDocument, '_id'> = {
       rawPGN: normalizedPGN,
       analysis: {
         ...analysis,
-        engineData: analysis.engineData ? {
-          pgnHash: analysis.engineData.pgnHash,
-          positions: analysis.engineData.positions,
-          evaluations: analysis.engineData.evaluations instanceof Map
-            ? Array.from(analysis.engineData.evaluations.entries()).reduce((obj, [key, value]) => {
-                obj[String(key)] = value;
-                return obj;
-              }, {} as Record<string, unknown>)
-            : analysis.engineData.evaluations as Record<string, unknown>,
-          keyPositions: analysis.engineData.keyPositions
-        } : undefined
-      } as GameAnalysis,
+        engineData: engineDataToSave as any
+      },
       story,
       createdAt: now,
       updatedAt: now,

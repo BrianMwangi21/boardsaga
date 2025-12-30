@@ -1,7 +1,7 @@
 import { parsePGN } from '@/lib/pgn-parser'
 import { GameAnalysis } from '@/lib/prompts/prompts'
 import { type GameEngineData, type MoveAnalysis } from '@/lib/stockfish-client'
-import { analyzeGameWithEngine } from '@/lib/engine-analyzer'
+import { analyzeGameWithEngine, getEvaluationsCount, getEvaluationsEntries } from '@/lib/engine-analyzer'
 import { Cache, generateHash, CACHE_TTL } from '@/lib/cache'
 import { DEFAULT_RATE_LIMITER } from '@/lib/rate-limit'
 
