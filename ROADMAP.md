@@ -142,22 +142,22 @@ Save generated stories and provide history management.
 Apply classic wood chess theme throughout the application.
 
 ### Tasks
-- [ ] Design color palette:
+- [x] Design color palette:
   - Wood tones (light oak, walnut, mahogany)
   - Board colors (cream, brown)
   - Piece colors (ivory, ebony)
-- [ ] Create typography system:
+- [x] Create typography system:
   - Elegant serif for stories (Merriweather or Playfair Display)
   - Clean sans for UI (Inter or Lato)
-- [ ] Design layout components:
+- [x] Design layout components:
   - Navigation bar with chess motifs
   - Story display with paper texture
   - Chess board visualization
-- [ ] Add animations:
+- [x] Add animations:
   - Smooth page transitions
   - Piece movement animations
   - Hover effects
-- [ ] Responsive design for mobile and desktop
+- [x] Responsive design for mobile and desktop
 
 ### Theme Guidelines
 - Primary colors: #D4A373 (light wood), #8B4513 (dark wood)

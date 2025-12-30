@@ -31,7 +31,7 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
     [onFileSelect]
   )
 
-  const handleUploadClick = () => {
+  const handleInputClick = () => {
     clickCount.current += 1
 
     if (clickTimer.current) {
@@ -64,10 +64,9 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
     <div
       {...getRootProps()}
       className={`
-        border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all duration-300
+        border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-300
         ${isDragActive ? 'scale-[1.02]' : 'hover:scale-[1.01]'}
       `}
-      onClick={handleUploadClick}
       style={{
         background: isDragActive
           ? 'linear-gradient(135deg, rgba(193, 154, 107, 0.2) 0%, rgba(212, 163, 115, 0.2) 100%)'
@@ -78,10 +77,10 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
           : '0 4px 16px rgba(44, 24, 16, 0.1)',
       }}
     >
-      <input {...getInputProps()} />
-      <div className="flex flex-col items-center gap-4">
+      <input {...getInputProps()} onClick={handleInputClick} />
+      <div className="flex flex-col items-center gap-3">
         <svg
-          className="w-16 h-16 transition-all duration-300"
+          className="w-12 h-12 transition-all duration-300"
           style={{
             color: isDragActive ? '#8B4513' : '#C19A6B',
             transform: isDragActive ? 'scale(1.1)' : 'scale(1)',
@@ -102,7 +101,7 @@ export default function PGNUploader({ onFileSelect }: PGNUploaderProps) {
             className="transition-all duration-200"
             style={{
               fontFamily: 'var(--font-serif), Georgia, serif',
-              fontSize: 'var(--text-lg)',
+              fontSize: 'var(--text-base)',
               fontWeight: 600,
               color: isDragActive ? '#2C1810' : '#8B4513',
             }}

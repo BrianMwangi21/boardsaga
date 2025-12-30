@@ -116,78 +116,263 @@ const storyThemes = [
 
 export default function LorePage() {
   return (
-    <div className="min-h-screen bg-stone-100">
+    <div
+      className="min-h-screen"
+      style={{
+        background: 'linear-gradient(to bottom, #F5F0E6 0%, #EEE8D3 100%)',
+      }}
+    >
       <main className="container mx-auto px-4 py-8 pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-stone-800 mb-4">The World of BoardSaga</h1>
-            <p className="text-xl text-stone-600 max-w-2xl mx-auto">
-              In the eternal struggle across the sixty-four squares, each piece possesses its own spirit, purpose, and voice. 
+            <h1
+              className="mb-4"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-5xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+                letterSpacing: 'var(--tracking-tight)',
+              }}
+            >
+              The World of BoardSaga
+            </h1>
+            <p
+              className="max-w-2xl mx-auto"
+              style={{
+                fontSize: 'var(--text-xl)',
+                color: '#6B3410',
+                lineHeight: 'var(--leading-relaxed)',
+              }}
+            >
+              In the eternal struggle across the sixty-four squares, each piece possesses its own spirit, purpose, and voice.
               Their stories intertwine through countless battles, creating legends whispered by masters and novices alike.
             </p>
           </div>
 
           <div className="space-y-8 mb-16">
             {pieces.map((piece) => (
-              <div key={piece.name} className="bg-white rounded-lg shadow-md p-8 border border-stone-200">
+              <div
+                key={piece.name}
+                className="rounded-lg shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                style={{
+                  background: '#FFFFFF',
+                  border: '2px solid #E8C9A0',
+                }}
+              >
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="text-6xl text-stone-800">{piece.symbol}</div>
-                  <h2 className="text-3xl font-bold text-stone-800">{piece.name}</h2>
-                </div>
-                
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-stone-700 mb-2">Characteristics</h3>
-                  <p className="text-stone-600">{piece.characteristics}</p>
+                  <div
+                    className="text-6xl transition-transform duration-300 hover:scale-110"
+                    style={{
+                      color: '#8B4513',
+                    }}
+                  >
+                    {piece.symbol}
+                  </div>
+                  <h2
+                    className="transition-colors duration-300"
+                    style={{
+                      fontFamily: 'var(--font-serif), Georgia, serif',
+                      fontSize: 'var(--text-3xl)',
+                      fontWeight: 700,
+                      color: '#2C1810',
+                    }}
+                  >
+                    {piece.name}
+                  </h2>
                 </div>
 
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-stone-700 mb-2">Catch-phrases</h3>
+                  <h3
+                    className="mb-2"
+                    style={{
+                      fontSize: 'var(--text-lg)',
+                      fontWeight: 600,
+                      color: '#6B3410',
+                    }}
+                  >
+                    Characteristics
+                  </h3>
+                  <p style={{ color: '#6B3410' }}>{piece.characteristics}</p>
+                </div>
+
+                <div className="mb-4">
+                  <h3
+                    className="mb-2"
+                    style={{
+                      fontSize: 'var(--text-lg)',
+                      fontWeight: 600,
+                      color: '#6B3410',
+                    }}
+                  >
+                    Catch-phrases
+                  </h3>
                   <ul className="space-y-1">
                     {piece.catchPhrases.map((phrase, index) => (
-                      <li key={index} className="text-stone-600 italic">{phrase}</li>
+                      <li
+                        key={index}
+                        className="transition-all duration-200 hover:translate-x-2 cursor-default"
+                        style={{
+                          color: '#6B3410',
+                          fontStyle: 'italic',
+                        }}
+                      >
+                        {phrase}
+                      </li>
                     ))}
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-stone-700 mb-2">Lore</h3>
-                  <p className="text-stone-600">{piece.lore}</p>
+                  <h3
+                    className="mb-2"
+                    style={{
+                      fontSize: 'var(--text-lg)',
+                      fontWeight: 600,
+                      color: '#6B3410',
+                    }}
+                  >
+                    Lore
+                  </h3>
+                  <p style={{ color: '#6B3410' }}>{piece.lore}</p>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-stone-800 mb-6 text-center">Opening Concepts</h2>
+            <h2
+              className="mb-6 text-center"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-3xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+              }}
+            >
+              Opening Concepts
+            </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {openingConcepts.map((concept) => (
-                <div key={concept.title} className="bg-stone-50 rounded-lg p-6 border border-stone-200">
-                  <h3 className="text-xl font-semibold text-stone-800 mb-2">{concept.title}</h3>
-                  <p className="text-stone-600 italic">{concept.description}</p>
+                <div
+                  key={concept.title}
+                  className="rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+                  style={{
+                    background: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
+                    border: '2px solid #E8C9A0',
+                  }}
+                >
+                  <h3
+                    className="mb-2"
+                    style={{
+                      fontSize: 'var(--text-xl)',
+                      fontWeight: 600,
+                      color: '#2C1810',
+                    }}
+                  >
+                    {concept.title}
+                  </h3>
+                  <p
+                    className="italic"
+                    style={{
+                      color: '#6B3410',
+                      lineHeight: 'var(--leading-relaxed)',
+                    }}
+                  >
+                    {concept.description}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-stone-800 mb-6 text-center">Special Moments</h2>
+            <h2
+              className="mb-6 text-center"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-3xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+              }}
+            >
+              Special Moments
+            </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {specialMoments.map((moment) => (
-                <div key={moment.title} className="bg-stone-50 rounded-lg p-6 border border-stone-200">
-                  <h3 className="text-xl font-semibold text-stone-800 mb-2">{moment.title}</h3>
-                  <p className="text-stone-600 italic">{moment.description}</p>
+                <div
+                  key={moment.title}
+                  className="rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+                  style={{
+                    background: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
+                    border: '2px solid #E8C9A0',
+                  }}
+                >
+                  <h3
+                    className="mb-2"
+                    style={{
+                      fontSize: 'var(--text-xl)',
+                      fontWeight: 600,
+                      color: '#2C1810',
+                    }}
+                  >
+                    {moment.title}
+                  </h3>
+                  <p
+                    className="italic"
+                    style={{
+                      color: '#6B3410',
+                      lineHeight: 'var(--leading-relaxed)',
+                    }}
+                  >
+                    {moment.description}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold text-stone-800 mb-6 text-center">Themes for Story Generation</h2>
+            <h2
+              className="mb-6 text-center"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-3xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+              }}
+            >
+              Themes for Story Generation
+            </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {storyThemes.map((theme) => (
-                <div key={theme.name} className="bg-white rounded-lg p-6 shadow-sm border border-stone-200">
-                  <h3 className="text-xl font-semibold text-stone-800 mb-2">{theme.name}</h3>
-                  <p className="text-stone-600">{theme.description}</p>
+                <div
+                  key={theme.name}
+                  className="rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                  style={{
+                    background: '#FFFFFF',
+                    boxShadow: '0 2px 8px rgba(44, 24, 16, 0.08)',
+                    border: '2px solid #E8C9A0',
+                  }}
+                >
+                  <h3
+                    className="mb-2 transition-colors duration-300"
+                    style={{
+                      fontSize: 'var(--text-xl)',
+                      fontWeight: 600,
+                      color: '#2C1810',
+                    }}
+                  >
+                    {theme.name}
+                  </h3>
+                  <p
+                    style={{
+                      color: '#6B3410',
+                      lineHeight: 'var(--leading-relaxed)',
+                    }}
+                  >
+                    {theme.description}
+                  </p>
                 </div>
               ))}
             </div>

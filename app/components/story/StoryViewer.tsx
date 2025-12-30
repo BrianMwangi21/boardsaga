@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Story, ChapterSection } from '@/lib/story-types'
 import ChessBoard from '../chess/ChessBoard'
 
@@ -17,9 +17,60 @@ const SECTION_LABELS: Record<ChapterSection, string> = {
   'key-moments': 'Key Moments'
 }
 
+const STORY_EASTER_EGGS = [
+  'The pieces speak to those who listen...',
+  'Every game tells a story, but this one speaks volumes!',
+  'You\'ve found a hidden chapter in the legend!',
+  'The board remembers what the players forget.',
+  'A master\'s touch is felt in every move.',
+  'Strategy and sacrifice: the twin pillars of chess.',
+  'In the end, it\'s not just about winning—it\'s about the art.',
+]
+
 export default function StoryViewer({ story }: StoryViewerProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('chapter')
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0)
+  const [easterEgg, setEasterEgg] = useState('')
+  const [showEasterEgg, setShowEasterEgg] = useState(false)
+  const [hoveredParagraph, setHoveredParagraph] = useState<number | null>(null)
+  const clickCountRef = useRef(0)
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
+
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleTitleClick = () => {
+    clickCountRef.current++
+    setShowEasterEgg(false)
+
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current)
+    }
+
+    clickTimeoutRef.current = setTimeout(() => {
+      if (clickCountRef.current >= 5) {
+        const randomEgg = STORY_EASTER_EGGS[Math.floor(Math.random() * STORY_EASTER_EGGS.length)]
+        setEasterEgg(randomEgg)
+        setShowEasterEgg(true)
+        setTimeout(() => setShowEasterEgg(false), 4000)
+      }
+      clickCountRef.current = 0
+    }, 600)
+  }
+
+  const handleParagraphHover = (index: number) => {
+    setHoveredParagraph(index)
+  }
+
+  const handleParagraphLeave = () => {
+    setHoveredParagraph(null)
+  }
 
   if (!story || !story.chapters || story.chapters.length === 0) {
     return (
@@ -89,52 +140,70 @@ export default function StoryViewer({ story }: StoryViewerProps) {
     }
 
     return (
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            {chapter.isFlashback && (
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              {chapter.isFlashback && (
+                <span
+                  className="px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 hover:scale-110"
+                  style={{
+                    background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
+                    color: '#F5F0E6',
+                  }}
+                >
+                  Flashback
+                </span>
+              )}
               <span
-                className="px-3 py-1 rounded-full text-sm font-medium"
+                className="uppercase tracking-wide"
                 style={{
-                  background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
-                  color: '#F5F0E6',
+                  fontSize: 'var(--text-sm)',
+                  color: '#6B3410',
+                  fontWeight: 600,
+                  letterSpacing: 'var(--tracking-wide)',
                 }}
               >
-                Flashback
+                Chapter {chapter.chapterNumber}
               </span>
-            )}
-            <span
-              className="uppercase tracking-wide"
+            </div>
+
+            <h2
+              ref={titleRef}
+              onClick={handleTitleClick}
+              className="mb-4 cursor-pointer transition-all duration-300 hover:text-[#8B4513]"
               style={{
-                fontSize: 'var(--text-sm)',
-                color: '#6B3410',
-                fontWeight: 600,
-                letterSpacing: 'var(--tracking-wide)',
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-3xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+                letterSpacing: 'var(--tracking-tight)',
               }}
             >
-              Chapter {chapter.chapterNumber}
-            </span>
-          </div>
+              {chapter.title}
+            </h2>
 
-          <h2
-            className="mb-4"
-            style={{
-              fontFamily: 'var(--font-serif), Georgia, serif',
-              fontSize: 'var(--text-3xl)',
-              fontWeight: 700,
-              color: '#2C1810',
-              letterSpacing: 'var(--tracking-tight)',
-            }}
-          >
-            {chapter.title}
-          </h2>
+            {showEasterEgg && (
+              <div
+                className="mb-4 p-3 rounded-lg text-center transition-all duration-500"
+                style={{
+                  background: 'linear-gradient(135deg, #C19A6B 0%, #8B4513 100%)',
+                  color: '#F5F0E6',
+                  boxShadow: '0 4px 12px rgba(139, 69, 19, 0.3)',
+                  animation: 'slideIn 0.3s ease-out',
+                }}
+              >
+                <p className="italic" style={{ fontSize: 'var(--text-sm)' }}>
+                  {easterEgg}
+                </p>
+              </div>
+            )}
 
           {chapter.sections.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {chapter.sections.map(section => (
                 <span
                   key={section}
-                  className="px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105"
+                  className="px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-110 hover:shadow-md cursor-default"
                   style={{
                     background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
                     color: '#F5F0E6',
@@ -151,11 +220,17 @@ export default function StoryViewer({ story }: StoryViewerProps) {
           {chapter.content && chapter.content.split('\n\n').map((paragraph, index) => (
             <p
               key={index}
-              className="mb-4 leading-relaxed transition-all duration-200 hover:translate-x-2"
+              onMouseEnter={() => handleParagraphHover(index)}
+              onMouseLeave={handleParagraphLeave}
+              className="mb-4 leading-relaxed transition-all duration-300 rounded-lg px-2"
               style={{
                 fontSize: 'var(--text-lg)',
                 color: '#2C1810',
                 lineHeight: 'var(--leading-loose)',
+                backgroundColor: hoveredParagraph === index ? 'rgba(193, 154, 107, 0.15)' : 'transparent',
+                transform: hoveredParagraph === index ? 'translateX(8px)' : 'translateX(0)',
+                borderLeft: hoveredParagraph === index ? '3px solid #C19A6B' : '3px solid transparent',
+                cursor: 'pointer',
               }}
             >
               {paragraph}
@@ -207,11 +282,11 @@ export default function StoryViewer({ story }: StoryViewerProps) {
             >
               Key Move References
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {chapter.keyMoveReferences.map((ref, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-3"
+                  className="flex items-start gap-3 p-2 rounded transition-all duration-300 hover:bg-white/50 hover:shadow-sm"
                   style={{ fontSize: 'var(--text-sm)' }}
                 >
                   <span
@@ -308,7 +383,7 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                 {story.storyThemes.map(theme => (
                   <span
                     key={theme}
-                    className="px-3 py-1 rounded-full transition-all duration-200 hover:scale-105"
+                    className="px-3 py-1 rounded-full transition-all duration-300 hover:scale-110 hover:bg-white/20 cursor-default"
                     style={{
                       background: 'rgba(255, 255, 255, 0.1)',
                       fontSize: 'var(--text-sm)',
@@ -447,11 +522,12 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                 {story.pieceLoreUsed.map((piece, index) => (
                   <div
                     key={index}
-                    className="p-4 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                    className="p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-[#8B4513]"
                     style={{
                       background: '#FFFFFF',
                       border: '2px solid #C19A6B',
                       boxShadow: '0 2px 8px rgba(44, 24, 16, 0.08)',
+                      cursor: 'pointer',
                     }}
                   >
                     <div

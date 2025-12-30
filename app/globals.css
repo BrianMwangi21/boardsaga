@@ -169,3 +169,14 @@ p:last-child {
 .muted {
   color: var(--wood-darker);
 }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

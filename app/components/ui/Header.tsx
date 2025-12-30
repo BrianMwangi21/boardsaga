@@ -95,8 +95,8 @@ export default function Header() {
         <nav className="flex gap-6 items-center">
           {[
             { href: '/', label: 'Home' },
+            { href: '/stories', label: 'Stories' },
             { href: '/lore', label: 'Lore' },
-            { href: '/history', label: 'Stories' },
           ].map((link) => (
             <Link
               key={link.href}

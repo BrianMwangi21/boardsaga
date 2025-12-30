@@ -30,5 +30,14 @@ export default async function StoryPage({
     notFound();
   }
 
-  return <StoryViewer story={storyDoc.story} />;
+  return (
+    <div
+      className="animate-in fade-in slide-in-from-bottom-4 duration-700"
+      style={{
+        minHeight: '100vh',
+      }}
+    >
+      <StoryViewer story={storyDoc.story} />
+    </div>
+  );
 }

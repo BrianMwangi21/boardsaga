@@ -31,6 +31,9 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${sans.variable} ${serif.variable} antialiased min-h-screen flex flex-col`}
+        style={{
+          background: 'linear-gradient(to bottom, #F5F0E6 0%, #EEE8D3 100%)',
+        }}
       >
         <Header />
         <main className="flex-1">{children}</main>

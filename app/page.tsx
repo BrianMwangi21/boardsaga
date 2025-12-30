@@ -129,11 +129,32 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">BoardSaga</h1>
-          <p className="text-lg text-muted-foreground">
+    <div
+      className="container mx-auto px-4"
+      style={{
+        minHeight: 'calc(100vh - 180px)',
+      }}
+    >
+      <div className="max-w-4xl mx-auto py-6">
+        <div className="text-center mb-6">
+          <h1
+            className="mb-2"
+            style={{
+              fontFamily: 'var(--font-serif), Georgia, serif',
+              fontSize: 'var(--text-4xl)',
+              fontWeight: 700,
+              color: '#2C1810',
+              letterSpacing: 'var(--tracking-tight)',
+            }}
+          >
+            BoardSaga
+          </h1>
+          <p
+            className="text-lg"
+            style={{
+              color: '#6B3410',
+            }}
+          >
             Transform your chess games into captivating stories
           </p>
         </div>
@@ -142,7 +163,14 @@ export default function Home() {
           <div>
             <PGNUploader onFileSelect={handleFileSelect} />
             {error && (
-              <div className="mt-4 p-4 border border-destructive/50 bg-destructive/10 text-destructive rounded-lg">
+              <div
+                className="mt-4 p-4 rounded-lg"
+                style={{
+                  background: 'rgba(220, 38, 38, 0.1)',
+                  border: '2px solid rgba(220, 38, 38, 0.5)',
+                  color: '#991B1B',
+                }}
+              >
                 {error}
               </div>
             )}
@@ -150,9 +178,24 @@ export default function Home() {
         )}
 
         {appState === 'analyzing' && (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <p className="mt-4 text-muted-foreground">Analyzing your game...</p>
+          <div className="text-center py-8">
+            <div
+              className="inline-block animate-spin rounded-full h-12 w-12 mx-auto"
+              style={{
+                borderTop: '3px solid #C19A6B',
+                borderRight: '3px solid transparent',
+                borderBottom: '3px solid #8B4513',
+                borderLeft: '3px solid transparent',
+              }}
+            ></div>
+            <p
+              className="mt-4"
+              style={{
+                color: '#6B3410',
+              }}
+            >
+              Analyzing your game...
+            </p>
           </div>
         )}
 
@@ -161,13 +204,35 @@ export default function Home() {
         )}
 
         {appState === 'error' && (
-          <div className="text-center py-12">
-            <div className="mb-4 text-destructive text-6xl">⚠️</div>
-            <h2 className="text-2xl font-bold mb-2">Something went wrong</h2>
-            <p className="text-muted-foreground mb-6">{error}</p>
+          <div className="text-center py-8">
+            <div className="mb-4 text-6xl">⚠️</div>
+            <h2
+              className="mb-2"
+              style={{
+                fontFamily: 'var(--font-serif), Georgia, serif',
+                fontSize: 'var(--text-2xl)',
+                fontWeight: 700,
+                color: '#2C1810',
+              }}
+            >
+              Something went wrong
+            </h2>
+            <p
+              className="mb-6"
+              style={{
+                color: '#6B3410',
+              }}
+            >
+              {error}
+            </p>
             <button
               onClick={resetUpload}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              className="px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
+                color: '#F5F0E6',
+                boxShadow: '0 4px 16px rgba(44, 24, 16, 0.2)',
+              }}
             >
               Try Again
             </button>
