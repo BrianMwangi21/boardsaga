@@ -22,7 +22,7 @@ export interface PositionData {
 export interface GameEngineData {
   pgnHash: string;
   positions: PositionData[];
-  evaluations: Map<number, MoveAnalysis> | Record<number, MoveAnalysis>;
+  evaluations: MoveAnalysis[];
   keyPositions: number[];
 }
 
@@ -248,7 +248,7 @@ export class StockfishClient {
 
     const positions = extractPositions(game);
     const pgnHash = await generatePgnHash(game.pgn);
-    const evaluations = new Map<number, MoveAnalysis>();
+    const evaluations: MoveAnalysis[] = [];
     const keyPositions: number[] = [];
 
     let prevEvaluation: EngineEvaluation | null = null;
@@ -267,7 +267,7 @@ export class StockfishClient {
         const move = game.moves[i - 1];
         const classification = this.classifyMove(prevEvaluation, currentEvaluation);
 
-        evaluations.set(i - 1, {
+        evaluations.push({
           san: move.san,
           evaluation: currentEvaluation,
           classification

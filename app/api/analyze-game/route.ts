@@ -1,7 +1,7 @@
 import { parsePGN } from '@/lib/pgn-parser'
 import { GameAnalysis } from '@/lib/prompts/prompts'
 import { type GameEngineData, type MoveAnalysis } from '@/lib/stockfish-client'
-import { analyzeGameWithEngine, getEvaluationsCount, getEvaluationsEntries } from '@/lib/engine-analyzer'
+import { analyzeGameWithEngine } from '@/lib/engine-analyzer'
 import { Cache, generateHash, CACHE_TTL } from '@/lib/cache'
 import { DEFAULT_RATE_LIMITER } from '@/lib/rate-limit'
 
@@ -29,14 +29,14 @@ export async function POST(request: Request) {
       )
     }
 
-    const engineData: GameEngineData | null = rawEngineData ? {
-      pgnHash: rawEngineData.pgnHash,
-      positions: rawEngineData.positions,
-      evaluations: new Map<number, MoveAnalysis>(
-        Object.entries(rawEngineData.evaluations).map(([k, v]) => [parseInt(k), v as MoveAnalysis])
-      ),
-      keyPositions: rawEngineData.keyPositions,
-    } : null
+     const engineData: GameEngineData | null = rawEngineData ? {
+       pgnHash: rawEngineData.pgnHash,
+       positions: rawEngineData.positions,
+       evaluations: Array.isArray(rawEngineData.evaluations) 
+         ? rawEngineData.evaluations 
+         : Object.values(rawEngineData.evaluations || []),
+       keyPositions: rawEngineData.keyPositions,
+     } : null
 
     const pgnHash = generateHash(pgn)
     const cached = analysisCache.get(pgnHash)
@@ -71,12 +71,12 @@ export async function POST(request: Request) {
 
     const narrativeAnalysis = analyzeGameWithEngine(parsedGame, engineData)
 
-    console.log('[Stockfish Data]', {
-      evaluationsCount: engineData?.evaluations.size || 0,
-      keyPositionsCount: engineData?.keyPositions.length || 0,
-      positionsCount: engineData?.positions.length || 0,
-      evaluations: engineData?.evaluations
-    })
+     console.log('[Stockfish Data]', {
+       evaluationsCount: engineData?.evaluations.length || 0,
+       keyPositionsCount: engineData?.keyPositions.length || 0,
+       positionsCount: engineData?.positions.length || 0,
+       evaluations: engineData?.evaluations
+     })
 
     const gameAnalysis: GameAnalysis = {
       gameMetadata: {

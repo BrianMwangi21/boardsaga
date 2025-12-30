@@ -87,7 +87,7 @@ export default function Home() {
       const serializedEngineData = engineData ? {
         pgnHash: engineData.pgnHash,
         positions: engineData.positions,
-        evaluations: Object.fromEntries(engineData.evaluations),
+        evaluations: engineData.evaluations,
         keyPositions: engineData.keyPositions,
       } : null
 

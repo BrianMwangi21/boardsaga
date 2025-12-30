@@ -77,7 +77,7 @@ function classifyGamePhase(moveCount: number): NarrativeAnalysis['overview']['ph
 }
 
 function determineTempoControl(engineData: GameEngineData | null): NarrativeAnalysis['overview']['tempoControl'] {
-  if (!engineData || engineData.evaluations.size < 10) return 'balanced';
+  if (!engineData || engineData.evaluations.length < 10) return 'balanced';
 
   let whiteAdvantage = 0;
   let blackAdvantage = 0;
@@ -148,7 +148,7 @@ function analyzePlayerStyle(
   const weaknesses: string[] = [];
   const signatureMoves: string[] = [];
 
-  if (!engineData || engineData.evaluations.size === 0) {
+  if (!engineData || engineData.evaluations.length === 0) {
     return { style: ['tactical'], strengths: [], weaknesses: [], signatureMoves: [] };
   }
 

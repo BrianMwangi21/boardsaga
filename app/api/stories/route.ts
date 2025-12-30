@@ -55,22 +55,18 @@ export async function POST(request: NextRequest) {
     const db = await getDb();
     const now = new Date();
 
-    const engineDataToSave = analysis.engineData ? {
-      pgnHash: analysis.engineData.pgnHash,
-      positions: analysis.engineData.positions,
-      evaluations: analysis.engineData.evaluations instanceof Map
-        ? Object.fromEntries(analysis.engineData.evaluations.entries())
-        : analysis.engineData.evaluations as Record<number, unknown>,
-      keyPositions: analysis.engineData.keyPositions
-    } : undefined
+     const engineDataToSave = analysis.engineData ? {
+       pgnHash: analysis.engineData.pgnHash,
+       positions: analysis.engineData.positions,
+       evaluations: analysis.engineData.evaluations,
+       keyPositions: analysis.engineData.keyPositions
+     } : undefined
 
-    console.log('[MongoDB Save] engineData.evaluations:',
-      'type:', analysis.engineData?.evaluations instanceof Map ? 'Map' : typeof analysis.engineData?.evaluations,
-      'count:', analysis.engineData?.evaluations instanceof Map ? analysis.engineData.evaluations.size : Object.keys(analysis.engineData.evaluations || {}).length,
-      'sample:', analysis.engineData?.evaluations instanceof Map ? 
-        Array.from(analysis.engineData.evaluations.entries()).slice(0, 2) : 
-        Object.values(analysis.engineData.evaluations || {}).slice(0, 2)
-    )
+     console.log('[MongoDB Save] engineData.evaluations:',
+       'type:', Array.isArray(analysis.engineData?.evaluations) ? 'Array' : typeof analysis.engineData?.evaluations,
+       'count:', analysis.engineData?.evaluations.length || 0,
+       'sample:', analysis.engineData?.evaluations.slice(0, 2)
+     )
 
     const storyDoc: Omit<StoryDocument, '_id'> = {
       rawPGN: normalizedPGN,

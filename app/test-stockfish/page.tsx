@@ -90,20 +90,20 @@ export default function StockfishTestPage() {
       const engineData = await client.analyzeGame(parsed);
       const analysisDuration = Date.now() - analysisStart;
 
-      if (engineData && engineData.evaluations.size > 0) {
+      if (engineData && engineData.evaluations.length > 0) {
         appendLog(`✅ PASS: Full game analysis (${analysisDuration}ms)`, 'pass');
         appendLog(`   PGN Hash: ${engineData.pgnHash.substring(0, 16)}...`, 'info');
         appendLog(`   Positions: ${engineData.positions.length}`, 'info');
-        appendLog(`   Evaluations: ${engineData.evaluations.size}`, 'info');
+        appendLog(`   Evaluations: ${engineData.evaluations.length}`, 'info');
         appendLog(`   Key Positions: ${engineData.keyPositions.length}`, 'info');
         appendLog(`   Sample key positions: ${engineData.keyPositions.slice(0, 5).join(', ')}`, 'info');
 
         appendLog('\n=== Sample Evaluations ===', 'info');
         let sampleCount = 0;
-        for (const [moveNum, analysis] of engineData.evaluations) {
-          if (sampleCount >= 10) break;
+        for (let i = 0; i < engineData.evaluations.length && sampleCount < 10; i++) {
+          const analysis = engineData.evaluations[i];
           const sign = analysis.evaluation.score > 0 ? '+' : '';
-          appendLog(`   Move ${moveNum + 1}: ${analysis.san} = ${sign}${analysis.evaluation.score}cp (${analysis.classification})`, 'info');
+          appendLog(`   Move ${i + 1}: ${analysis.san} = ${sign}${analysis.evaluation.score}cp (${analysis.classification})`, 'info');
           sampleCount++;
         }
       } else {
