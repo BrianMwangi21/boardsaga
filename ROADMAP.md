@@ -188,33 +188,33 @@ Integrate Stockfish chess engine to provide accurate, factual game analysis and 
 - **Combined Flow**: PGN → Stockfish Analysis → Factual Data → LLM Story Generation
 
 ### Tasks
-- [ ] Choose Stockfish integration approach:
+- [x] Choose Stockfish integration approach:
   - Option A: stockfish.js (WebAssembly) for client/server-side execution
   - Option B: REST API service (chess.com/lichess-style engine API)
   - Option C: Local Stockfish binary with Node.js wrapper
-- [ ] Install Stockfish dependencies
-- [ ] Create chess engine wrapper utility in `lib/stockfish.ts`:
+- [x] Install Stockfish dependencies
+- [x] Create chess engine wrapper utility in `lib/stockfish-client.ts`:
   - Initialize engine
   - Analyze position by position
   - Extract evaluation scores
   - Identify move classifications (blunders, mistakes, best moves)
-- [ ] Implement tactical pattern detection:
+- [x] Implement tactical pattern detection:
   - Pins, forks, skewers
   - Sacrifices and combinations
   - Checkmate sequences
-- [ ] Update game analysis types in `lib/prompts/prompts.ts`:
+- [x] Update game analysis types in `lib/prompts/prompts.ts`:
   - Add `engineAnalysis` field with position evaluations
   - Add `moveClassifications` array (blunder, mistake, inaccuracy, good move, brilliancy)
   - Add `evaluations` array with centipawn scores for each move
-- [ ] Refactor `/api/analyze-game/route.ts`:
+- [x] Refactor `/api/analyze-game/route.ts`:
   - Use Stockfish for move-by-move analysis instead of LLM
   - Keep LLM for high-level narrative context (themes, strategies)
   - Merge engine data with existing analysis structure
-- [ ] Update story generation prompts in `lib/prompts/story-prompts.ts`:
+- [x] Update story generation prompts in `lib/prompts/story-prompts.ts`:
   - Pass actual move evaluations to LLM
   - Instruct LLM to use factual engine data only
   - Remove move number guessing - use engine-provided data
-- [ ] Add move validation in `/api/generate-story/route.ts`:
+- [x] Add move validation in `/api/generate-story/route.ts`:
   - Cross-reference story move references with actual game moves
   - Auto-correct or flag hallucinated moves
   - Ensure FEN and SAN notation match
@@ -233,7 +233,7 @@ Integrate Stockfish chess engine to provide accurate, factual game analysis and 
 - **Engine Depth**: 15-20 plies for good balance of speed/accuracy
 
 ### Deliverables
-- Stockfish wrapper in `lib/stockfish.ts`
+- Stockfish wrapper in `lib/stockfish-client.ts`
 - Updated analysis types with engine data in `lib/prompts/prompts.ts`
 - Refactored `/api/analyze-game/route.ts` using Stockfish
 - Updated story prompts in `lib/prompts/story-prompts.ts`
