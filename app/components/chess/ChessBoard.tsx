@@ -93,7 +93,7 @@ export default function ChessBoard({ boardState, size = 'medium' }: ChessBoardPr
     try {
       chess = new Chess(boardState.fen)
       turn = chess.turn()
-      turnColor = turn === 'w' ? 'white' : 'black'
+      turnColor = turn === 'w' ? 'black' : 'white'
     } catch (error) {
       console.error('[ChessBoard] Invalid FEN:', boardState.fen, error)
       boardError = true
