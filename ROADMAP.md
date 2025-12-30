@@ -177,11 +177,82 @@ Apply classic wood chess theme throughout the application.
 
 ---
 
+## Phase 6: Stockfish Integration
+
+### Goal
+Integrate Stockfish chess engine to provide accurate, factual game analysis and eliminate LLM hallucinations.
+
+### Architecture Notes
+- **Engine Choice**: Stockfish.js (WebAssembly) for client-side OR server-side Stockfish via REST API
+- **Integration Point**: Replace LLM-based move analysis with engine-based analysis in `/api/analyze-game`
+- **Combined Flow**: PGN → Stockfish Analysis → Factual Data → LLM Story Generation
+
+### Tasks
+- [ ] Choose Stockfish integration approach:
+  - Option A: stockfish.js (WebAssembly) for client/server-side execution
+  - Option B: REST API service (chess.com/lichess-style engine API)
+  - Option C: Local Stockfish binary with Node.js wrapper
+- [ ] Install Stockfish dependencies
+- [ ] Create chess engine wrapper utility in `lib/stockfish.ts`:
+  - Initialize engine
+  - Analyze position by position
+  - Extract evaluation scores
+  - Identify move classifications (blunders, mistakes, best moves)
+- [ ] Implement tactical pattern detection:
+  - Pins, forks, skewers
+  - Sacrifices and combinations
+  - Checkmate sequences
+- [ ] Update game analysis types in `lib/prompts/prompts.ts`:
+  - Add `engineAnalysis` field with position evaluations
+  - Add `moveClassifications` array (blunder, mistake, inaccuracy, good move, brilliancy)
+  - Add `evaluations` array with centipawn scores for each move
+- [ ] Refactor `/api/analyze-game/route.ts`:
+  - Use Stockfish for move-by-move analysis instead of LLM
+  - Keep LLM for high-level narrative context (themes, strategies)
+  - Merge engine data with existing analysis structure
+- [ ] Update story generation prompts in `lib/prompts/story-prompts.ts`:
+  - Pass actual move evaluations to LLM
+  - Instruct LLM to use factual engine data only
+  - Remove move number guessing - use engine-provided data
+- [ ] Add move validation in `/api/generate-story/route.ts`:
+  - Cross-reference story move references with actual game moves
+  - Auto-correct or flag hallucinated moves
+  - Ensure FEN and SAN notation match
+- [ ] Add engine analysis tests in `lib/__tests__/stockfish.test.ts`
+
+### Tech Notes
+- **Stockfish.js**: https://github.com/nmrugg/stockfish.js - WebAssembly build of Stockfish
+- **Stockfish Node**: Use `stockfish` npm package for server-side execution
+- **Evaluation Format**: Centipawn score (e.g., +150 = 1.5 pawn advantage, mate in 3 = #3)
+- **Move Classifications**:
+  - Blunder: >200 centipawn loss
+  - Mistake: 100-200 centipawn loss
+  - Inaccuracy: 50-99 centipawn loss
+  - Good move: 0-49 centipawn loss
+  - Brilliancy: Gains >200 centipawn or finds tactical shot
+- **Engine Depth**: 15-20 plies for good balance of speed/accuracy
+
+### Deliverables
+- Stockfish wrapper in `lib/stockfish.ts`
+- Updated analysis types with engine data in `lib/prompts/prompts.ts`
+- Refactored `/api/analyze-game/route.ts` using Stockfish
+- Updated story prompts in `lib/prompts/story-prompts.ts`
+- Move validation in `/api/generate-story/route.ts`
+- Tests for engine analysis in `lib/__tests__/stockfish.test.ts`
+
+### Definition of Done
+- Stockfish successfully analyzes PGN games
+- All moves have accurate evaluation scores
+- No hallucinated moves in generated stories
+- Move references in stories match actual PGN moves
+- LLM uses factual engine data for narrative
+
+---
+
 ## Future Enhancements (Post-MVP)
 
 - [ ] User authentication and accounts
 - [ ] Social features (share stories, comments)
-- [ ] Chess engine integration for deeper analysis
 - [ ] Interactive board replay alongside story
 - [ ] Multi-language support
 - [ ] Export stories (PDF, EPUB)
@@ -203,6 +274,12 @@ Apply classic wood chess theme throughout the application.
 3. Configure in Vercel AI SDK
 4. Update prompts as needed
 
+### Stockfish Setup
+1. Install stockfish npm package: `npm install stockfish`
+2. Or use stockfish.js for WebAssembly: `npm install stockfish.js`
+3. Configure engine depth in `.env.local` (STOCKFISH_DEPTH=18)
+4. Adjust engine threads based on server capacity (STOCKFISH_THREADS=2)
+
 ### Deployment
 1. Push code to GitHub
 2. Connect to Vercel
@@ -211,4 +288,4 @@ Apply classic wood chess theme throughout the application.
 
 ---
 
-*Last updated: December 2025*
+*Last updated: December 30, 2025*
