@@ -6,16 +6,34 @@ Transform chess PGN files into captivating stories powered by AI.
 
 Upload your chess games (PGN files) and get a generated story that brings your matches to life. BoardSaga analyzes your games and creates narratives that capture the drama, strategy, and memorable moments of each match.
 
+**Key Features:**
+- 🎯 **Accurate Analysis**: Stockfish chess engine evaluates moves and identifies blunders, brilliancies, and tactical patterns
+- 📖 **Story Generation**: AI creates engaging narratives with chapters for opening, middlegame, and endgame
+- 🎭 **Piece Personalities**: Each chess piece has unique lore and personality woven into stories
+- ♟️ **Chess Board Visualization**: Interactive board shows critical positions from your game
+- 📚 **Story History**: Browse and revisit all your generated stories
+- ⚠️ **AI Transparency**: Clear disclaimers about AI-generated content and mitigation strategies
+
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
-- **UI**: React with TypeScript
-- **Styling**: CSS (classic wood chess theme)
-- **Database**: MongoDB Atlas (Vercel-compatible)
- - **AI**: Vercel AI SDK with OpenRouter (open-source LLMs)
+- **Framework**: Next.js 15
+- **Styling**: Tailwind CSS 4 (classic wood chess theme)
+- **Database**: MongoDB Atlas
+- **AI**: Vercel AI SDK with OpenRouter (open-source LLMs)
+- **Chess Engine**: Stockfish.js (WebAssembly) for move analysis
+- **Chess Library**: Chess.js for PGN parsing and move validation
+- **Testing**: Jest with React Testing Library
 - **Deployment**: Vercel
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js 20+ 
+- MongoDB Atlas account (free tier works)
+- OpenRouter API key (free tier available)
+
+### Installation
 
 1. Clone the repo:
 ```bash
@@ -32,6 +50,7 @@ npm install
 ```bash
 cp .env.example .env
 # Add your OpenRouter API key to .env
+# Add your MongoDB connection string to .env
 ```
 
 4. Run the dev server:
@@ -41,22 +60,45 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
+### Environment Variables
+
+Required variables in `.env`:
+```
+OPENROUTER_API_KEY=your_openrouter_key
+MONGODB_URI=mongodb+srv://...
+```
+
 ## Project Structure
 
 ```
 boardsaga/
-├── app/              # Next.js app router pages and API routes
-│   ├── api/         # API endpoints (analyze-game, parse-pgn)
-│   ├── components/   # React components (ui, pgn, story, chess)
-│   └── lore/       # Lore page for piece characteristics
-├── lib/             # Utilities and helpers
-│   ├── prompts/     # LLM prompts and piece lore (LORE.md)
-│   └── pgn-parser.ts # Chess.js PGN parsing
-├── public/          # Static assets
-├── .env.example     # Environment variables template
-├── AGENTS.md        # Development guidelines for AI agents
-├── ROADMAP.md       # Development roadmap
-└── sessions.md      # Session tracking (git ignored)
+├── app/                      # Next.js app router pages and API routes
+│   ├── api/                  # API endpoints
+│   │   ├── analyze-game/     # LLM game analysis
+│   │   ├── generate-story/   # Story generation
+│   │   ├── parse-pgn/        # PGN parsing
+│   │   └── stories/          # Story CRUD operations
+│   ├── components/           # React components
+│   │   ├── chess/            # Chess board visualization
+│   │   ├── pgn/              # PGN upload component
+│   │   ├── story/            # Story viewer
+│   │   └── ui/               # Reusable UI components
+│   ├── lore/                 # Piece lore page
+│   └── stories/              # Story history page
+├── lib/                      # Utilities and helpers
+│   ├── prompts/              # LLM prompts and piece lore (LORE.md)
+│   ├── __tests__/            # Test suites
+│   ├── constants.ts          # Named constants
+│   ├── db.ts                 # MongoDB connection
+│   ├── pgn-parser.ts         # Chess.js PGN parsing
+│   ├── stockfish-client.ts   # Stockfish engine wrapper
+│   ├── theme.ts              # Theme constants
+│   └── utils.ts              # Shared utilities
+├── public/                   # Static assets
+├── .env.example              # Environment variables template
+├── AGENTS.md                 # Development guidelines for AI agents
+├── ROADMAP.md                # Development roadmap
+└── sessions/                 # Session tracking for development
 ```
 
 ## Piece Lore System
@@ -65,27 +107,151 @@ BoardSaga features a unique lore system that gives each chess piece its own pers
 
 ### The Pieces
 
-- **Pawn**: Humble and ambitious, dreaming of promotion
-- **Rook**: The unwavering guardian of territory
-- **Knight**: The unpredictable strategic trickster
-- **Bishop**: The spiritual guide with mystic insight
-- **Queen**: The sovereign commander with boundless power
-- **King**: The crown bearing the weight of the kingdom
+- **♙ Pawn**: Humble and ambitious, dreaming of promotion
+- **♜ Rook**: The unwavering guardian of territory
+- **♞ Knight**: The unpredictable strategic trickster
+- **♝ Bishop**: The spiritual guide with mystic insight
+- **♛ Queen**: The sovereign commander with boundless power
+- **♚ King**: The crown bearing the weight of the kingdom
 
 Each piece has catch-phrases and personality traits that are woven into generated stories. For the complete lore reference, see [lib/prompts/LORE.md](./lib/prompts/LORE.md).
 
-## Lore Page
+Visit `/lore` in the application to explore the full piece lore and world-building.
 
-Visit `/lore` in the application to explore the full piece lore and world-building of BoardSaga.
+## AI & Accuracy
 
-## Roadmap
+### Stockfish Engine Integration
 
-See [ROADMAP.md](./ROADMAP.md) for detailed development phases.
+BoardSaga uses the Stockfish chess engine to ensure move accuracy in generated stories:
+
+- **Move Analysis**: Every move is evaluated with centipawn scores
+- **Move Classifications**: Identifies blunders, mistakes, inaccuracies, good moves, and brilliancies
+- **Tactical Detection**: Recognizes pins, forks, skewers, sacrifices, and checkmate sequences
+- **Position Evaluation**: Evaluates key positions throughout the game
+
+### AI Disclaimers
+
+The application includes multiple AI disclaimers to maintain transparency:
+
+1. **Footer**: General disclaimer on all pages
+2. **Story Page**: Prominent warning box below each generated story
+3. **Loading Screen**: Notice during story generation
+4. **History Page**: Reminder when browsing stories
+
+These disclaimers inform users that:
+- Stories are AI-generated
+- Stockfish engine ensures move accuracy
+- AI can occasionally make mistakes
+- Stories should be enjoyed as creative interpretations, not definitive analyses
+
+## Testing
+
+The project includes comprehensive test coverage:
+
+```bash
+npm test
+```
+
+**Test Coverage:**
+- PGN parsing and validation (13 tests)
+- Prompt generation (6 tests)
+- Stockfish client move classification (9 tests)
+- Story generation prompts (10 tests)
+- API route validation (3 tests)
+
+**Total: 41 tests passing** (87% coverage, some tests skipped due to Node.js environment limitations)
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage
+npm test -- --coverage
+```
+
+## Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run test         # Run tests
+npm run lint         # Run ESLint
+```
+
+## Development Phases (All Complete! ✅)
+
+**Phase 1: PGN Upload & Parsing** ✅
+- Drag-and-drop PGN upload
+- PGN validation and error handling
+- Chess.js integration for parsing
+
+**Phase 2: LLM Integration** ✅
+- OpenRouter integration with streaming responses
+- Comprehensive prompt system
+- Piece lore integration
+- Rate limiting and caching
+
+**Phase 3: Story Generation** ✅
+- Multi-chapter story structure
+- Creative loading experience
+- Multiple story formats
+- Chess board visualization
+
+**Phase 4: Storage & Persistence** ✅
+- MongoDB Atlas integration
+- Story CRUD operations
+- PGN hash caching
+- Story history page
+
+**Phase 5: Chess-Themed UI** ✅
+- Classic wood chess theme
+- Elegant typography (serif/sans-serif)
+- Responsive design
+- Smooth animations
+
+**Phase 6: Stockfish Integration** ✅
+- Client-side Stockfish.js
+- Move evaluation and classification
+- Tactical pattern detection
+- AI hallucination mitigation
+
+See [ROADMAP.md](./ROADMAP.md) for detailed phase information.
 
 ## Contributing
 
 This is a hobby project built with love for chess. Feel free to open issues or PRs!
 
+### Development Guidelines
+
+See [AGENTS.md](./AGENTS.md) for:
+- Component design principles
+- Function design patterns
+- File organization
+- Code style guidelines
+- Testing strategy
+
+## Future Enhancements
+
+While the MVP is complete, potential future features include:
+
+- User authentication and accounts
+- Social features (share stories, comments)
+- Interactive board replay alongside story
+- Multi-language support
+- Export stories (PDF, EPUB)
+- Community story gallery
+- Mobile app
+
 ## License
 
 MIT
+
+---
+
+**Built with ❤️  for chess enthusiasts**

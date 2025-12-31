@@ -190,6 +190,14 @@ export default function HistoryPage() {
           >
             Browse your generated chess stories
           </p>
+          <p
+            className="text-sm mt-2 italic"
+            style={{
+              color: '#8B4513',
+            }}
+          >
+            All stories are AI-generated with Stockfish engine analysis for move accuracy
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

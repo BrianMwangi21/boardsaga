@@ -233,6 +233,29 @@ export default function StoryLoading({ isGenerating = true }: StoryLoadingProps)
       >
         This may take a moment - great stories need time to unfold
       </p>
+
+      <div
+        className="mt-6 p-4 rounded-lg max-w-md mx-auto"
+        style={{
+          background: 'linear-gradient(135deg, #FFF9E6 0%, #FFE4B5 100%)',
+          border: '1px solid #C19A6B',
+        }}
+      >
+        <div className="flex items-start gap-2">
+          <span className="text-lg">⚠️</span>
+          <div>
+            <p
+              className="text-sm"
+              style={{
+                color: '#6B3410',
+                fontFamily: 'var(--font-sans), sans-serif',
+              }}
+            >
+              AI can occasionally make mistakes, but we use Stockfish engine analysis to ensure move accuracy.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
