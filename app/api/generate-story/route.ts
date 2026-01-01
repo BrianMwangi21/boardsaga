@@ -12,7 +12,7 @@ const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 })
 
-const MODEL = 'meta-llama/llama-3.3-70b-instruct:free'
+const MODEL = 'tngtech/tng-r1t-chimera:free'
 
 const storyCache = new Cache<Story>()
 
