@@ -274,6 +274,7 @@ Elevate storytelling quality with pure 3rd-person narration, enhanced piece lore
   - More catchphrases, quirks, motivations
   - Piece rivalries, friendships, fears, dreams
   - Emotional themes and dramatic elements
+  - Historical battle legends
 - [x] Update `app/lore/page.tsx` with enhanced piece data and expanded themes
 - [x] Test story generation with new model and prompts
   - Verify pure 3rd-person narration
