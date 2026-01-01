@@ -1,3 +1,5 @@
+import { createHash } from 'crypto'
+
 export const CACHE_TTL = 60 * 60 * 1000
 
 export interface CachedEntry<T> {
@@ -40,9 +42,9 @@ export class Cache<T> {
 }
 
 export function generateHash(input: string): string {
-  return Buffer.from(input).toString('base64').slice(0, 32)
+  return createHash('sha256').update(input).digest('hex')
 }
 
 export function generateHashFromObject(obj: unknown): string {
-  return Buffer.from(JSON.stringify(obj)).toString('base64').slice(0, 32)
+  return generateHash(JSON.stringify(obj))
 }
