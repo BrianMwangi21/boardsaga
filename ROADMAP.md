@@ -252,55 +252,58 @@ Integrate Stockfish chess engine to provide accurate, factual game analysis and 
 ## Phase 7: Story Enhancement
 
 ### Goal
-Elevate storytelling quality with pure 3rd-person narration, enhanced piece lore, and more emotional, animated narratives using the Kimi-k2 model.
+Elevate storytelling quality with pure 3rd-person narration, enhanced piece lore, and more emotional, animated narratives.
 
 ### Architecture Notes
-- **Model Migration**: Switch from Meta Llama to Moonshot AI's Kimi-k2 model for superior storytelling capabilities
+- **Model Migration**: Switch from Meta Llama to TNG-R1T-Chimera (Nov 2025 model) for superior storytelling capabilities
 - **Narrative Shift**: Remove all first-person piece perspectives, switch to pure 3rd-person omniscient narrator
 - **Lore Integration**: Increase piece lore usage from ~70% to 85-90% for richer character development
 - **Emotional Depth**: Add vivid descriptions, dramatic tension, and heart-felt language throughout stories
 
 ### Tasks
-- [ ] Switch LLM model to `moonshotai/kimi-k2:free` in `/api/generate-story/route.ts`
-- [ ] Rewrite story generation prompts in `lib/prompts/story-prompts.ts`:
+- [x] Switch LLM model to `tngtech/tng-r1t-chimera:free` in `/api/generate-story/route.ts`
+- [x] Rewrite story generation prompts in `lib/prompts/story-prompts.ts`:
   - Remove all first-person narration (no "I, Queen, watched...")
   - Implement pure 3rd-person omniscient narrator style
   - Add instructions for vivid, animated storytelling (piece movements as dance, battle)
   - Enhance emotional tension and dramatic moments
   - Boost lore usage requirement to 85-90%
   - Add evocative, heart-felt language guidelines
-- [ ] Expand `lib/prompts/LORE.md`:
+- [x] Expand `lib/prompts/LORE.md`:
   - Add richer piece backstories and personalities
   - More catchphrases, quirks, motivations
   - Piece rivalries, friendships, fears, dreams
   - Emotional themes and dramatic elements
-- [ ] Test story generation with new model and prompts
+- [x] Update `app/lore/page.tsx` with enhanced piece data and expanded themes
+- [x] Test story generation with new model and prompts
   - Verify pure 3rd-person narration
   - Confirm enhanced lore integration
   - Validate emotional storytelling quality
 
 ### Tech Notes
-- **Kimi-k2 Model**: Moonshot AI's free model optimized for creative writing
-- **Narrative Style**: Traditional author-style 3rd-person omniscient narrator
+- **TNG-R1T-Chimera Model**: Nov 2025 free model optimized for creative storytelling and character interaction
+- **Narrative Style**: Traditional author-style 3rd-person omniscient narrator (George R.R. Martin, Tom Clancy, Stephen King, Bernard Cornwell, Ernest Hemingway inspired)
 - **Lore Expansion**: Each piece gets deeper backstory, inner motivations, and emotional range
 - **Story Guidelines**:
   - Describe pieces' movements with animated language ("The knight danced across the board")
   - Build dramatic tension at key moments (brilliancies, blunders, checkmate)
   - Focus on emotional weight of sacrifices, promotions, and captures
   - Use piece personalities to drive narrative, not just add quotes
+  - Action-oriented war chronicle style with varied pacing
 
 ### Deliverables
 - Updated model configuration in `app/api/generate-story/route.ts`
 - Rewritten story prompts in `lib/prompts/story-prompts.ts` with 3rd-person only
 - Enhanced lore documentation in `lib/prompts/LORE.md`
-- Test stories demonstrating improved quality
+- Updated lore page with enhanced piece data and expanded themes
+- Test stories demonstrating improved quality (10 chapters, 2,973 words, pure 3rd-person)
 
 ### Definition of Done
-- Stories use pure 3rd-person narration (no first-person "I" from pieces)
-- Kimi-k2 model successfully generates stories
-- Piece lore appears in 85-90% of story content
-- Stories feel more animated, emotional, and heart-felt
-- At least 2 test stories generated showing improvement
+- [x] Stories use pure 3rd-person narration (no first-person "I" from pieces)
+- [x] TNG-R1T-Chimera model successfully generates stories
+- [x] Piece lore appears in 85-90% of story content
+- [x] Stories feel more animated, emotional, and heart-felt
+- [x] At least 2 test stories generated showing improvement
 
 ---
 
