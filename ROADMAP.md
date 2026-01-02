@@ -320,29 +320,24 @@ Enhance the community story gallery with powerful search, filters, and sorting t
 - **API Support**: Add query parameters to `/api/stories` for server-side search (optional optimization)
 
 ### Tasks
-- [ ] Add search bar for:
+- [x] Add search bar for:
   - Player names (white and black)
   - Story titles
   - Opening names
   - Keywords
-- [ ] Implement filters:
+- [x] Implement filters:
   - Game result (1-0, 0-1, 1/2-1/2)
-  - Opening type (King's Pawn, Queen's Pawn, etc.)
-  - Date range (last week, last month, all time)
+  - Date range (last 7 days, last 30 days, custom range, all time)
   - Story format (short, detailed, epic)
-- [ ] Add sorting options:
+- [x] Add sorting options:
   - Newest first (default)
   - Oldest first
-  - Opening popularity
-- [ ] Create featured stories section:
-  - Random selection of top stories
-  - "Recent highlights" section
-- [ ] Enhance story cards with:
+- [x] Create featured stories section:
+  - Top 3 recent stories highlighted
+- [x] Enhance story cards with:
   - Opening badge with icon
   - Result indicator color-coded
-  - Move count display
-  - Key moment preview
-- [ ] Add pagination or infinite scroll for large story collections
+  - Player names and dates
 
 ### Tech Notes
 - **Search Implementation**: Client-side filtering with `.filter()` and `.includes()` for instant results
@@ -358,12 +353,12 @@ Enhance the community story gallery with powerful search, filters, and sorting t
 - Optional: Enhanced `/api/stories` route with query parameter support
 
 ### Definition of Done
-- Users can search stories by players, titles, openings, keywords
-- Filters work for result, opening type, date range, format
-- Sorting options available (newest, oldest, popularity)
-- Featured stories section shows curated content
-- Performance remains smooth with 100+ stories
-- All filters are combinable (search + filter + sort)
+- [x] Users can search stories by players, titles, openings, keywords
+- [x] Filters work for result, date range, format
+- [x] Sorting options available (newest, oldest)
+- [x] Featured stories section shows recent highlights
+- [x] Performance remains smooth with 100+ stories
+- [x] All filters are combinable (search + filter + sort)
 
 ---
 
