@@ -28,9 +28,11 @@ function matchesSearch(query: string, story: StoryMetadata): boolean {
     story.story.summary || '',
   ].map(normalizeForSearch)
 
-  return searchTexts.some((text) =>
+  const matches = searchTexts.some((text) =>
     searchTerms.some((term) => text.includes(term))
   )
+
+  return matches
 }
 
 function matchesDateRange(
@@ -110,7 +112,7 @@ export default function HistoryPage() {
           throw new Error(data.error || 'Failed to fetch stories')
         }
 
-        setStories(data)
+        setAllStories(data)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
@@ -122,6 +124,11 @@ export default function HistoryPage() {
   }, [])
 
   useEffect(() => {
+    if (allStories.length === 0) {
+      setStories([])
+      return
+    }
+
     const filtered = allStories.filter((story) => {
       if (!matchesSearch(filters.search, story)) return false
       if (!matchesDateRange(filters.dateRange, filters.customDateFrom, filters.customDateTo, story)) return false
