@@ -362,10 +362,48 @@ Enhance the community story gallery with powerful search, filters, and sorting t
 
 ---
 
+## Phase 9: Social Features (Share Buttons)
+
+### Goal
+Add social sharing capabilities to allow users to easily share chess stories across platforms.
+
+### Tasks
+- [x] Create ShareButtons component with multiple platforms
+- [x] Add share buttons to story cards (icon size)
+- [x] Add share buttons to story viewer page (page size)
+- [x] Support Twitter/X, Facebook, and native share API
+- [x] Add copy link functionality
+- [x] Style buttons to match wood theme
+- [x] Fix nested `<a>` tag hydration errors
+- [x] Position share buttons appropriately in cards and pages
+
+### Tech Notes
+- **Platforms**: Twitter/X, Facebook, Native Share API (mobile)
+- **Icons**: SVG icons for cleaner, theme-matching design
+- **Sizes**: Three variants - 'icon' (for cards), 'page' (for story viewer), 'card' (general)
+- **Wood Theme**: Use gradients like #D4A373, #C19A6B, #8B4513 to match site palette
+- **Stop Propagation**: Click handlers prevent card navigation when sharing
+
+### Deliverables
+- ShareButtons component in `app/components/ui/ShareButtons.tsx`
+- Icon-style buttons in story cards
+- Page-style buttons in story viewer
+- No nested `<a>` tags (hydration-safe)
+
+### Definition of Done
+- [x] Share buttons appear on all story cards
+- [x] Share buttons appear on story viewer page
+- [x] Buttons styled to match wood theme
+- [x] No hydration errors
+- [x] Copy link shows "✓ Copied!" feedback
+- [x] Native share API works on supported devices
+
+---
+
 ## Future Enhancements (Post-MVP)
 
 - [ ] User authentication and accounts
-- [ ] Social features (share stories, comments)
+- [ ] Social features (comments)
 - [ ] Interactive board replay alongside story
 - [ ] Multi-language support
 - [ ] Export stories (PDF, EPUB)

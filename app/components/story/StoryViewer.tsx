@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Story, ChapterSection } from '@/lib/story-types'
 import ChessBoard from '../chess/ChessBoard'
+import ShareButtons from '../ui/ShareButtons'
 
 interface StoryViewerProps {
   story: Story
@@ -152,11 +153,12 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                   {SECTION_LABELS[section]}
                 </span>
               ))}
-            </div>
-          )}
-        </div>
+               </div>
+              )}
+ 
+           </div>
 
-        <div className="max-w-none">
+         <div className="max-w-none">
           {chapter.content && chapter.content.split('\n\n').map((paragraph, index) => (
             <p
               key={index}
@@ -316,7 +318,7 @@ export default function StoryViewer({ story }: StoryViewerProps) {
               {story.gameMetadata.result && (
                 <span style={{ fontWeight: 700 }}>{story.gameMetadata.result}</span>
               )}
-            </div>
+             </div>
 
             {story.storyThemes.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
@@ -511,8 +513,16 @@ export default function StoryViewer({ story }: StoryViewerProps) {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+             </div>
+           )}
+
+          <div className="p-8" style={{ borderTop: '2px solid #C19A6B' }}>
+            <ShareButtons
+              title={story.title}
+              summary={story.summary}
+              size="page"
+            />
+          </div>
 
         <div
           className="p-6 mx-auto max-w-4xl"

@@ -9,6 +9,7 @@ import StoryFilters, {
   type FormatFilter,
   type SortOption,
 } from '@/app/components/ui/StoryFilters'
+import ShareButtons from '@/app/components/ui/ShareButtons'
 
 function normalizeForSearch(text: string): string {
   return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -377,18 +378,18 @@ export default function HistoryPage() {
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {featuredStories.map((story) => (
-                <Link
+                <div
                   key={story._id.toString()}
-                  href={`/stories/${story._id.toString()}`}
-                  className="group block"
+                  className="group rounded-xl overflow-hidden transition-all duration-300 h-full hover:-translate-y-2 hover:shadow-2xl"
+                  style={{
+                    background: '#FFFFFF',
+                    boxShadow: '0 8px 32px rgba(44, 24, 16, 0.15)',
+                    border: '3px solid #C19A6B',
+                  }}
                 >
-                  <div
-                    className="rounded-xl overflow-hidden transition-all duration-300 h-full hover:-translate-y-2 hover:shadow-2xl"
-                    style={{
-                      background: '#FFFFFF',
-                      boxShadow: '0 8px 32px rgba(44, 24, 16, 0.15)',
-                      border: '3px solid #C19A6B',
-                    }}
+                  <Link
+                    href={`/stories/${story._id.toString()}`}
+                    className="block"
                   >
                     <div
                       className="p-6 text-white"
@@ -500,8 +501,17 @@ export default function HistoryPage() {
                         </p>
                       )}
                     </div>
+                  </Link>
+
+                  <div className="px-6 pb-6 pt-4 flex justify-between items-center" style={{ borderTop: '1px solid #E8C9A0' }}>
+                    <ShareButtons
+                      title={story.story.title}
+                      url={`${typeof window !== 'undefined' ? window.location.origin : ''}/stories/${story._id.toString()}`}
+                      summary={story.story.summary}
+                      size="icon"
+                    />
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
@@ -522,18 +532,18 @@ export default function HistoryPage() {
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {regularStories.map((story) => (
-                <Link
+                <div
                   key={story._id.toString()}
-                  href={`/stories/${story._id.toString()}`}
-                  className="group block"
+                  className="group rounded-xl overflow-hidden transition-all duration-300 h-full hover:-translate-y-2 hover:shadow-2xl"
+                  style={{
+                    background: '#FFFFFF',
+                    boxShadow: '0 4px 16px rgba(44, 24, 16, 0.12)',
+                    border: '2px solid #E8C9A0',
+                  }}
                 >
-                  <div
-                    className="rounded-xl overflow-hidden transition-all duration-300 h-full hover:-translate-y-2 hover:shadow-2xl"
-                    style={{
-                      background: '#FFFFFF',
-                      boxShadow: '0 4px 16px rgba(44, 24, 16, 0.12)',
-                      border: '2px solid #E8C9A0',
-                    }}
+                  <Link
+                    href={`/stories/${story._id.toString()}`}
+                    className="block"
                   >
                     <div
                       className="p-6 text-white transition-all duration-300 group-hover:shadow-md"
@@ -641,8 +651,17 @@ export default function HistoryPage() {
                         </p>
                       )}
                     </div>
+                  </Link>
+
+                  <div className="px-6 pb-6 pt-4 flex justify-between items-center" style={{ borderTop: '1px solid #E8C9A0' }}>
+                    <ShareButtons
+                      title={story.story.title}
+                      url={`${typeof window !== 'undefined' ? window.location.origin : ''}/stories/${story._id.toString()}`}
+                      summary={story.story.summary}
+                      size="icon"
+                    />
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
