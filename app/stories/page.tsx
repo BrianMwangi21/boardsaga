@@ -28,7 +28,7 @@ function matchesSearch(query: string, story: StoryMetadata): boolean {
     story.story.summary || '',
   ].map(normalizeForSearch)
 
-  return searchTerms.some((text) =>
+  return searchTexts.some((text) =>
     searchTerms.some((term) => text.includes(term))
   )
 }
