@@ -308,6 +308,65 @@ Elevate storytelling quality with pure 3rd-person narration, enhanced piece lore
 
 ---
 
+## Phase 8: Story Discovery
+
+### Goal
+Enhance the community story gallery with powerful search, filters, and sorting to help users discover and explore chess stories.
+
+### Architecture Notes
+- **Enhanced Gallery**: Build upon existing `/stories` page - no new routes needed
+- **No Authentication**: Stories remain public and anonymous - keep lean
+- **Client-Side Filtering**: Use React state for fast, instant filtering
+- **API Support**: Add query parameters to `/api/stories` for server-side search (optional optimization)
+
+### Tasks
+- [ ] Add search bar for:
+  - Player names (white and black)
+  - Story titles
+  - Opening names
+  - Keywords
+- [ ] Implement filters:
+  - Game result (1-0, 0-1, 1/2-1/2)
+  - Opening type (King's Pawn, Queen's Pawn, etc.)
+  - Date range (last week, last month, all time)
+  - Story format (short, detailed, epic)
+- [ ] Add sorting options:
+  - Newest first (default)
+  - Oldest first
+  - Opening popularity
+- [ ] Create featured stories section:
+  - Random selection of top stories
+  - "Recent highlights" section
+- [ ] Enhance story cards with:
+  - Opening badge with icon
+  - Result indicator color-coded
+  - Move count display
+  - Key moment preview
+- [ ] Add pagination or infinite scroll for large story collections
+
+### Tech Notes
+- **Search Implementation**: Client-side filtering with `.filter()` and `.includes()` for instant results
+- **Debounce Search**: 300ms delay to avoid excessive re-renders on long lists
+- **Date Filtering**: JavaScript Date objects for range comparisons
+- **Sorting**: `Array.sort()` with multiple criteria for stable ordering
+- **Pagination**: Simple page-based or scroll-based pagination
+
+### Deliverables
+- Enhanced `/stories/page.tsx` with search and filter UI
+- Filter/search components in `app/components/ui/StoryFilters.tsx`
+- Enhanced story cards with additional metadata
+- Optional: Enhanced `/api/stories` route with query parameter support
+
+### Definition of Done
+- Users can search stories by players, titles, openings, keywords
+- Filters work for result, opening type, date range, format
+- Sorting options available (newest, oldest, popularity)
+- Featured stories section shows curated content
+- Performance remains smooth with 100+ stories
+- All filters are combinable (search + filter + sort)
+
+---
+
 ## Future Enhancements (Post-MVP)
 
 - [ ] User authentication and accounts
@@ -315,7 +374,6 @@ Elevate storytelling quality with pure 3rd-person narration, enhanced piece lore
 - [ ] Interactive board replay alongside story
 - [ ] Multi-language support
 - [ ] Export stories (PDF, EPUB)
-- [ ] Community story gallery
 
 ---
 
@@ -347,4 +405,4 @@ Elevate storytelling quality with pure 3rd-person narration, enhanced piece lore
 
 ---
 
-*Last updated: December 30, 2025*
+*Last updated: January 2, 2026*
