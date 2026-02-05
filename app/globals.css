@@ -1,38 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #F5F0E6;
-  --foreground: #2C1810;
-
-  --wood-light: #D4A373;
-  --wood-medium: #C19A6B;
-  --wood-dark: #8B4513;
-  --wood-darker: #6B3410;
-  --wood-golden: #C19A6B;
-
-  --wood-light-gradient: linear-gradient(135deg, #D4A373 0%, #C19A6B 100%);
-  --wood-medium-gradient: linear-gradient(135deg, #C19A6B 0%, #A0522D 100%);
-  --wood-dark-gradient: linear-gradient(135deg, #8B4513 0%, #6B3410 100%);
-
-  --board-cream: #EEE8D3;
-  --board-brown: #C19A6B;
-  --board-cream-alt: #F0E6D2;
-
-  --piece-white: #F5F0E6;
-  --piece-black: #2C1810;
-
-  --accent: #C19A6B;
-  --accent-light: #E8C9A0;
-  --accent-dark: #8B4513;
-
-  --shadow-soft: 0 2px 8px rgba(44, 24, 16, 0.1);
-  --shadow-medium: 0 4px 16px rgba(44, 24, 16, 0.15);
-  --shadow-strong: 0 8px 32px rgba(44, 24, 16, 0.2);
-
-  --border-wood: #C19A6B;
-  --border-light: #E8C9A0;
-  --border-dark: #8B4513;
-
+  /* Cosmic Theme - Deep Space Observatory */
+  --void-black: #0a0a0f;
+  --deep-space: #0f0f1a;
+  --cosmic-purple: #1a1a2e;
+  --nebula-blue: #16213e;
+  --starlight: #e8e6f0;
+  --moon-glow: #c9c6e0;
+  
+  /* Accent Colors - Neon Cosmic */
+  --neon-cyan: #00f5ff;
+  --neon-purple: #b829dd;
+  --neon-gold: #ffd700;
+  --neon-pink: #ff00aa;
+  --nebula-glow: #4facfe;
+  
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, var(--void-black) 0%, var(--cosmic-purple) 50%, var(--nebula-blue) 100%);
+  --gradient-card: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(22, 33, 62, 0.8) 100%);
+  --gradient-glow: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--neon-gold) 0%, #ffaa00 100%);
+  --gradient-button: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(184, 41, 221, 0.1) 100%);
+  
+  /* Shadows - Cosmic Glow */
+  --glow-cyan: 0 0 20px rgba(0, 245, 255, 0.4), 0 0 40px rgba(0, 245, 255, 0.2);
+  --glow-purple: 0 0 20px rgba(184, 41, 221, 0.4), 0 0 40px rgba(184, 41, 221, 0.2);
+  --glow-gold: 0 0 20px rgba(255, 215, 0, 0.4), 0 0 40px rgba(255, 215, 0, 0.2);
+  --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.5);
+  
+  /* Background */
+  --background: var(--deep-space);
+  --foreground: var(--starlight);
+  
+  /* Typography Scale */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -42,18 +44,21 @@
   --text-3xl: 1.875rem;
   --text-4xl: 2.25rem;
   --text-5xl: 3rem;
-
+  --text-6xl: 3.75rem;
+  --text-7xl: 4.5rem;
+  
+  /* Spacing & Effects */
   --leading-tight: 1.2;
   --leading-snug: 1.375;
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
-  --leading-loose: 2;
-
-  --tracking-tight: -0.025em;
+  --tracking-tight: -0.02em;
   --tracking-normal: 0;
-  --tracking-wide: 0.025em;
-  --tracking-wider: 0.05em;
-  --tracking-widest: 0.1em;
+  --tracking-wide: 0.05em;
+  
+  /* Borders */
+  --border-glow: 1px solid rgba(0, 245, 255, 0.3);
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {
@@ -63,109 +68,341 @@
   --font-serif: var(--font-serif);
 }
 
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  background: var(--deep-space);
+  color: var(--starlight);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
-  letter-spacing: var(--tracking-normal);
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-.font-serif {
-  font-family: var(--font-serif), Georgia, serif;
+/* Cosmic Background Animation */
+.cosmic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 20% 80%, rgba(184, 41, 221, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%),
+    var(--deep-space);
+  z-index: -2;
 }
 
+/* Star Field Animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-2deg); }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-delayed {
+  animation: float-delayed 7s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Glow Pulse Animation */
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.3), 0 0 40px rgba(0, 245, 255, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(0, 245, 255, 0.5), 0 0 60px rgba(0, 245, 255, 0.2);
+  }
+}
+
+@keyframes glow-pulse-purple {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(184, 41, 221, 0.3), 0 0 40px rgba(184, 41, 221, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(184, 41, 221, 0.5), 0 0 60px rgba(184, 41, 221, 0.2);
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.glow-pulse-purple {
+  animation: glow-pulse-purple 3s ease-in-out infinite;
+}
+
+/* Orbit Animation */
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+}
+
+@keyframes orbit-reverse {
+  0% { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+  100% { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Typing Cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: var(--gradient-glow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass Card Effect */
+.glass-card {
+  background: rgba(26, 26, 46, 0.6);
+  backdrop-filter: blur(20px);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-deep);
+}
+
+/* Neon Button */
+.neon-button {
+  background: var(--gradient-button);
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  color: var(--neon-cyan);
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  background: rgba(0, 245, 255, 0.1);
+  box-shadow: var(--glow-cyan);
+  transform: translateY(-2px);
+}
+
+/* Portal Effect */
+.portal-ring {
+  position: relative;
+}
+
+.portal-ring::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--gradient-glow);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.portal-ring:hover::before {
+  opacity: 1;
+}
+
+/* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
   line-height: var(--leading-tight);
-  color: var(--foreground);
+  color: var(--starlight);
   margin-top: 0;
 }
 
 h1 {
-  font-size: var(--text-5xl);
+  font-size: var(--text-6xl);
   letter-spacing: var(--tracking-tight);
 }
 
 h2 {
-  font-size: var(--text-4xl);
+  font-size: var(--text-5xl);
   letter-spacing: var(--tracking-tight);
 }
 
 h3 {
-  font-size: var(--text-3xl);
+  font-size: var(--text-4xl);
   letter-spacing: var(--tracking-tight);
 }
 
 h4 {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
   letter-spacing: var(--tracking-normal);
 }
 
 p {
   margin-bottom: 1.5rem;
+  color: var(--moon-glow);
 }
 
 p:last-child {
   margin-bottom: 0;
 }
 
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--void-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nebula-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-purple);
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 245, 255, 0.3);
+  color: var(--starlight);
+}
+
+/* Focus States */
+*:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+}
+
+/* Loading Spinner */
+@keyframes spin-cosmic {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner-cosmic {
+  border: 3px solid rgba(0, 245, 255, 0.1);
+  border-top-color: var(--neon-cyan);
+  border-radius: 50%;
+  animation: spin-cosmic 1s linear infinite;
+}
+
+/* Story Typography Classes */
 .story-title {
-  font-size: var(--text-4xl);
-  font-weight: 700;
+  font-size: var(--text-5xl);
+  font-weight: 600;
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
 }
 
 .story-chapter-title {
-  font-size: var(--text-2xl);
-  font-weight: 600;
+  font-size: var(--text-3xl);
+  font-weight: 500;
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-normal);
   margin-top: 2rem;
   margin-bottom: 1rem;
-  color: var(--accent-dark);
+  color: var(--neon-cyan);
 }
 
 .story-paragraph {
   font-size: var(--text-lg);
   line-height: var(--leading-loose);
   margin-bottom: 1.5rem;
-  color: var(--foreground);
+  color: var(--moon-glow);
 }
 
 .story-highlight {
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--leading-relaxed);
-  color: var(--accent-dark);
-  border-left: 4px solid var(--accent);
+  color: var(--neon-gold);
+  border-left: 3px solid var(--neon-cyan);
   padding-left: 1rem;
   margin: 2rem 0;
   font-style: italic;
 }
 
+/* Card Styles */
 .card-title {
   font-size: var(--text-xl);
   font-weight: 600;
   line-height: var(--leading-snug);
+  color: var(--starlight);
 }
 
 .card-subtitle {
   font-size: var(--text-sm);
   font-weight: 400;
   line-height: var(--leading-normal);
-  color: var(--wood-darker);
+  color: var(--moon-glow);
 }
 
-.caption {
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
-  color: var(--wood-darker);
+/* Chess Board Specific */
+.board-square-light {
+  background: rgba(232, 230, 240, 0.1);
 }
 
-.muted {
-  color: var(--wood-darker);
+.board-square-dark {
+  background: rgba(0, 245, 255, 0.1);
+}
+
+/* Status Indicators */
+.status-success {
+  color: var(--neon-cyan);
+}
+
+.status-error {
+  color: var(--neon-pink);
+}
+
+.status-warning {
+  color: var(--neon-gold);
 }

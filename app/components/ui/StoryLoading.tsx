@@ -6,7 +6,7 @@ interface FlashCardProps {
   title: string
   content: string
   icon?: string
-  color?: string
+  gradient?: string
 }
 
 interface StoryLoadingProps {
@@ -16,91 +16,95 @@ interface StoryLoadingProps {
 const PIECE_LORE = [
   {
     piece: '♙ Pawn',
-    lore: '"One step at a time, toward glory." The humble soldiers who dream of becoming queens.',
-    color: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)'
+    lore: '"From the depths of the void, we ascend." The humble souls who dream of becoming stars.',
+    gradient: 'from-cyan-500/20 to-purple-500/20'
   },
   {
     piece: '♜ Rook',
-    lore: '"I hold the line." Guardians of territory, masters of straight lines and unwavering resolve.',
-    color: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)'
+    lore: '"I am the wall against entropy." Guardians of cosmic order, masters of infinite straight lines.',
+    gradient: 'from-purple-500/20 to-pink-500/20'
   },
   {
     piece: '♞ Knight',
-    lore: '"Predictability is for the slow." The unpredictable warriors dancing through chaos in L-shaped leaps.',
-    color: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)'
+    lore: '"Chaos is merely pattern unrecognized." The quantum dancers moving through probability.',
+    gradient: 'from-pink-500/20 to-gold-500/20'
   },
   {
     piece: '♝ Bishop',
-    lore: '"I walk the diagonal path to truth." Spiritual guides gliding diagonally like mystics of the board.',
-    color: 'linear-gradient(135deg, #8B4513 0%, #6B3410 100%)'
+    lore: '"The diagonal path reveals truth." Mystics who walk between dimensions on sacred angles.',
+    gradient: 'from-gold-500/20 to-cyan-500/20'
   },
   {
     piece: '♛ Queen',
-    lore: '"My reach knows no boundaries." Sovereign power, flexible commander combining rook and bishop.',
-    color: 'linear-gradient(135deg, #D4A373 0%, #8B4513 100%)'
+    lore: '"My dominion spans all directions." Sovereign of spacetime, wielder of infinite possibility.',
+    gradient: 'from-cyan-500/20 via-purple-500/20 to-pink-500/20'
   },
   {
     piece: '♚ King',
-    lore: '"The battle is lost when I fall." The crown that must not fall, lonely burden of sixty-four squares.',
-    color: 'linear-gradient(135deg, #C19A6B 0%, #D4A373 100%)'
+    lore: '"The universe trembles when I fall." The singularity around which all orbits.',
+    gradient: 'from-gold-400/30 to-yellow-500/30'
   }
 ]
 
 const ANALYSIS_SNIPPETS = [
   {
     title: 'Analyzing Moves',
-    content: 'Examining each strategic decision, from opening gambits to final checkmate.',
-    icon: '🎯'
+    content: 'Decoding strategic decisions across the spacetime of 64 squares.',
+    icon: '🔭'
   },
   {
     title: 'Identifying Key Moments',
-    content: 'Finding the turning points, brilliancies, and critical sacrifices.',
+    content: 'Detecting singularities, brilliancies, and critical gravitational shifts.',
     icon: '⚡'
   },
   {
     title: 'Uncovering Player Styles',
-    content: 'Reading the strategic fingerprints of white and black.',
-    icon: '🧠'
+    content: 'Reading the unique cosmic signatures of white and black.',
+    icon: '🌌'
   },
   {
     title: 'Weaving Narratives',
-    content: 'Combining piece lore with game moments to craft compelling stories.',
+    content: 'Combining piece lore with stellar events to craft cosmic tales.',
     icon: '📖'
   },
   {
     title: 'Creating Characters',
-    content: 'Each piece has a story - bringing their personalities to life.',
-    icon: '🎭'
+    content: 'Each piece is a constellation - bringing their stories to life.',
+    icon: '✨'
   },
   {
     title: 'Crafting Chapters',
-    content: 'Building the epic tale from opening to endgame.',
-    icon: '📚'
+    content: 'Building the epic from the Big Bang opening to the endgame singularity.',
+    icon: '🌠'
   }
 ]
 
-function FlashCard({ title, content, icon, color = 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)' }: FlashCardProps) {
+function FlashCard({ title, content, icon, gradient = 'from-cyan-500/20 to-purple-500/20' }: FlashCardProps) {
   return (
     <div
-      className="w-full max-w-md p-6 rounded-2xl transform transition-all duration-300 hover:scale-105"
+      className={`w-full max-w-md p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 relative overflow-hidden bg-gradient-to-br ${gradient}`}
       style={{
-        background: color,
-        boxShadow: '0 8px 32px rgba(139, 69, 19, 0.15)',
-        border: '2px solid #C19A6B',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(0, 245, 255, 0.3)',
+        boxShadow: '0 0 40px rgba(0, 245, 255, 0.1), inset 0 0 40px rgba(255,255,255,0.02)',
       }}
     >
-      <div className="flex items-start gap-3">
+      {/* Animated shimmer overlay */}
+      <div className="absolute inset-0 shimmer opacity-30" />
+      
+      <div className="flex items-start gap-4 relative z-10">
         {icon && (
-          <span className="text-3xl flex-shrink-0">{icon}</span>
+          <span className="text-4xl flex-shrink-0" style={{ filter: 'drop-shadow(0 0 10px rgba(0,245,255,0.5))' }}>
+            {icon}
+          </span>
         )}
         <div className="flex-1">
           <h3
-            className="mb-2"
+            className="mb-3 text-xl font-semibold"
             style={{
-              fontFamily: 'var(--font-serif), Georgia, serif',
-              fontSize: 'var(--text-lg)',
-              fontWeight: 700,
-              color: '#2C1810',
+              fontFamily: "'Playfair Display', serif",
+              color: 'var(--neon-cyan)',
+              textShadow: '0 0 20px rgba(0, 245, 255, 0.3)',
             }}
           >
             {title}
@@ -108,8 +112,8 @@ function FlashCard({ title, content, icon, color = 'linear-gradient(135deg, #F5F
           <p
             className="leading-relaxed"
             style={{
-              fontSize: 'var(--text-sm)',
-              color: '#6B3410',
+              color: 'var(--moon-glow)',
+              fontSize: '0.95rem',
             }}
           >
             {content}
@@ -151,107 +155,139 @@ export default function StoryLoading({ isGenerating = true }: StoryLoadingProps)
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] w-full py-8 px-4">
-      <div className="text-center mb-8">
-        <div className="inline-block animate-spin mb-4">
-          <svg
-            className="w-12 h-12"
-            style={{ color: '#C19A6B' }}
-            fill="none"
-            viewBox="0 0 24 24"
+      {/* Cosmic Spinner */}
+      <div className="relative mb-8">
+        {/* Outer glow */}
+        <div 
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(0,245,255,0.3) 0%, transparent 70%)',
+            transform: 'scale(2)',
+            filter: 'blur(10px)',
+          }}
+        />
+        
+        {/* Spinning rings */}
+        <div className="relative w-20 h-20">
+          <div 
+            className="absolute inset-0 rounded-full border-2 border-cyan-500/30"
+            style={{ animation: 'spin 3s linear infinite' }}
+          />
+          <div 
+            className="absolute inset-2 rounded-full border-2 border-purple-500/30"
+            style={{ animation: 'spin 2s linear infinite reverse' }}
+          />
+          <div 
+            className="absolute inset-4 rounded-full border-2 border-gold-500/30"
+            style={{ animation: 'spin 4s linear infinite' }}
+          />
+          
+          {/* Center icon */}
+          <div 
+            className="absolute inset-0 flex items-center justify-center text-3xl"
+            style={{ animation: 'float 3s ease-in-out infinite' }}
           >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+            ✨
+          </div>
         </div>
-        <h2
-          className="mb-2"
-          style={{
-            fontFamily: 'var(--font-serif), Georgia, serif',
-            fontSize: 'var(--text-2xl)',
-            fontWeight: 700,
-            color: '#2C1810',
-          }}
-        >
-          Generating Your Chess Story
-        </h2>
-        <p
-          style={{
-            fontSize: 'var(--text-base)',
-            color: '#6B3410',
-          }}
-        >
-          The pieces are weaving their tale...
-        </p>
       </div>
 
+      {/* Title */}
+      <h2
+        className="mb-3 text-3xl font-bold text-center"
+        style={{
+          fontFamily: "'Playfair Display', serif",
+          background: 'linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-gold) 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}
+      >
+        Generating Your Chess Story
+      </h2>
+      <p
+        className="mb-8 text-center"
+        style={{
+          color: 'var(--moon-glow)',
+          fontSize: '1.1rem',
+        }}
+      >
+        The constellations are aligning...
+      </p>
+
+      {/* Flash Card */}
       <div
-        className="transition-all duration-300"
+        className="transition-all duration-500"
         style={{
           opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
+          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
         }}
       >
         {cardType === 'lore' ? (
           <FlashCard
             title={currentLore.piece}
             content={currentLore.lore}
-            color={currentLore.color}
+            gradient={currentLore.gradient}
           />
         ) : (
           <FlashCard
             title={currentAnalysis.title}
             content={currentAnalysis.content}
             icon={currentAnalysis.icon}
-            color="linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)"
           />
         )}
       </div>
 
+      {/* Progress Indicators */}
       <div className="mt-8 flex gap-2">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-full transition-all duration-300"
+            className="rounded-full transition-all duration-500"
             style={{
-              width: i === currentCard % 3 ? '32px' : '8px',
+              width: i === currentCard % 6 ? '32px' : '8px',
               height: '8px',
-              backgroundColor: i === currentCard % 3 ? '#C19A6B' : '#D4A373',
-              opacity: i === currentCard % 3 ? 1 : 0.4,
+              background: i === currentCard % 6 
+                ? 'linear-gradient(90deg, var(--neon-cyan), var(--neon-purple))' 
+                : 'rgba(0, 245, 255, 0.2)',
+              boxShadow: i === currentCard % 6 ? '0 0 10px var(--neon-cyan)' : 'none',
             }}
           />
         ))}
       </div>
 
+      {/* Subtitle */}
       <p
-        className="mt-4 text-sm"
+        className="mt-6 text-sm italic text-center"
         style={{
-          color: '#8B4513',
+          color: 'var(--moon-glow)',
           opacity: 0.7,
-          fontFamily: 'var(--font-serif), Georgia, serif',
-          fontStyle: 'italic',
+          fontFamily: "'Playfair Display', serif",
         }}
       >
-        This may take a moment - great stories need time to unfold
+        Great stories, like stars, need time to shine
       </p>
 
+      {/* Disclaimer */}
       <div
-        className="mt-6 p-4 rounded-lg max-w-md mx-auto"
+        className="mt-6 p-4 rounded-xl max-w-md mx-auto"
         style={{
-          background: 'linear-gradient(135deg, #FFF9E6 0%, #FFE4B5 100%)',
-          border: '1px solid #C19A6B',
+          background: 'rgba(0, 245, 255, 0.05)',
+          border: '1px solid rgba(0, 245, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
         }}
       >
-        <div className="flex items-start gap-2">
-          <span className="text-lg">⚠️</span>
+        <div className="flex items-start gap-3">
+          <span className="text-lg" style={{ filter: 'drop-shadow(0 0 5px var(--neon-gold))' }}>⚠️</span>
           <div>
             <p
-              className="text-sm"
+              className="text-xs leading-relaxed"
               style={{
-                color: '#6B3410',
-                fontFamily: 'var(--font-sans), sans-serif',
+                color: 'var(--moon-glow)',
+                opacity: 0.8,
               }}
             >
-              AI can occasionally make mistakes, but we use Stockfish engine analysis to ensure move accuracy.
+              AI may occasionally drift through nebulae of inaccuracy, but Stockfish engine analysis keeps us grounded in truth.
             </p>
           </div>
         </div>

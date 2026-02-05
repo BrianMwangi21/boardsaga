@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { COLORS, GRADIENTS, SHADOWS } from '@/lib/theme'
 
 export type DateRange = '7days' | '30days' | 'alltime' | 'custom'
 export type ResultFilter = 'all' | '1-0' | '0-1' | '1/2-1/2'
@@ -84,26 +83,32 @@ export default function StoryFilters({
     filters.format !== 'all' ? filters.format : '',
   ].filter(Boolean).length
 
+  const inputStyle = {
+    background: 'rgba(26, 26, 46, 0.6)',
+    border: '1px solid rgba(0, 245, 255, 0.3)',
+    color: 'var(--starlight)',
+    backdropFilter: 'blur(10px)',
+  }
+
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
+    <div className="mb-12">
+      <div className="flex items-center justify-between mb-6">
         <h2
+          className="text-xl font-bold"
           style={{
-            fontFamily: 'var(--font-serif), Georgia, serif',
-            fontSize: 'var(--text-xl)',
-            fontWeight: 700,
-            color: COLORS.veryDarkBrown,
+            fontFamily: "'Playfair Display', serif",
+            color: 'var(--neon-cyan)',
           }}
         >
           Filter Stories
         </h2>
         <button
           onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
-          className="md:hidden px-4 py-2 rounded-lg font-medium"
+          className="md:hidden px-4 py-2 rounded-lg font-medium transition-all duration-300"
           style={{
-            background: GRADIENTS.button,
-            color: COLORS.cream,
-            boxShadow: SHADOWS.small,
+            background: 'rgba(0, 245, 255, 0.1)',
+            border: '1px solid rgba(0, 245, 255, 0.3)',
+            color: 'var(--neon-cyan)',
           }}
         >
           {isMobileFiltersOpen ? 'Hide Filters' : `Filters ${activeFiltersCount > 0 ? `(${activeFiltersCount})` : ''}`}
@@ -113,16 +118,18 @@ export default function StoryFilters({
       <div
         className={`${isMobileFiltersOpen ? 'block' : 'hidden'} md:block rounded-xl p-6`}
         style={{
-          background: COLORS.white,
-          boxShadow: SHADOWS.medium,
-          border: '2px solid COLORS.lightParchment'.replace('COLORS.', COLORS.lightParchment),
+          background: 'rgba(26, 26, 46, 0.6)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(0, 245, 255, 0.2)',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
         }}
       >
-        <div className="space-y-4">
+        <div className="space-y-6">
+          {/* Search */}
           <div>
             <label
-              className="block mb-2 font-medium"
-              style={{ color: COLORS.veryDarkBrown }}
+              className="block mb-2 font-medium text-sm"
+              style={{ color: 'var(--neon-cyan)' }}
             >
               Search
             </label>
@@ -131,122 +138,135 @@ export default function StoryFilters({
               placeholder="Search players, titles, keywords..."
               value={filters.search}
               onChange={handleSearchChange}
-              className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-colors"
-              style={{
-                borderColor: COLORS.lightParchment,
-                color: COLORS.veryDarkBrown,
-              }}
+              className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all duration-300"
+              style={inputStyle}
               onFocus={(e) => {
-                e.target.style.borderColor = COLORS.darkWood
+                e.target.style.borderColor = 'var(--neon-cyan)'
+                e.target.style.boxShadow = '0 0 20px rgba(0, 245, 255, 0.2)'
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = COLORS.lightParchment
+                e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
+                e.target.style.boxShadow = 'none'
               }}
             />
           </div>
 
+          {/* Filters Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Date Range */}
             <div>
               <label
-                className="block mb-2 font-medium"
-                style={{ color: COLORS.veryDarkBrown }}
+                className="block mb-2 font-medium text-sm"
+                style={{ color: 'var(--neon-cyan)' }}
               >
                 Date Range
               </label>
               <select
                 value={filters.dateRange}
                 onChange={handleDateRangeChange}
-                className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none cursor-pointer transition-colors"
-                style={{
-                  borderColor: COLORS.lightParchment,
-                  color: COLORS.veryDarkBrown,
-                  backgroundColor: COLORS.white,
+                className="w-full px-4 py-3 rounded-lg focus:outline-none cursor-pointer transition-all duration-300"
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--neon-cyan)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
                 }}
               >
-                <option value="alltime">All Time</option>
-                <option value="7days">Last 7 Days</option>
-                <option value="30days">Last 30 Days</option>
-                <option value="custom">Custom Range</option>
+                <option value="alltime" style={{ background: '#1a1a2e' }}>All Time</option>
+                <option value="7days" style={{ background: '#1a1a2e' }}>Last 7 Days</option>
+                <option value="30days" style={{ background: '#1a1a2e' }}>Last 30 Days</option>
+                <option value="custom" style={{ background: '#1a1a2e' }}>Custom Range</option>
               </select>
             </div>
 
+            {/* Result */}
             <div>
               <label
-                className="block mb-2 font-medium"
-                style={{ color: COLORS.veryDarkBrown }}
+                className="block mb-2 font-medium text-sm"
+                style={{ color: 'var(--neon-cyan)' }}
               >
                 Result
               </label>
               <select
                 value={filters.result}
                 onChange={handleResultChange}
-                className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none cursor-pointer transition-colors"
-                style={{
-                  borderColor: COLORS.lightParchment,
-                  color: COLORS.veryDarkBrown,
-                  backgroundColor: COLORS.white,
+                className="w-full px-4 py-3 rounded-lg focus:outline-none cursor-pointer transition-all duration-300"
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--neon-cyan)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
                 }}
               >
-                <option value="all">All Results</option>
-                <option value="1-0">White Wins (1-0)</option>
-                <option value="0-1">Black Wins (0-1)</option>
-                <option value="1/2-1/2">Draw (1/2-1/2)</option>
+                <option value="all" style={{ background: '#1a1a2e' }}>All Results</option>
+                <option value="1-0" style={{ background: '#1a1a2e' }}>White Wins (1-0)</option>
+                <option value="0-1" style={{ background: '#1a1a2e' }}>Black Wins (0-1)</option>
+                <option value="1/2-1/2" style={{ background: '#1a1a2e' }}>Draw (1/2-1/2)</option>
               </select>
             </div>
 
+            {/* Format */}
             <div>
               <label
-                className="block mb-2 font-medium"
-                style={{ color: COLORS.veryDarkBrown }}
+                className="block mb-2 font-medium text-sm"
+                style={{ color: 'var(--neon-cyan)' }}
               >
                 Format
               </label>
               <select
                 value={filters.format}
                 onChange={handleFormatChange}
-                className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none cursor-pointer transition-colors"
-                style={{
-                  borderColor: COLORS.lightParchment,
-                  color: COLORS.veryDarkBrown,
-                  backgroundColor: COLORS.white,
+                className="w-full px-4 py-3 rounded-lg focus:outline-none cursor-pointer transition-all duration-300"
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--neon-cyan)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
                 }}
               >
-                <option value="all">All Formats</option>
-                <option value="short">Short</option>
-                <option value="detailed">Detailed</option>
-                <option value="epic">Epic</option>
+                <option value="all" style={{ background: '#1a1a2e' }}>All Formats</option>
+                <option value="short" style={{ background: '#1a1a2e' }}>Short</option>
+                <option value="detailed" style={{ background: '#1a1a2e' }}>Detailed</option>
+                <option value="epic" style={{ background: '#1a1a2e' }}>Epic</option>
               </select>
             </div>
 
+            {/* Sort By */}
             <div>
               <label
-                className="block mb-2 font-medium"
-                style={{ color: COLORS.veryDarkBrown }}
+                className="block mb-2 font-medium text-sm"
+                style={{ color: 'var(--neon-cyan)' }}
               >
                 Sort By
               </label>
               <select
                 value={filters.sort}
                 onChange={handleSortChange}
-                className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none cursor-pointer transition-colors"
-                style={{
-                  borderColor: COLORS.lightParchment,
-                  color: COLORS.veryDarkBrown,
-                  backgroundColor: COLORS.white,
+                className="w-full px-4 py-3 rounded-lg focus:outline-none cursor-pointer transition-all duration-300"
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--neon-cyan)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
                 }}
               >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
+                <option value="newest" style={{ background: '#1a1a2e' }}>Newest First</option>
+                <option value="oldest" style={{ background: '#1a1a2e' }}>Oldest First</option>
               </select>
             </div>
           </div>
 
+          {/* Custom Date Range */}
           {filters.dateRange === 'custom' && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label
-                  className="block mb-2 font-medium"
-                  style={{ color: COLORS.veryDarkBrown }}
+                  className="block mb-2 font-medium text-sm"
+                  style={{ color: 'var(--neon-cyan)' }}
                 >
                   From Date
                 </label>
@@ -258,17 +278,20 @@ export default function StoryFilters({
                       : ''
                   }
                   onChange={handleCustomDateFromChange}
-                  className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-colors"
-                  style={{
-                    borderColor: COLORS.lightParchment,
-                    color: COLORS.veryDarkBrown,
+                  className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all duration-300"
+                  style={inputStyle}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--neon-cyan)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
                   }}
                 />
               </div>
               <div>
                 <label
-                  className="block mb-2 font-medium"
-                  style={{ color: COLORS.veryDarkBrown }}
+                  className="block mb-2 font-medium text-sm"
+                  style={{ color: 'var(--neon-cyan)' }}
                 >
                   To Date
                 </label>
@@ -280,24 +303,34 @@ export default function StoryFilters({
                       : ''
                   }
                   onChange={handleCustomDateToChange}
-                  className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-colors"
-                  style={{
-                    borderColor: COLORS.lightParchment,
-                    color: COLORS.veryDarkBrown,
+                  className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all duration-300"
+                  style={inputStyle}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--neon-cyan)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(0, 245, 255, 0.3)'
                   }}
                 />
               </div>
             </div>
           )}
 
+          {/* Reset Button */}
           <div className="flex justify-end pt-2">
             <button
               onClick={onReset}
-              className="px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+              className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
               style={{
-                background: GRADIENTS.button,
-                color: COLORS.cream,
-                boxShadow: SHADOWS.small,
+                background: 'linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(184, 41, 221, 0.1))',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 245, 255, 0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = 'none'
               }}
             >
               Reset All Filters

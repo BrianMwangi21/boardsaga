@@ -46,18 +46,34 @@ export default function ShareButtons({ title, url, summary, size = 'card' }: Sha
 
   const canUseNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
+  const buttonBaseStyle = {
+    padding: '0.5rem',
+    borderRadius: '8px',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    border: '1px solid transparent',
+  }
+
   if (size === 'icon') {
     return (
-      <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
         {canUseNativeShare && (
           <button
             onClick={handleShareNative}
-            className="p-2 rounded transition-all duration-200 hover:scale-110 hover:shadow-md"
+            className="p-2 rounded-lg transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
-              color: '#F5F0E6',
-              border: 'none',
-              cursor: 'pointer',
+              ...buttonBaseStyle,
+              background: 'rgba(0, 245, 255, 0.1)',
+              border: '1px solid rgba(0, 245, 255, 0.3)',
+              color: 'var(--neon-cyan)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(0, 245, 255, 0.2)'
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 245, 255, 0.3)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(0, 245, 255, 0.1)'
+              e.currentTarget.style.boxShadow = 'none'
             }}
             title="Share"
           >
@@ -73,12 +89,22 @@ export default function ShareButtons({ title, url, summary, size = 'card' }: Sha
           href={twitterUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded transition-all duration-200 hover:scale-110 hover:shadow-md"
+          className="p-2 rounded-lg transition-all duration-300"
           style={{
-            background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
-            color: '#F5F0E6',
+            ...buttonBaseStyle,
+            background: 'rgba(184, 41, 221, 0.1)',
+            border: '1px solid rgba(184, 41, 221, 0.3)',
+            color: 'var(--neon-purple)',
             textDecoration: 'none',
             display: 'inline-block',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(184, 41, 221, 0.2)'
+            e.currentTarget.style.boxShadow = '0 0 15px rgba(184, 41, 221, 0.3)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(184, 41, 221, 0.1)'
+            e.currentTarget.style.boxShadow = 'none'
           }}
           title="Share on X"
           onClick={(e) => e.stopPropagation()}
@@ -92,12 +118,22 @@ export default function ShareButtons({ title, url, summary, size = 'card' }: Sha
           href={facebookUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded transition-all duration-200 hover:scale-110 hover:shadow-md"
+          className="p-2 rounded-lg transition-all duration-300"
           style={{
-            background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
-            color: '#F5F0E6',
+            ...buttonBaseStyle,
+            background: 'rgba(255, 215, 0, 0.1)',
+            border: '1px solid rgba(255, 215, 0, 0.3)',
+            color: 'var(--neon-gold)',
             textDecoration: 'none',
             display: 'inline-block',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 215, 0, 0.2)'
+            e.currentTarget.style.boxShadow = '0 0 15px rgba(255, 215, 0, 0.3)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)'
+            e.currentTarget.style.boxShadow = 'none'
           }}
           title="Share on Facebook"
           onClick={(e) => e.stopPropagation()}
@@ -109,12 +145,24 @@ export default function ShareButtons({ title, url, summary, size = 'card' }: Sha
 
         <button
           onClick={handleCopyLink}
-          className="p-2 rounded transition-all duration-200 hover:scale-110 hover:shadow-md"
+          className="p-2 rounded-lg transition-all duration-300"
           style={{
-            background: 'linear-gradient(135deg, #8B4513 0%, #6B3410 100%)',
-            color: '#F5F0E6',
-            border: 'none',
-            cursor: 'pointer',
+            ...buttonBaseStyle,
+            background: copied ? 'rgba(0, 245, 255, 0.3)' : 'rgba(0, 245, 255, 0.1)',
+            border: copied ? '1px solid var(--neon-cyan)' : '1px solid rgba(0, 245, 255, 0.3)',
+            color: 'var(--neon-cyan)',
+          }}
+          onMouseEnter={(e) => {
+            if (!copied) {
+              e.currentTarget.style.background = 'rgba(0, 245, 255, 0.2)'
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 245, 255, 0.3)'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!copied) {
+              e.currentTarget.style.background = 'rgba(0, 245, 255, 0.1)'
+              e.currentTarget.style.boxShadow = 'none'
+            }
           }}
           title="Copy link"
         >
@@ -133,29 +181,48 @@ export default function ShareButtons({ title, url, summary, size = 'card' }: Sha
     )
   }
 
-  const buttonStyle = {
+  const largeButtonStyle = {
     padding: size === 'page' ? '0.75rem 1.25rem' : '0.5rem 0.875rem',
     fontSize: size === 'page' ? '0.875rem' : '0.75rem',
     borderRadius: '8px',
     fontWeight: 500,
-    transition: 'all 0.2s ease',
+    transition: 'all 0.3s ease',
     cursor: 'pointer',
-    border: 'none',
-    color: '#F5F0E6',
+    border: '1px solid transparent',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.5rem',
   }
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center gap-3 flex-wrap">
       {canUseNativeShare && (
         <button
           onClick={handleShareNative}
-          className="transition-all duration-200 hover:scale-105 hover:shadow-md"
+          className="transition-all duration-300"
           style={{
-            ...buttonStyle,
-            background: 'linear-gradient(135deg, #C19A6B 0%, #A0522D 100%)',
+            ...largeButtonStyle,
+            background: 'rgba(0, 245, 255, 0.1)',
+            border: '1px solid rgba(0, 245, 255, 0.3)',
+            color: 'var(--neon-cyan)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 245, 255, 0.2)'
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 245, 255, 0.3)'
+            e.currentTarget.style.transform = 'translateY(-2px)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 245, 255, 0.1)'
+            e.currentTarget.style.boxShadow = 'none'
+            e.currentTarget.style.transform = 'translateY(0)'
           }}
           title="Share"
         >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
           Share
         </button>
       )}
@@ -164,44 +231,103 @@ export default function ShareButtons({ title, url, summary, size = 'card' }: Sha
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="transition-all duration-200 hover:scale-105 hover:shadow-md"
+        className="transition-all duration-300"
         style={{
-          ...buttonStyle,
-          background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
+          ...largeButtonStyle,
+          background: 'rgba(184, 41, 221, 0.1)',
+          border: '1px solid rgba(184, 41, 221, 0.3)',
+          color: 'var(--neon-purple)',
           textDecoration: 'none',
-          display: 'inline-block',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(184, 41, 221, 0.2)'
+          e.currentTarget.style.boxShadow = '0 0 20px rgba(184, 41, 221, 0.3)'
+          e.currentTarget.style.transform = 'translateY(-2px)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(184, 41, 221, 0.1)'
+          e.currentTarget.style.boxShadow = 'none'
+          e.currentTarget.style.transform = 'translateY(0)'
         }}
         title="Share on X"
       >
-        𝕏
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        X
       </a>
 
       <a
         href={facebookUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="transition-all duration-200 hover:scale-105 hover:shadow-md"
+        className="transition-all duration-300"
         style={{
-          ...buttonStyle,
-          background: 'linear-gradient(135deg, #D4A373 0%, #C19A6B 100%)',
+          ...largeButtonStyle,
+          background: 'rgba(255, 215, 0, 0.1)',
+          border: '1px solid rgba(255, 215, 0, 0.3)',
+          color: 'var(--neon-gold)',
           textDecoration: 'none',
-          display: 'inline-block',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 215, 0, 0.2)'
+          e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.3)'
+          e.currentTarget.style.transform = 'translateY(-2px)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)'
+          e.currentTarget.style.boxShadow = 'none'
+          e.currentTarget.style.transform = 'translateY(0)'
         }}
         title="Share on Facebook"
       >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
         f
       </a>
 
       <button
         onClick={handleCopyLink}
-        className="transition-all duration-200 hover:scale-105 hover:shadow-md"
+        className="transition-all duration-300"
         style={{
-          ...buttonStyle,
-          background: 'linear-gradient(135deg, #8B4513 0%, #6B3410 100%)',
+          ...largeButtonStyle,
+          background: copied ? 'rgba(0, 245, 255, 0.3)' : 'rgba(0, 245, 255, 0.1)',
+          border: copied ? '1px solid var(--neon-cyan)' : '1px solid rgba(0, 245, 255, 0.3)',
+          color: 'var(--neon-cyan)',
+        }}
+        onMouseEnter={(e) => {
+          if (!copied) {
+            e.currentTarget.style.background = 'rgba(0, 245, 255, 0.2)'
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 245, 255, 0.3)'
+            e.currentTarget.style.transform = 'translateY(-2px)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!copied) {
+            e.currentTarget.style.background = 'rgba(0, 245, 255, 0.1)'
+            e.currentTarget.style.boxShadow = 'none'
+            e.currentTarget.style.transform = 'translateY(0)'
+          }
         }}
         title="Copy link"
       >
-        {copied ? '✓ Copied!' : '🔗 Copy'}
+        {copied ? (
+          <>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Copied!
+          </>
+        ) : (
+          <>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+            Copy Link
+          </>
+        )}
       </button>
     </div>
   )

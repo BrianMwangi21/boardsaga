@@ -1,405 +1,537 @@
+'use client'
+
 const pieces = [
   {
     name: 'Pawn',
     symbol: '♟',
-    characteristics: 'Humble yet ambitious, the pawn is the soul of the chess army. They march forward with unwavering determination, sacrificing themselves for greater goals. Each pawn dreams of promotion—of transcending their humble origins to become something greater. Though individually the weakest, they are the most numerous, their collective strength capable of toppling empires.',
+    characteristics: 'From the depths of the void, we ascend. The humble souls who dream of becoming stars. Each pawn carries the weight of possibility, marching forward with unwavering determination. They sacrifice themselves for greater goals, their collective strength capable of reshaping the cosmic order.',
     catchPhrases: [
       '"One step at a time, toward glory."',
-      '"The smallest stone can start the greatest avalanche."',
+      '"The smallest star can illuminate the darkest void."',
       '"We are many, and we are relentless."',
-      '"My promotion is not a dream—it is destiny."',
+      '"My ascension is not a dream—it is destiny."',
       '"The first rank is my beginning, not my end."'
     ],
-    lore: 'Pawns are the heart of the kingdom. They form the living wall, the first line of defense and offense. Though individually weak, their collective strength can topple empires. When a pawn reaches the eighth rank, their transformation is more than promotion—it\'s ascension to legend. The pawn\'s march is the most heroic journey in all of chess.'
+    lore: 'Pawns are the quantum particles of chess—small yet essential, each carrying the potential for transformation. They form the living constellation, the first line of both defense and offense. When a pawn reaches the eighth rank, their promotion is more than metamorphosis—it\'s ascension to a higher plane of existence.',
+    color: 'cyan'
   },
   {
     name: 'Rook',
     symbol: '♜',
-    characteristics: 'The castle stands firm. Rooks are guardians of territory, masters of straight lines and unwavering resolve. They command the files and ranks with authority, their presence felt across the entire board. Slow but unstoppable, the rook is the embodiment of absolute power.',
+    characteristics: 'Guardians of cosmic order, masters of infinite straight lines. They command the orthogonal dimensions with absolute authority, their presence felt across entire regions of the board. Like ancient monoliths, they stand firm while empires crumble around them.',
     catchPhrases: [
-      '"I hold the line."',
+      '"I hold the line against entropy."',
       '"Straight and true, my aim never falters."',
       '"The castle stands while foundations remain."',
       '"Patience is the rook\'s greatest weapon."',
-      '"When I move, the board trembles."'
+      '"When I move, the spacetime trembles."'
     ],
-    lore: 'Rooks are the ancient sentinels of the board, forged from the stone of fortresses past. They communicate in silent vibrations through the board, coordinating defenses and crushing advances alike. When rooks connect (the "rooks\' alliance"), their power becomes nearly unstoppable. The rook is the only piece that can survive on the board until the very end, always threatening, always dangerous.'
+    lore: 'Rooks are the ancient sentinels of the chess cosmos, forged from the fabric of space itself. They communicate in silent resonances across the board, coordinating defenses and crushing advances. When two rooks connect, they form a quantum entanglement—a bond that multiplies their power exponentially.',
+    color: 'purple'
   },
   {
     name: 'Knight',
     symbol: '♞',
-    characteristics: 'The unpredictable warrior. Knights dance through chaos, their L-shaped movements defying the laws of straight lines. Strategic, cunning, and always appearing where least expected, they are the masters of the surprise attack. Where other pieces march, the knight rides nightmares.',
+    characteristics: 'Quantum dancers moving through probability space. Their L-shaped leaps defy conventional geometry, appearing where least expected like particles tunneling through barriers. They exist in superposition, threatening multiple squares simultaneously.',
     catchPhrases: [
       '"Two steps forward, one to the side—always an angle."',
-      '"Predictability is for the slow."',
-      '"The path to victory is never a straight line."',
-      '"I don\'t see obstacles—I see opportunities."',
-      '"While you march, I dance."'
+      '"Predictability is for those bound by classical physics."',
+      '"The path to victory follows no straight line."',
+      '"I don\'t see obstacles—I see probability waves."',
+      '"While you march, I quantum leap."'
     ],
-    lore: 'Knights are the tricksters of the board, riding on nightmares that leap over obstacles. Their strange gait confuses enemies, allowing them to strike from unexpected quarters. They are immune to the crushing lines of rooks and queens, existing in the spaces between. A knight in the center of the board is a force of nature, controlling eight squares and threatening pieces that feel safe.'
+    lore: 'Knights are the tricksters of the chess multiverse, riding on probability waves that leap over obstacles. Their strange gait confuses classical calculation, allowing them to strike from dimensions unseen. They are immune to the crushing lines of rooks and queens, existing in the spaces between conventional paths.',
+    color: 'gold'
   },
   {
     name: 'Bishop',
     symbol: '♝',
-    characteristics: 'The spiritual guide. Bishops glide diagonally like spirits through the material world, their movements elegant and swift. They are pieces of light and shadow, each bound to their color since birth. While rooks control territory and knights create chaos, bishops operate on the invisible lines of influence.',
+    characteristics: 'Mystics who walk the diagonal paths between dimensions. They glide through the board like light through prisms, each bound to their color since the dawn of the game. While others control territory, bishops operate on the invisible wavelengths of influence.',
     catchPhrases: [
-      '"I walk the diagonal path to truth."',
-      '"Light and shadow, forever intertwined."',
-      '"My sight pierces through all obstructions."',
-      '"The diagonal is my kingdom."',
-      '"While others see squares, I see futures."'
+      '"I walk the diagonal path to transcendence."',
+      '"Light and shadow, forever entangled."',
+      '"My sight pierces through dimensional barriers."',
+      '"The diagonal is my sacred geometry."',
+      '"While others see squares, I see spectral lines."'
     ],
-    lore: 'Bishops are the mystics of the chess realm, seeing patterns invisible to others. Though each bishop is confined to half the board, their wisdom flows through the diagonals like rivers of insight. When the two bishops unite ("the bishop pair"), they create a web of influence that few can escape. The bishop\'s greatest weapon is their range—a well-placed bishop can threaten squares that seem unreachable.'
+    lore: 'Bishops are the mystics of the chess cosmos, seeing patterns invisible to classical observers. Though each bishop is confined to half the chromatic spectrum, their wisdom flows through the diagonals like photons through space. When the bishop pair unites, they create a web of influence that spans the entire color wheel.',
+    color: 'cyan'
   },
   {
     name: 'Queen',
     symbol: '♛',
-    characteristics: 'The sovereign of all. The Queen commands every direction, combining the rook\'s straight lines with the bishop\'s diagonal grace. She is the most powerful piece, but also the most critical to protect. Her movements are a dance of calculated destruction—elegant, efficient, and utterly devastating.',
+    characteristics: 'Sovereign of all dimensions, combining the rook\'s spatial authority with the bishop\'s diagonal transcendence. She is the most powerful force in the known chess universe, her movements a dance of calculated destruction across every possible vector.',
     catchPhrases: [
-      '"My reach knows no boundaries."',
+      '"My reach spans all dimensions."',
       '"The queen protects her own, but must also be protected."',
-      '"All paths lead to me, and I to them."',
-      '"When I strike, the board remembers."',
-      '"Power requires responsibility."',
-      '"I am the war."'
+      '"All paths lead to me, and I to all paths."',
+      '"When I strike, the cosmos remembers."',
+      '"I am not just power—I am potential itself."'
     ],
-    lore: 'The Queen is the embodiment of chess itself—flexible, powerful, and irreplaceable. Her presence transforms the board, her movements a dance of calculated destruction. Losing a queen is not just losing a piece; it\'s losing the kingdom\'s heart. The queen\'s paradox is that she is both the most powerful piece and the one that must be most carefully protected. A queen in the open field is a force that can end games.'
+    lore: 'The Queen embodies the unified forces of chess—orthogonal and diagonal, a perfect synthesis of movement. Her presence transforms the board into a field of infinite possibility. Losing a queen is not merely losing a piece; it\'s losing the universal constant that holds the game together.',
+    color: 'gold'
   },
   {
     name: 'King',
     symbol: '♚',
-    characteristics: 'The crown that must not fall. Though his movement is slow, his survival is the only objective that truly matters. The King is the prize that all other pieces exist to protect or capture. Every move on the board—every attack, every sacrifice, every strategy—ultimately revolves around the king.',
+    characteristics: 'The singularity around which all orbits. Though his movement is limited, his survival is the only objective that transcends all others. Every move, every sacrifice, every strategy ultimately revolves around this gravitational center.',
     catchPhrases: [
-      '"The battle is lost when I fall."',
+      '"The universe ends when I fall."',
       '"Small steps to safety, surrounded by loyal guardians."',
-      '"The weight of the kingdom rests on my shoulders."',
-      '"I am the reason for all this."',
-      '"Survival is the only victory that matters."',
-      '"Every sacrifice is for me."'
+      '"The weight of the cosmos rests on my shoulders."',
+      '"I am the reason for all existence."',
+      '"Survival is the only victory that matters."'
     ],
-    lore: 'The King is the purpose behind every move, every sacrifice, every strategy. His castling with the rook is a sacred ritual—a desperate flight to safety when danger looms. The checkmate is not just capturing a piece; it\'s ending the war. The king\'s paradox is that he is both the most important piece and the least powerful—he must survive through the efforts of all others. In the endgame, when most pieces are gone, the king becomes active, finally fighting for himself.'
+    lore: 'The King is the gravitational singularity of chess—the purpose behind every move, every sacrifice, every strategy. His castling is a quantum tunnel to safety, a desperate shift through spacetime when danger looms. Checkmate is not just capturing a piece; it\'s the collapse of the wavefunction, the end of all possible futures.',
+    color: 'purple'
   }
 ]
 
 const openingConcepts = [
   {
     title: 'The Open Game',
-    description: 'When the center becomes a battlefield, the brave souls advance. e4 and e5—they are the gateways to chaos and glory. The open game rewards those who strike first and strike hard.'
+    icon: '🌅',
+    description: 'When the center becomes a dimensional battlefield, the brave advance through the e-file. e4 and e5—these are the portals to chaos and glory, where space opens and pieces find their true vectors.',
+    color: 'cyan'
   },
   {
     title: 'The Closed Game',
-    description: 'Queens and kings stand their ground. d4 and d5—fortresses built before the first shot is fired. The closed game is a war of attrition, won by those who can endure.'
+    icon: '🏰',
+    description: 'Fortresses built before the first quantum fluctuation. d4 and d5—structures that define the spacetime of the battle. The closed game is a war of positional accumulation, won by those who can build the strongest dimensional barriers.',
+    color: 'purple'
   },
   {
     title: 'The Sacrifice',
-    description: 'The greatest victories require the greatest risks. When a piece falls for future gain, the board remembers. Sacrifice is the language of legends.'
+    icon: '💫',
+    description: 'The greatest victories require the greatest energy expenditure. When matter converts to tactical advantage, the board remembers. Sacrifice is the alchemy of chess—transmuting pieces into position.',
+    color: 'gold'
   },
   {
     title: 'The Gambit',
-    description: 'Give a pawn to gain a position, a tempo, an advantage. The bold player understands that sometimes you must lose to win. The gambit is the brave soldier\'s declaration.'
+    icon: '🎲',
+    description: 'Offer a pawn to gain the initiative, a tempo, an advantage in spacetime. The bold player understands that sometimes you must give to receive. The gambit is the quantum gambit—probability favoring the brave.',
+    color: 'cyan'
   }
 ]
 
 const specialMoments = [
   {
     title: 'The Back Rank Mate',
-    description: 'The castle crumbles when the king has nowhere to hide. The rook\'s final checkmate—swift, merciless, inevitable. The back rank is where dreams go to die.'
+    icon: '⚡',
+    description: 'The castle crumbles when the king has nowhere to tunnel. The rook\'s final checkmate—swift, merciless, inevitable. The back rank is where royal dreams collapse into singularities.',
+    color: 'gold'
   },
   {
     title: 'The Fork',
-    description: 'A knight\'s deadly gift—two pieces threatened, one saved at best. The cruel mathematics of war. The fork teaches that numbers favor the clever.'
+    icon: '🔱',
+    description: 'A knight\'s quantum superposition—two pieces threatened, one saved at best. The cruel mathematics of probability. The fork teaches that positioning creates multiplicative force.',
+    color: 'cyan'
   },
   {
     title: 'The Pin',
-    description: 'Bound by duty, a piece cannot move. The sniper\'s aim holds more than the soldier can bear. The pin is psychological warfare—the art of trapping your enemy in their own loyalty.'
+    icon: '📌',
+    description: 'Bound by quantum entanglement, a piece cannot move. The sniper\'s aim holds more than the target can bear. The pin is dimensional warfare—the art of freezing enemies in their tracks.',
+    color: 'purple'
   },
   {
     title: 'The Discovery',
-    description: 'When one piece moves, another reveals its deadly purpose. The shadow that was always there, waiting. The discovery is the art of surprise.'
+    icon: '🔭',
+    description: 'When one piece moves, another reveals its hidden potential. The shadow that was always there, waiting to strike. The discovery is the art of unveiling hidden dimensions.',
+    color: 'cyan'
   },
   {
     title: 'The Checkmate',
-    description: 'The war ends when the king falls. All sacrifices, all plans, all courage leads to this moment. Checkmate is both the end and the beginning of memory.'
+    icon: '👑',
+    description: 'The war ends when the king collapses. All sacrifices, all plans, all courage lead to this moment. Checkmate is both the end and the beginning—the resolution of all quantum states.',
+    color: 'gold'
   }
 ]
 
 const storyThemes = [
-  { name: 'War and Sacrifice', description: 'Pieces give themselves for the greater good. Every death serves a purpose, every fall is an offering to the king.' },
-  { name: 'Strategy and Foresight', description: 'Plans unfold across moves, patience rewarded. The master sees five moves ahead, the apprentice sees only the next square.' },
-  { name: 'The Underdog\'s Journey', description: 'Pawns dreaming of promotion, knights proving their worth against queens, kings fighting alone in the endgame.' },
-  { name: 'Tragedy of Overextension', description: 'Ambition leading to downfall, pieces advancing too far and falling. The war teaches that pride comes before destruction.' },
-  { name: 'The Beauty of Combination', description: 'Multiple pieces working in harmony, the perfect sequence where each piece contributes to checkmate. The symphony of war.' },
-  { name: 'The King\'s Lonely Burden', description: 'All depends on one—the king who must survive while everyone else can die. The weight of being the reason for all this bloodshed.' },
-  { name: 'Redemption Through Sacrifice', description: 'A piece that once failed finding redemption in a final sacrifice. The last chance to prove worth.' },
-  { name: 'Honor in Defeat', description: 'A game played well even when lost. Some wars are more about dignity than victory.' },
-  { name: 'The Legend Born', description: 'A single move that defines a piece for eternity. The moment when a soldier becomes a hero.' },
-  { name: 'The Art of the Attack', description: 'The beautiful dance of attacking pieces, the rhythm of threats and counter-threats, the poetry of aggression.' },
-  { name: 'Patience and Position', description: 'The quiet beauty of positional play, where every piece finds its perfect square. Not all wars are won with fireworks.' },
-  { name: 'The Endgame\'s Mercy', description: 'When most pieces are gone and the king finally joins the fight. The final act of the drama.' }
+  { name: 'Ascension and Sacrifice', icon: '⬆️', description: 'Pieces give themselves for the greater dimensional harmony. Every conversion of matter serves the ultimate geometry of victory.', color: 'cyan' },
+  { name: 'Strategy and Foresight', icon: '🔮', description: 'Plans unfold across moves like wavefunctions evolving. The master sees five moves ahead, the novice sees only the present position.', color: 'purple' },
+  { name: 'The Underdog\'s Journey', icon: '🌟', description: 'Pawns dreaming of promotion, knights proving their worth against queens, kings fighting alone in the endgame vacuum.', color: 'gold' },
+  { name: 'The Beauty of Combination', icon: '🔗', description: 'Multiple pieces working in quantum harmony, the perfect sequence where each contributes to checkmate. The symphony of force.', color: 'cyan' },
+  { name: 'The King\'s Lonely Burden', icon: '👑', description: 'All depends on one—the king who must survive while others can transform. The weight of being the universal constant.', color: 'purple' },
+  { name: 'Honor in Defeat', icon: '🛡️', description: 'A game played with dignity even when lost. Some battles are more about the journey than the outcome.', color: 'gold' },
+  { name: 'The Legend Born', icon: '⚔️', description: 'A single move that defines a piece for eternity. The moment when a particle becomes a wave, a soldier becomes a hero.', color: 'cyan' },
 ]
+
+function getColorStyle(color: string) {
+  const colors: Record<string, { text: string; border: string; bg: string; glow: string }> = {
+    cyan: {
+      text: 'var(--neon-cyan)',
+      border: 'rgba(0, 245, 255, 0.3)',
+      bg: 'rgba(0, 245, 255, 0.1)',
+      glow: '0 0 20px rgba(0, 245, 255, 0.2)'
+    },
+    purple: {
+      text: 'var(--neon-purple)',
+      border: 'rgba(184, 41, 221, 0.3)',
+      bg: 'rgba(184, 41, 221, 0.1)',
+      glow: '0 0 20px rgba(184, 41, 221, 0.2)'
+    },
+    gold: {
+      text: 'var(--neon-gold)',
+      border: 'rgba(255, 215, 0, 0.3)',
+      bg: 'rgba(255, 215, 0, 0.1)',
+      glow: '0 0 20px rgba(255, 215, 0, 0.2)'
+    }
+  }
+  return colors[color] || colors.cyan
+}
 
 export default function LorePage() {
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background: 'linear-gradient(to bottom, #F5F0E6 0%, #EEE8D3 100%)',
-      }}
-    >
-      <main className="container mx-auto px-4 py-8 pb-20">
+    <div className="min-h-screen pt-24 pb-20">
+      <main className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
+          {/* Header */}
+          <div className="text-center mb-16">
             <h1
-              className="mb-4"
+              className="mb-6"
               style={{
-                fontFamily: 'var(--font-serif), Georgia, serif',
-                fontSize: 'var(--text-5xl)',
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(2.5rem, 6vw, 4rem)',
                 fontWeight: 700,
-                color: '#2C1810',
-                letterSpacing: 'var(--tracking-tight)',
+                background: 'linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-gold) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 0 40px rgba(0, 245, 255, 0.2)',
               }}
             >
-              The World of BoardSaga
+              The Cosmic Codex
             </h1>
             <p
-              className="max-w-2xl mx-auto"
+              className="max-w-2xl mx-auto text-xl"
               style={{
-                fontSize: 'var(--text-xl)',
-                color: '#6B3410',
-                lineHeight: 'var(--leading-relaxed)',
+                color: 'var(--moon-glow)',
+                lineHeight: '1.8',
               }}
             >
-              In the eternal struggle across the sixty-four squares, each piece possesses its own spirit, purpose, and voice.
-              Their stories intertwine through countless battles, creating legends whispered by masters and novices alike.
+              In the eternal dance across the sixty-four squares of spacetime, each piece possesses its own quantum signature, purpose, and voice. 
+              Their stories intertwine through countless dimensional battles, creating legends whispered across the multiverse.
             </p>
-          </div>
-
-          <div className="space-y-8 mb-16">
-            {pieces.map((piece) => (
-              <div
-                key={piece.name}
-                className="rounded-lg shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            
+            {/* Decorative Line */}
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <div 
+                className="h-px w-24"
                 style={{
-                  background: '#FFFFFF',
-                  border: '2px solid #E8C9A0',
+                  background: 'linear-gradient(90deg, transparent, var(--neon-cyan))',
                 }}
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <div
-                    className="text-6xl transition-transform duration-300 hover:scale-110"
-                    style={{
-                      color: '#8B4513',
-                    }}
-                  >
-                    {piece.symbol}
+              />
+              <div 
+                className="w-3 h-3 rotate-45"
+                style={{
+                  background: 'var(--neon-cyan)',
+                  boxShadow: '0 0 15px var(--neon-cyan)',
+                }}
+              />
+              <div 
+                className="h-px w-24"
+                style={{
+                  background: 'linear-gradient(90deg, var(--neon-cyan), transparent)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Pieces Section */}
+          <div className="space-y-8 mb-20">
+            <h2
+              className="text-3xl font-bold text-center mb-12"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: 'var(--neon-cyan)',
+                textShadow: '0 0 20px rgba(0, 245, 255, 0.3)',
+              }}
+            >
+              ✨ The Six Quantum Forces
+            </h2>
+            
+            {pieces.map((piece) => {
+              const colors = getColorStyle(piece.color)
+              return (
+                <div
+                  key={piece.name}
+                  className="rounded-2xl p-8 transition-all duration-500 hover:scale-[1.02]"
+                  style={{
+                    background: 'rgba(26, 26, 46, 0.6)',
+                    backdropFilter: 'blur(20px)',
+                    border: `1px solid ${colors.border}`,
+                    boxShadow: `0 10px 40px rgba(0, 0, 0, 0.3), ${colors.glow}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = colors.text
+                    e.currentTarget.style.boxShadow = `0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px ${colors.text.replace('var(', 'rgba(').replace(')', ', 0.3)')}`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = colors.border
+                    e.currentTarget.style.boxShadow = `0 10px 40px rgba(0, 0, 0, 0.3), ${colors.glow}`
+                  }}
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <div
+                      className="text-6xl transition-transform duration-300"
+                      style={{
+                        color: colors.text,
+                        filter: `drop-shadow(0 0 20px ${colors.text.replace('var(', 'rgba(').replace(')', ', 0.5)')})`,
+                      }}
+                    >
+                      {piece.symbol}
+                    </div>
+                    <h2
+                      style={{
+                        fontFamily: "'Playfair Display', serif",
+                        fontSize: '2rem',
+                        fontWeight: 700,
+                        color: colors.text,
+                      }}
+                    >
+                      {piece.name}
+                    </h2>
                   </div>
-                  <h2
-                    className="transition-colors duration-300"
-                    style={{
-                      fontFamily: 'var(--font-serif), Georgia, serif',
-                      fontSize: 'var(--text-3xl)',
-                      fontWeight: 700,
-                      color: '#2C1810',
-                    }}
-                  >
-                    {piece.name}
-                  </h2>
-                </div>
 
-                <div className="mb-4">
-                  <h3
-                    className="mb-2"
-                    style={{
-                      fontSize: 'var(--text-lg)',
-                      fontWeight: 600,
-                      color: '#6B3410',
-                    }}
-                  >
-                    Characteristics
-                  </h3>
-                  <p style={{ color: '#6B3410' }}>{piece.characteristics}</p>
-                </div>
+                  <div className="mb-6">
+                    <h3
+                      className="mb-3 text-lg font-semibold"
+                      style={{
+                        color: 'var(--neon-cyan)',
+                      }}
+                    >
+                      Quantum Characteristics
+                    </h3>
+                    <p style={{ color: 'var(--moon-glow)', lineHeight: '1.7' }}>
+                      {piece.characteristics}
+                    </p>
+                  </div>
 
-                <div className="mb-4">
-                  <h3
-                    className="mb-2"
-                    style={{
-                      fontSize: 'var(--text-lg)',
-                      fontWeight: 600,
-                      color: '#6B3410',
-                    }}
-                  >
-                    Catch-phrases
-                  </h3>
-                  <ul className="space-y-1">
-                    {piece.catchPhrases.map((phrase, index) => (
-                      <li
-                        key={index}
-                        className="transition-all duration-200 hover:translate-x-2 cursor-default"
-                        style={{
-                          color: '#6B3410',
-                          fontStyle: 'italic',
-                        }}
-                      >
-                        {phrase}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                  <div className="mb-6">
+                    <h3
+                      className="mb-3 text-lg font-semibold"
+                      style={{
+                        color: 'var(--neon-gold)',
+                      }}
+                    >
+                      Sacred Mantras
+                    </h3>
+                    <ul className="space-y-2">
+                      {piece.catchPhrases.map((phrase, index) => (
+                        <li
+                          key={index}
+                          className="transition-all duration-300 pl-4 border-l-2 hover:pl-6"
+                          style={{
+                            color: 'var(--moon-glow)',
+                            fontStyle: 'italic',
+                            borderColor: colors.border,
+                          }}
+                        >
+                          {phrase}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                <div>
-                  <h3
-                    className="mb-2"
-                    style={{
-                      fontSize: 'var(--text-lg)',
-                      fontWeight: 600,
-                      color: '#6B3410',
-                    }}
-                  >
-                    Lore
-                  </h3>
-                  <p style={{ color: '#6B3410' }}>{piece.lore}</p>
+                  <div>
+                    <h3
+                      className="mb-3 text-lg font-semibold"
+                      style={{
+                        color: 'var(--neon-purple)',
+                      }}
+                    >
+                      Cosmic Lore
+                    </h3>
+                    <p style={{ color: 'var(--moon-glow)', lineHeight: '1.7' }}>
+                      {piece.lore}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="mb-16">
+          {/* Opening Concepts Section */}
+          <div className="mb-20">
             <h2
-              className="mb-6 text-center"
+              className="text-3xl font-bold text-center mb-12"
               style={{
-                fontFamily: 'var(--font-serif), Georgia, serif',
-                fontSize: 'var(--text-3xl)',
-                fontWeight: 700,
-                color: '#2C1810',
+                fontFamily: "'Playfair Display', serif",
+                color: 'var(--neon-gold)',
+                textShadow: '0 0 20px rgba(255, 215, 0, 0.3)',
               }}
             >
-              Opening Concepts
+              🌌 Opening Portals
             </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {openingConcepts.map((concept) => (
-                <div
-                  key={concept.title}
-                  className="rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-1"
-                  style={{
-                    background: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
-                    border: '2px solid #E8C9A0',
-                  }}
-                >
-                  <h3
-                    className="mb-2"
+            <div className="grid md:grid-cols-2 gap-6">
+              {openingConcepts.map((concept) => {
+                const colors = getColorStyle(concept.color)
+                return (
+                  <div
+                    key={concept.title}
+                    className="rounded-xl p-6 transition-all duration-300 hover:scale-105"
                     style={{
-                      fontSize: 'var(--text-xl)',
-                      fontWeight: 600,
-                      color: '#2C1810',
+                      background: 'rgba(26, 26, 46, 0.6)',
+                      backdropFilter: 'blur(10px)',
+                      border: `1px solid ${colors.border}`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = colors.text
+                      e.currentTarget.style.boxShadow = colors.glow
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = colors.border
+                      e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
-                    {concept.title}
-                  </h3>
-                  <p
-                    className="italic"
-                    style={{
-                      color: '#6B3410',
-                      lineHeight: 'var(--leading-relaxed)',
-                    }}
-                  >
-                    {concept.description}
-                  </p>
-                </div>
-              ))}
+                    <h3
+                      className="mb-3 text-xl font-bold flex items-center gap-2"
+                      style={{
+                        color: colors.text,
+                      }}
+                    >
+                      <span>{concept.icon}</span> {concept.title}
+                    </h3>
+                    <p
+                      className="italic"
+                      style={{
+                        color: 'var(--moon-glow)',
+                        lineHeight: '1.7',
+                      }}
+                    >
+                      {concept.description}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
           </div>
 
-          <div className="mb-16">
+          {/* Special Moments Section */}
+          <div className="mb-20">
             <h2
-              className="mb-6 text-center"
+              className="text-3xl font-bold text-center mb-12"
               style={{
-                fontFamily: 'var(--font-serif), Georgia, serif',
-                fontSize: 'var(--text-3xl)',
-                fontWeight: 700,
-                color: '#2C1810',
+                fontFamily: "'Playfair Display', serif",
+                color: 'var(--neon-cyan)',
+                textShadow: '0 0 20px rgba(0, 245, 255, 0.3)',
               }}
             >
-              Special Moments
+              ⚡ Critical Events
             </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {specialMoments.map((moment) => (
-                <div
-                  key={moment.title}
-                  className="rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-1"
-                  style={{
-                    background: 'linear-gradient(135deg, #F5F0E6 0%, #EEE8D3 100%)',
-                    border: '2px solid #E8C9A0',
-                  }}
-                >
-                  <h3
-                    className="mb-2"
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {specialMoments.map((moment) => {
+                const colors = getColorStyle(moment.color)
+                return (
+                  <div
+                    key={moment.title}
+                    className="rounded-xl p-6 transition-all duration-300 hover:scale-105"
                     style={{
-                      fontSize: 'var(--text-xl)',
-                      fontWeight: 600,
-                      color: '#2C1810',
+                      background: 'rgba(26, 26, 46, 0.6)',
+                      backdropFilter: 'blur(10px)',
+                      border: `1px solid ${colors.border}`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = colors.text
+                      e.currentTarget.style.boxShadow = colors.glow
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = colors.border
+                      e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
-                    {moment.title}
-                  </h3>
-                  <p
-                    className="italic"
-                    style={{
-                      color: '#6B3410',
-                      lineHeight: 'var(--leading-relaxed)',
-                    }}
-                  >
-                    {moment.description}
-                  </p>
-                </div>
-              ))}
+                    <h3
+                      className="mb-3 text-lg font-bold flex items-center gap-2"
+                      style={{
+                        color: colors.text,
+                      }}
+                    >
+                      <span>{moment.icon}</span> {moment.title}
+                    </h3>
+                    <p
+                      className="italic text-sm"
+                      style={{
+                        color: 'var(--moon-glow)',
+                        lineHeight: '1.6',
+                      }}
+                    >
+                      {moment.description}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
           </div>
 
+          {/* Story Themes Section */}
           <div>
             <h2
-              className="mb-6 text-center"
+              className="text-3xl font-bold text-center mb-12"
               style={{
-                fontFamily: 'var(--font-serif), Georgia, serif',
-                fontSize: 'var(--text-3xl)',
-                fontWeight: 700,
-                color: '#2C1810',
+                fontFamily: "'Playfair Display', serif",
+                color: 'var(--neon-purple)',
+                textShadow: '0 0 20px rgba(184, 41, 221, 0.3)',
               }}
             >
-              Themes for Story Generation
+              🎭 Cosmic Narratives
             </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {storyThemes.map((theme) => (
-                <div
-                  key={theme.name}
-                  className="rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                  style={{
-                    background: '#FFFFFF',
-                    boxShadow: '0 2px 8px rgba(44, 24, 16, 0.08)',
-                    border: '2px solid #E8C9A0',
-                  }}
-                >
-                  <h3
-                    className="mb-2 transition-colors duration-300"
+            <div className="grid md:grid-cols-2 gap-6">
+              {storyThemes.map((theme) => {
+                const colors = getColorStyle(theme.color)
+                return (
+                  <div
+                    key={theme.name}
+                    className="rounded-xl p-6 transition-all duration-300 hover:scale-105"
                     style={{
-                      fontSize: 'var(--text-xl)',
-                      fontWeight: 600,
-                      color: '#2C1810',
+                      background: 'rgba(26, 26, 46, 0.6)',
+                      backdropFilter: 'blur(10px)',
+                      border: `1px solid ${colors.border}`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = colors.text
+                      e.currentTarget.style.boxShadow = colors.glow
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = colors.border
+                      e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
-                    {theme.name}
-                  </h3>
-                  <p
-                    style={{
-                      color: '#6B3410',
-                      lineHeight: 'var(--leading-relaxed)',
-                    }}
-                  >
-                    {theme.description}
-                  </p>
-                </div>
-              ))}
+                    <h3
+                      className="mb-3 text-lg font-bold flex items-center gap-2"
+                      style={{
+                        color: colors.text,
+                      }}
+                    >
+                      <span>{theme.icon}</span> {theme.name}
+                    </h3>
+                    <p
+                      style={{
+                        color: 'var(--moon-glow)',
+                        lineHeight: '1.6',
+                      }}
+                    >
+                      {theme.description}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
+          </div>
+
+          {/* Footer decoration */}
+          <div className="flex justify-center gap-2 mt-20">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="w-2 h-2 rounded-full"
+                style={{
+                  background: i === 2 ? 'var(--neon-gold)' : 'var(--neon-cyan)',
+                  opacity: i === 2 ? 1 : 0.5,
+                  boxShadow: i === 2 ? '0 0 15px var(--neon-gold)' : 'none',
+                }}
+              />
+            ))}
           </div>
         </div>
       </main>
