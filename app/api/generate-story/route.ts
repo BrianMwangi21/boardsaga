@@ -12,7 +12,7 @@ const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 })
 
-const MODEL = 'tngtech/tng-r1t-chimera:free'
+const MODEL = 'openrouter/free'
 
 const storyCache = new Cache<Story>()
 
